@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.tempus.fugit.temporal;
+package org.tempus.fugit.concurrency;
 
+import org.tempus.fugit.temporal.*;
 import static org.tempus.fugit.temporal.WaitFor.waitUntil;
 
 import java.util.concurrent.atomic.AtomicLong;

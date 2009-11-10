@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.tempus.fugit.temporal;
+package org.tempus.fugit.concurrency;
 
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.core.Is.is;
@@ -23,9 +23,12 @@ import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import org.junit.Test;
+import static org.tempus.fugit.concurrency.Interrupter.interrupt;
+import org.tempus.fugit.temporal.Condition;
+import org.tempus.fugit.temporal.DeterministicDateFactory;
+import org.tempus.fugit.temporal.Duration;
 import static org.tempus.fugit.temporal.Duration.millis;
 import static org.tempus.fugit.temporal.Duration.seconds;
-import static org.tempus.fugit.temporal.Interrupter.interrupt;
 import static org.tempus.fugit.temporal.WaitFor.SLEEP_PERIOD;
 import static org.tempus.fugit.temporal.WaitFor.waitOrTimeout;
 
