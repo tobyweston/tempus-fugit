@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0 
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
+import static com.google.code.tempusfugit.temporal.Duration.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
@@ -30,6 +31,35 @@ public class DurationTest {
         Duration duration = seconds(60);
         assertThat(duration.inMillis(), is(60000L));
         assertThat(duration.inSeconds(), is(60L));
+        assertThat(duration.inMinutes(), is(1L));
+        assertThat(duration.inHours(), is(0L));
+    }
+
+    @Test
+    public void secondsConversionRounding() {
+        Duration duration = seconds(95);
+        assertThat(duration.inMillis(), is(90000L));
+        assertThat(duration.inSeconds(), is(90L));
+        assertThat(duration.inMinutes(), is(1L));
+        assertThat(duration.inHours(), is(0L));
+    }
+
+    @Test
+    public void minutesConversionTest() {
+        Duration duration = minutes(50);
+        assertThat(duration.inMillis(), is(3000000L));
+        assertThat(duration.inSeconds(), is(3000L));
+        assertThat(duration.inMinutes(), is(50L));
+        assertThat(duration.inHours(), is(0L));
+    }
+
+    @Test
+    public void hoursConversionTest() {
+        Duration duration = hours(24);
+        assertThat(duration.inMillis(), is(86400000L));
+        assertThat(duration.inSeconds(), is(86400L));
+        assertThat(duration.inMinutes(), is(1440L));
+        assertThat(duration.inHours(), is(24L));
     }
 
     @Test
