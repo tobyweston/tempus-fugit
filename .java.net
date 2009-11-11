@@ -1,0 +1,4 @@
+userName=kohsuke
+password=mypassword
+proxyServer=proxy.acme.com
+proxyPort=8080
