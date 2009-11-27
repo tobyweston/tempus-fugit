@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2009, Toby Weston
+ * Copyright (c) 2009, tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
@@ -17,12 +17,13 @@
 package com.google.code.tempusfugit.temporal;
 
 import java.util.concurrent.TimeoutException;
+import static java.lang.Thread.currentThread;
 
 import static com.google.code.tempusfugit.concurrency.ThreadUtils.sleep;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 
 public final class WaitFor {
-    public static final Duration SLEEP_PERIOD = millis(50);
+     public static final Duration SLEEP_PERIOD = millis(100);
 
     private WaitFor() {
     }
@@ -39,19 +40,22 @@ public final class WaitFor {
     }
 
     public static void waitUntil(Timeout timeout) {
-        while (!timeout.hasExpired()) {
+        while (shouldWait(timeout))
             sleep(SLEEP_PERIOD);
-        }
     }
 
     private static boolean success(Condition condition, Timeout timeout) {
-        while (!timeout.hasExpired()) {
+        while (shouldWait(timeout)) {
             if (condition.isSatisfied()) {
                 return true;
             }
             sleep(SLEEP_PERIOD);
         }
         return false;
+    }
+
+    private static boolean shouldWait(Timeout timeout) {
+        return !timeout.hasExpired() && !currentThread().isInterrupted();
     }
 
     private static StopWatch startDefaultStopWatch() {

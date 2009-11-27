@@ -1,27 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
+<project relativePaths="true" version="4">
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
   </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
   </component>
-  <component name="CCaseConfig">
-    <option name="checkoutReserved" value="false" />
-    <option name="markExternalChangeAsUpToDate" value="true" />
-    <option name="checkInUseHijack" value="true" />
-    <option name="useUcmModel" value="true" />
-    <option name="isOffline" value="false" />
-    <option name="synchOutside" value="false" />
-    <option name="isHistoryResticted" value="true" />
-    <option name="useIdenticalSwitch" value="true" />
-    <option name="synchActivitiesOnRefresh" value="true" />
-    <option name="lastScr" value="" />
-    <option name="scrTextFileName" value="" />
-    <option name="historyRevisionsNumber" value="4" />
+  <component name="CodeStyleSettingsManager">
+    <option name="PER_PROJECT_SETTINGS" />
+    <option name="USE_PER_PROJECT_SETTINGS" value="false" />
   </component>
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
+    <option name="DEPLOY_AFTER_MAKE" value="0" />
     <resourceExtensions>
       <entry name=".+\.(properties|xml|html|dtd|tld)" />
       <entry name=".+\.(gif|png|jpeg|jpg)" />
@@ -38,13 +29,11 @@
       <entry name="?*.tld" />
       <entry name="?*.ftl" />
     </wildcardResourcePatterns>
-    <annotationProcessing enabled="false" useClasspath="true" />
   </component>
   <component name="CopyrightManager" default="Apache">
     <copyright>
-      <option name="notice" value="Copyright (c) &amp;#36;today.year, Toby Weston &#10;&#10;Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); &#10;you may not use this file except in compliance with the License. &#10;You may obtain a copy of the License at &#10;&#10;     http://www.apache.org/licenses/LICENSE-2.0 &#10;&#10;Unless required by applicable law or agreed to in writing, software &#10;distributed under the License is distributed on an &quot;AS IS&quot; BASIS, &#10;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. &#10;See the License for the specific language governing permissions and &#10;limitations under the License." />
+      <option name="notice" value="Copyright (c) &amp;#36;today.year, tempus-fugit committers&#10;&#10;Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); &#10;you may not use this file except in compliance with the License. &#10;You may obtain a copy of the License at &#10;&#10;     http://www.apache.org/licenses/LICENSE-2.0 &#10;&#10;Unless required by applicable law or agreed to in writing, software &#10;distributed under the License is distributed on an &quot;AS IS&quot; BASIS, &#10;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. &#10;See the License for the specific language governing permissions and &#10;limitations under the License." />
       <option name="keyword" value="Copyright" />
-      <option name="allowReplaceKeyword" value="" />
       <option name="myName" value="Apache" />
       <option name="myLocal" value="true" />
     </copyright>
@@ -65,12 +54,15 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
   <component name="IdProvider" IDEtalkID="12E9D1A06815C42E387E8B79C764802F" />
   <component name="InspectionProjectProfileManager">
+    <option name="PROJECT_PROFILE" value="Project Default" />
+    <option name="USE_PROJECT_LEVEL_SETTINGS" value="false" />
+    <scopes />
     <profiles>
       <profile version="1.0" is_locked="false">
         <option name="myName" value="Project Default" />
         <option name="myLocal" value="false" />
         <inspection_tool class="GemInspection" level="WARNING" enabled="false" />
-        <inspection_tool class="HtmlUnknownAttribute" enabled="false" level="WARNING" enabled_by_default="false">
+        <inspection_tool class="HtmlUnknownAttribute" level="WARNING" enabled="false">
           <option name="myValues">
             <value>
               <list size="5">
@@ -89,9 +81,7 @@
         <inspection_tool class="SeamBijectionUndefinedContextVariableInspection" level="WARNING" enabled="false" />
       </profile>
     </profiles>
-    <option name="PROJECT_PROFILE" value="Project Default" />
-    <option name="USE_PROJECT_PROFILE" value="true" />
-    <version value="1.0" />
+    <list size="0" />
   </component>
   <component name="JavacSettings">
     <option name="DEBUGGING_INFO" value="true" />
@@ -256,6 +246,11 @@
   <component name="ProjectDetails">
     <option name="projectName" value="tempus-fugit" />
   </component>
+  <component name="ProjectFileVersion" converted="true">
+    <converter id="javaee-modules" />
+    <converter id="ror-modules" />
+    <converter id="SelenaRunConfToDiana" />
+  </component>
   <component name="ProjectKey">
     <option name="state" value="https://tempus-fugit.googlecode.com/svn/trunk/tempus-fugit/tempus-fugit.ipr" />
   </component>
@@ -280,17 +275,6 @@
     <option name="GENERATE_NO_WARNINGS" value="false" />
     <option name="GENERATE_IIOP_STUBS" value="false" />
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
-  </component>
-  <component name="StarteamConfiguration">
-    <option name="SERVER" value="" />
-    <option name="PORT" value="49201" />
-    <option name="USER" value="" />
-    <option name="PASSWORD" value="" />
-    <option name="PROJECT" value="" />
-    <option name="VIEW" value="" />
-    <option name="ALTERNATIVE_WORKING_PATH" value="" />
-    <option name="LOCK_ON_CHECKOUT" value="false" />
-    <option name="UNLOCK_ON_CHECKIN" value="false" />
   </component>
   <component name="SvnBranchConfigurationManager">
     <option name="mySupportsUserInfoFilter" value="true" />
@@ -433,5 +417,8 @@
       </SOURCES>
     </library>
   </component>
+  <UsedPathMacros>
+    <macro name="MAVEN_REPOSITORY" description="Maven Local Repostiry" />
+  </UsedPathMacros>
 </project>
 
