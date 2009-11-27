@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Toby Weston
+ * Copyright (c) 2009, tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,10 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import static com.google.code.tempusfugit.concurrency.CallableAdapter.runnable;
 import org.jmock.Expectations;
+import static org.jmock.Expectations.returnValue;
+import static org.jmock.Expectations.throwException;
 import org.jmock.Mockery;
 import org.jmock.api.Action;
 import org.jmock.integration.junit4.JMock;
@@ -24,10 +27,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.concurrent.Callable;
-
-import static com.google.code.tempusfugit.concurrency.CallableAdapter.runnable;
-import static org.jmock.Expectations.returnValue;
-import static org.jmock.Expectations.throwException;
 
 @RunWith(JMock.class)
 public class CallableAdapterTest {

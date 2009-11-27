@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Toby Weston 
+ * Copyright (c) 2009, tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -16,6 +16,8 @@
 
 package com.google.code.tempusfugit.temporal;
 
+import static com.google.code.tempusfugit.temporal.Duration.millis;
+import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
@@ -26,9 +28,6 @@ import org.junit.runner.RunWith;
 
 import java.util.Date;
 import java.util.concurrent.TimeoutException;
-
-import static com.google.code.tempusfugit.temporal.Duration.millis;
-import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 
 @RunWith(JMock.class)
 public class WaitForTest {
