@@ -2,7 +2,7 @@
  * Copyright (c) 2009, tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. 
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
@@ -16,11 +16,11 @@
 
 package com.google.code.tempusfugit.temporal;
 
-import java.util.concurrent.TimeoutException;
-import static java.lang.Thread.currentThread;
-
 import static com.google.code.tempusfugit.concurrency.ThreadUtils.sleep;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
+
+import static java.lang.Thread.currentThread;
+import java.util.concurrent.TimeoutException;
 
 public final class WaitFor {
      public static final Duration SLEEP_PERIOD = millis(100);

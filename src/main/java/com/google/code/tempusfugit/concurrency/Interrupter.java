@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Toby Weston
+ * Copyright (c) 2009, tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,9 @@
 package com.google.code.tempusfugit.concurrency;
 
 import com.google.code.tempusfugit.temporal.*;
+import static com.google.code.tempusfugit.temporal.WaitFor.waitUntil;
 
 import java.util.concurrent.atomic.AtomicLong;
-
-import static com.google.code.tempusfugit.temporal.WaitFor.waitUntil;
 
 public final class Interrupter {
 

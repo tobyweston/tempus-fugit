@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Toby Weston
+ * Copyright (c) 2009, tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,24 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import static com.google.code.tempusfugit.concurrency.Interrupter.interrupt;
 import com.google.code.tempusfugit.temporal.Condition;
 import com.google.code.tempusfugit.temporal.DeterministicDateFactory;
 import com.google.code.tempusfugit.temporal.Duration;
-import org.junit.Test;
-
-import java.util.concurrent.TimeoutException;
-
-import static com.google.code.tempusfugit.concurrency.Interrupter.interrupt;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
 import static com.google.code.tempusfugit.temporal.WaitFor.SLEEP_PERIOD;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
-import static java.lang.Thread.currentThread;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import org.junit.Test;
+
+import static java.lang.Thread.currentThread;
+import java.util.concurrent.TimeoutException;
 
 public class InterrupterTest {
 
