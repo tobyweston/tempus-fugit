@@ -21,7 +21,13 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 public class DurationTest {
+    private static final long HOURS_IN_A_DAY = 24;
+    private static final long MINUTES_IN_AN_HOUR = 60;
+    private static final long SECONDS_IN_A_MINUTE = 60;
+    private static final long MILLIS_IN_A_SECOND = SECONDS.toMillis(1);
 
     @Test
     public void secondsConversionTest() {
@@ -30,15 +36,17 @@ public class DurationTest {
         assertThat(duration.inSeconds(), is(60L));
         assertThat(duration.inMinutes(), is(1L));
         assertThat(duration.inHours(), is(0L));
+        assertThat(duration.inDays(), is(0L));
     }
 
     @Test
     public void secondsConversionRounding() {
         Duration duration = seconds(95);
-        assertThat(duration.inMillis(), is(90000L));
-        assertThat(duration.inSeconds(), is(90L));
+        assertThat(duration.inMillis(), is(95000L));
+        assertThat(duration.inSeconds(), is(95L));
         assertThat(duration.inMinutes(), is(1L));
         assertThat(duration.inHours(), is(0L));
+        assertThat(duration.inDays(), is(0L));
     }
 
     @Test
@@ -48,6 +56,7 @@ public class DurationTest {
         assertThat(duration.inSeconds(), is(3000L));
         assertThat(duration.inMinutes(), is(50L));
         assertThat(duration.inHours(), is(0L));
+        assertThat(duration.inDays(), is(0L));
     }
 
     @Test
@@ -57,6 +66,16 @@ public class DurationTest {
         assertThat(duration.inSeconds(), is(86400L));
         assertThat(duration.inMinutes(), is(1440L));
         assertThat(duration.inHours(), is(24L));
+        assertThat(duration.inDays(), is(1L));
+    }
+
+    @Test
+    public void daysConversionTest() {
+        Duration duration = Duration.days(2L);
+        assertThat(duration.inHours(), is(duration.inDays() * HOURS_IN_A_DAY));
+        assertThat(duration.inMinutes(), is(duration.inHours() * MINUTES_IN_AN_HOUR));
+        assertThat(duration.inSeconds(), is(duration.inMinutes() * SECONDS_IN_A_MINUTE));
+        assertThat(duration.inMillis(), is(duration.inSeconds() * MILLIS_IN_A_SECOND));
     }
 
     @Test
