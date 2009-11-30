@@ -47,6 +47,10 @@ public class Duration {
         return minutes(hours * 60);
     }
 
+    public static Duration days(long days) {
+        return hours(days * 24);
+    }
+
     private static void validate(long value, TimeUnit unit) {
         Duration duration = new Duration(value, unit);
         if (duration.inMillis() == Long.MAX_VALUE) {
@@ -61,13 +65,17 @@ public class Duration {
     public long inSeconds() {
         return unit.toSeconds(value);
     }
-    
+
     public long inMinutes() {
         return unit.toSeconds(value) / 60;
     }
 
     public long inHours() {
         return inMinutes() / 60;
+    }
+
+    public long inDays() {
+        return inHours() / 24;
     }
 
     public Duration plus(Duration duration) {
@@ -96,5 +104,4 @@ public class Duration {
     public String toString() {
         return "Duration " + value + " " + unit;
     }
-
 }
