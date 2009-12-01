@@ -32,12 +32,4 @@ public final class Timeout {
         return stopWatch.markAndGetTotalElapsedTime() > duration.inMillis();
     }
 
-    public Condition timeout() {
-        return new Condition() {
-            public boolean isSatisfied() {
-                return hasExpired();
-            }
-        };
-    }
-
 }

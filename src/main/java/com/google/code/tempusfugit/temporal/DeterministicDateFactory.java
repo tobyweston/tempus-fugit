@@ -26,7 +26,7 @@ public final class DeterministicDateFactory implements DateFactory {
         return new Date(now.getTime());
     }
 
-    public void moveTimeForwardFromStartBy(Duration time) {
+    public void setTime(Duration time) {
         now.setTime(time.inMillis());
     }
 

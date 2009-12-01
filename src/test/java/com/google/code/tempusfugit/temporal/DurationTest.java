@@ -71,7 +71,8 @@ public class DurationTest {
 
     @Test
     public void daysConversionTest() {
-        Duration duration = Duration.days(2L);
+        Duration duration = Duration.days(10L);
+        assertThat(duration.inDays(), is(10L));
         assertThat(duration.inHours(), is(duration.inDays() * HOURS_IN_A_DAY));
         assertThat(duration.inMinutes(), is(duration.inHours() * MINUTES_IN_AN_HOUR));
         assertThat(duration.inSeconds(), is(duration.inMinutes() * SECONDS_IN_A_MINUTE));
@@ -80,6 +81,7 @@ public class DurationTest {
 
     @Test
     public void canAddDurations() {
+        assertThat(days(1).plus(days(1)), is(equalTo(days(2))));
         assertThat(millis(1).plus(seconds(1)), is(equalTo(millis(1001))));
     }
 
