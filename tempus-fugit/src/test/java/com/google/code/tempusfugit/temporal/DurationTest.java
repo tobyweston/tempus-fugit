@@ -23,7 +23,8 @@ import org.junit.Test;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-public class DurationTest {
+public final class DurationTest {
+
     private static final long HOURS_IN_A_DAY = 24;
     private static final long MINUTES_IN_AN_HOUR = 60;
     private static final long SECONDS_IN_A_MINUTE = 60;
@@ -105,6 +106,7 @@ public class DurationTest {
     @Test
     public void differentUnitEquality() {
         assertThat(millis(10000), is(equalTo(seconds(10))));
+        assertThat(seconds(10), is(equalTo(millis(10000))));
     }
 
     @Test
@@ -130,4 +132,22 @@ public class DurationTest {
         assertThat(seconds(-1).greaterThan(seconds(1)), is(false));
     }
 
+    @Test
+    public void equalityNull() {
+        assertThat(seconds(1).equals(null), is(false));
+    }
+    
+    @Test
+    public void equalityDifferentClass() {
+        assertThat(seconds(10).equals(""), is(false));
+    }
+
+    @Test
+    public void toStringOnDuration() {
+        assertThat(millis(1099).toString(), is(equalTo("Duration 1099 MILLISECONDS")));
+        assertThat(seconds(1).toString(), is(equalTo("Duration 1 SECONDS")));
+        assertThat(minutes(60).toString(), is(equalTo("Duration 3600 SECONDS")));
+        assertThat(hours(24).toString(), is(equalTo("Duration 86400 SECONDS")));
+        assertThat(days(1).toString(), is(equalTo("Duration 86400 SECONDS")));
+    }
 }

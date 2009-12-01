@@ -44,7 +44,7 @@ public final class ExecutorServiceShutdown {
         return resetInterruptFlagWhen(awaitingTerminationIsInterrupted(duration));
     }
 
-    public Boolean waitingForShutdown(Duration timeout) throws TimeoutException {
+    public Boolean waitingForShutdown(Duration timeout) throws TimeoutException, InterruptedException {
         if (executor == null)
             return false;
         executor.shutdownNow();

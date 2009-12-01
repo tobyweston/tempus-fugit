@@ -16,46 +16,41 @@
 
 package com.google.code.tempusfugit.temporal;
 
-import static com.google.code.tempusfugit.concurrency.ThreadUtils.sleep;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 
-import static java.lang.Thread.currentThread;
 import java.util.concurrent.TimeoutException;
 
 public final class WaitFor {
-     public static final Duration SLEEP_PERIOD = millis(100);
+
+    public static final Duration SLEEP_PERIOD = millis(100);
 
     private WaitFor() {
     }
 
-    public static void waitOrTimeout(Condition condition, final Duration duration) throws TimeoutException {
+    public static void waitOrTimeout(Condition condition, final Duration duration) throws TimeoutException, InterruptedException {
         waitOrTimeout(condition, duration, startDefaultStopWatch());
     }
 
-    public static void waitOrTimeout(Condition condition, final Duration duration, final StopWatch stopWatch) throws TimeoutException {
+    public static void waitOrTimeout(Condition condition, final Duration duration, final StopWatch stopWatch) throws TimeoutException, InterruptedException {
         final Timeout timeout = new Timeout(duration, stopWatch);
         if (success(condition, timeout))
             return;
         throw new TimeoutException();
     }
 
-    public static void waitUntil(Timeout timeout) {
-        while (shouldWait(timeout))
-            sleep(SLEEP_PERIOD);
+    public static void waitUntil(Timeout timeout) throws InterruptedException {
+        while (!timeout.hasExpired())
+            Thread.sleep(SLEEP_PERIOD.inMillis());
     }
 
-    private static boolean success(Condition condition, Timeout timeout) {
-        while (shouldWait(timeout)) {
+    private static boolean success(Condition condition, Timeout timeout) throws InterruptedException {
+        while (!timeout.hasExpired()) {
             if (condition.isSatisfied()) {
                 return true;
             }
-            sleep(SLEEP_PERIOD);
+            Thread.sleep(SLEEP_PERIOD.inMillis());
         }
         return false;
-    }
-
-    private static boolean shouldWait(Timeout timeout) {
-        return !timeout.hasExpired() && !currentThread().isInterrupted();
     }
 
     private static StopWatch startDefaultStopWatch() {
