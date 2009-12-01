@@ -100,11 +100,15 @@ public class InterrupterTest {
 
     private void assertInterruptedWithin(Duration duration) throws TimeoutException {
         assertDurationIsAlotBiggerThanWaitForSleepPeriod(duration);
-        waitOrTimeout(new Condition() {
-            public boolean isSatisfied() {
-                return interrupted;
-            }
-        }, duration);
+        try {
+            waitOrTimeout(new Condition() {
+                public boolean isSatisfied() {
+                    return interrupted;
+                }
+            }, duration);
+        } catch (InterruptedException e) {
+            fail();
+        }
     }
 
     private void assertNotInterruptedWithin(Duration duration) {

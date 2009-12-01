@@ -19,6 +19,7 @@ package com.google.code.tempusfugit.concurrency;
 import com.google.code.tempusfugit.temporal.*;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitUntil;
 
+import static java.lang.Thread.currentThread;
 import java.util.concurrent.atomic.AtomicLong;
 
 public final class Interrupter {
@@ -48,9 +49,13 @@ public final class Interrupter {
         final Timeout timeout = timeout(duration);
         interrupterThread = new Thread(new Runnable() {
             public void run() {
-                waitUntil(timeout);
-                if (!interrupterThread.isInterrupted()) {
-                    Interrupter.this.threadToInterrupt.interrupt();
+                try {
+                    waitUntil(timeout);
+                    if (!interrupterThread.isInterrupted()) {
+                        Interrupter.this.threadToInterrupt.interrupt();
+                    }
+                } catch (InterruptedException e) {
+                    currentThread().interrupt();
                 }
             }
         }, "Interrupter-Thread-" + counter.incrementAndGet());

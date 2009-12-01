@@ -43,7 +43,7 @@ public class WaitForTest {
     private static final Duration TIMEOUT = millis(10);
 
     @Test
-    public void whenConditionPassesWaitContinues() throws TimeoutException {
+    public void whenConditionPassesWaitContinues() throws TimeoutException, InterruptedException {
         context.checking(new Expectations(){{
             one(condition).isSatisfied(); will(returnValue(true));
         }});
@@ -51,7 +51,7 @@ public class WaitForTest {
     }
 
     @Test
-    public void whenConditionEventuallyPassesWaitContinues() throws TimeoutException {
+    public void whenConditionEventuallyPassesWaitContinues() throws TimeoutException, InterruptedException {
         context.checking(new Expectations(){{
             one(condition).isSatisfied(); inSequence(sequence); will(returnValue(false));
             one(condition).isSatisfied(); inSequence(sequence); will(returnValue(true));
@@ -60,32 +60,45 @@ public class WaitForTest {
     }
 
     @Test(expected = TimeoutException.class)
-    public void timesout() throws TimeoutException {
+    public void timesout() throws TimeoutException, InterruptedException {
         waitOrTimeout(new ForceTimeout(), TIMEOUT, StopWatch.start(date));
     }
 
-    @Test (expected = TimeoutException.class, timeout = 500)
-    public void waitForCanBeInterrupted() throws TimeoutException {
+    @Test (expected = InterruptedException.class, timeout = 500)
+    public void waitForCanBeInterrupted() throws TimeoutException, InterruptedException {
         waitOrTimeout(IntrruptWaitFor(), seconds(10));
     }
 
     @Test (timeout = 500)
-    public void shouldWaitForTimeoutCanBeInterrupted() throws TimeoutException {
+    public void shouldWaitForTimeoutCanBeInterrupted() throws TimeoutException, InterruptedException {
         Thread thread = threadWaitsForever();
         thread.start();
+        waitForStartup(thread);
         thread.interrupt();
-        waitForInterrupt(thread);
+        waitForShutdown(thread);
     }
 
     private Thread threadWaitsForever() {
         return new Thread(new Runnable() {
             public void run() {
-                waitUntil(new Timeout(seconds(1), StopWatch.start(date)));
+                try {
+                    waitUntil(new Timeout(seconds(1), StopWatch.start(date)));
+                } catch (InterruptedException e) {
+                    currentThread().interrupt();
+                }
             }
         }, "blocking-thread");
     }
 
-    private void waitForInterrupt(final Thread thread) throws TimeoutException {
+    private void waitForStartup(final Thread thread) throws TimeoutException, InterruptedException {
+        waitOrTimeout(new Condition() {
+            public boolean isSatisfied() {
+                return thread.isAlive();
+            }
+        }, seconds(1));
+    }
+
+    private void waitForShutdown(final Thread thread) throws TimeoutException, InterruptedException {
         waitOrTimeout(new Condition() {
             public boolean isSatisfied() {
                 return !thread.isAlive();
