@@ -2,13 +2,14 @@ package com.google.code.tempusfugit.concurrency;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-@RunWith(IntermittentTestRunner.class)
-public class IntermittentTestRunnerTest {
+public class IntermittentTest {
+
+    @Rule public IntermittentRule rule = new IntermittentRule();
 
     private static final AtomicInteger counter = new AtomicInteger();
 
@@ -22,7 +23,5 @@ public class IntermittentTestRunnerTest {
     public void annotatedTestRunsMultipleTimes() {
         assertThat(counter.get(), is(100));
     }
-
-
 
 }
