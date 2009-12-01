@@ -17,7 +17,9 @@
 package com.google.code.tempusfugit.temporal;
 
 import static com.google.code.tempusfugit.temporal.Duration.millis;
+import static com.google.code.tempusfugit.temporal.Duration.seconds;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
+import static com.google.code.tempusfugit.temporal.WaitFor.waitUntil;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
@@ -26,19 +28,13 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Date;
+import static java.lang.Thread.currentThread;
 import java.util.concurrent.TimeoutException;
 
 @RunWith(JMock.class)
 public class WaitForTest {
-    
-    private Date now = new Date(0);
 
-    private final DateFactory dateProvider = new DateFactory() {
-        public Date create() {
-            return new Date(now.getTime());
-        }
-    };
+    private final DeterministicDateFactory date = new DeterministicDateFactory();
 
     private final Mockery context = new JUnit4Mockery();
 
@@ -51,7 +47,7 @@ public class WaitForTest {
         context.checking(new Expectations(){{
             one(condition).isSatisfied(); will(returnValue(true));
         }});
-        waitOrTimeout(condition, TIMEOUT, StopWatch.start(dateProvider));
+        waitOrTimeout(condition, TIMEOUT, StopWatch.start(date));
     }
 
     @Test
@@ -60,19 +56,57 @@ public class WaitForTest {
             one(condition).isSatisfied(); inSequence(sequence); will(returnValue(false));
             one(condition).isSatisfied(); inSequence(sequence); will(returnValue(true));
         }});
-        waitOrTimeout(condition, TIMEOUT, StopWatch.start(dateProvider));
+        waitOrTimeout(condition, TIMEOUT, StopWatch.start(date));
     }
 
     @Test(expected = TimeoutException.class)
     public void timesout() throws TimeoutException {
-        waitOrTimeout(new ForceTimeout(), TIMEOUT, StopWatch.start(dateProvider));
+        waitOrTimeout(new ForceTimeout(), TIMEOUT, StopWatch.start(date));
+    }
+
+    @Test (expected = TimeoutException.class, timeout = 500)
+    public void waitForCanBeInterrupted() throws TimeoutException {
+        waitOrTimeout(IntrruptWaitFor(), seconds(10));
+    }
+
+    @Test (timeout = 500)
+    public void shouldWaitForTimeoutCanBeInterrupted() throws TimeoutException {
+        Thread thread = threadWaitsForever();
+        thread.start();
+        thread.interrupt();
+        waitForInterrupt(thread);
+    }
+
+    private Thread threadWaitsForever() {
+        return new Thread(new Runnable() {
+            public void run() {
+                waitUntil(new Timeout(seconds(1), StopWatch.start(date)));
+            }
+        }, "blocking-thread");
+    }
+
+    private void waitForInterrupt(final Thread thread) throws TimeoutException {
+        waitOrTimeout(new Condition() {
+            public boolean isSatisfied() {
+                return !thread.isAlive();
+            }
+        }, seconds(1));
+    }
+
+    private Condition IntrruptWaitFor() {
+        return new Condition() {
+            public boolean isSatisfied() {
+                currentThread().interrupt();
+                return false;
+            }
+        };
     }
 
     private class ForceTimeout implements Condition {
         public boolean isSatisfied() {
-            now.setTime(TIMEOUT.inMillis()+1);
+            date.setTime(TIMEOUT.plus(millis(1)));
             return false;
         }
     }
-    
+
 }

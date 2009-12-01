@@ -75,13 +75,13 @@ public class InterrupterTest {
         interrupt(thread).using(time).after(seconds(5));
         assertNotInterruptedWithin(TIMEOUT);
 
-        time.moveTimeForwardFromStartBy(seconds(4));
+        time.setTime(seconds(4));
         assertNotInterruptedWithin(TIMEOUT);
 
-        time.moveTimeForwardFromStartBy(seconds(5));
+        time.setTime(seconds(5));
         assertNotInterruptedWithin(TIMEOUT);
 
-        time.moveTimeForwardFromStartBy(seconds(6));
+        time.setTime(seconds(6));
         assertInterruptedWithin(TIMEOUT);
     }
 
@@ -89,7 +89,7 @@ public class InterrupterTest {
     public void interruptCanBeCancelled() throws InterruptedException {
         Interrupter interrupter = interrupt(thread).using(time).after(millis(1));
         interrupter.cancel();
-        time.moveTimeForwardFromStartBy(millis(1));
+        time.setTime(millis(1));
         assertNotInterruptedWithin(TIMEOUT);
     }
 
