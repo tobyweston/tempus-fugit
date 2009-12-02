@@ -251,7 +251,11 @@
   <component name="ProjectDetails">
     <option name="projectName" value="tempus-fugit" />
   </component>
-  <component name="ProjectFileVersion" converted="true" />
+  <component name="ProjectFileVersion" converted="true">
+    <converter id="javaee-modules" />
+    <converter id="ror-modules" />
+    <converter id="SelenaRunConfToDiana" />
+  </component>
   <component name="ProjectKey">
     <option name="state" value="https://tempus-fugit.googlecode.com/svn/trunk/tempus-fugit/tempus-fugit.ipr" />
   </component>
