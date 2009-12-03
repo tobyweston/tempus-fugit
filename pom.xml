@@ -36,6 +36,10 @@
             <comments>A business-friendly OSS license</comments>
         </license>
     </licenses>
+    <issueManagement>
+        <system>Google Code</system>
+        <url>http://code.google.com/p/tempus-fugit/issues/list</url>
+    </issueManagement>
 
     <distributionManagement>
         <repository>
@@ -132,7 +136,7 @@
         </repository>
     </repositories>
 
-    <reporting>                                               
+    <reporting>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
