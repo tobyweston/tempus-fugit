@@ -16,6 +16,7 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import static com.google.code.tempusfugit.concurrency.IntermittentRule.Repeat.repeat;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
@@ -36,26 +37,26 @@ public class IntermittentRuleTest {
     }};
     private final FrameworkMethod method = context.mock(FrameworkMethod.class);
 
-    private static final Object NOTHING = new Object();
+    private static final Object ANYTHING = new Object();
 
-    private final IntermittentRule rule = new IntermittentRule();
+    private final IntermittentRule rule = new IntermittentRule(repeat(100));
 
     @Test
     public void nonAnnotatedMethod() throws Throwable {
         markMethodAsNotIntermittent();
-        rule.apply(new VoidStatement(), method, NOTHING).evaluate();
+        rule.apply(new VoidStatement(), method, ANYTHING).evaluate();
     }
 
     @Test
     public void annotatedMethod() throws Throwable {
         markMethodAsIntermittent();
-        rule.apply(new VoidStatement(), method, NOTHING).evaluate();
+        rule.apply(new VoidStatement(), method, ANYTHING).evaluate();
     }
 
     private void markMethodAsNotIntermittent() throws Throwable {
         context.checking(new Expectations() {{
             one(method).getAnnotation(with(Intermittent.class)); will(returnValue(null));
-            one(method).invokeExplosively(NOTHING);
+            one(method).invokeExplosively(ANYTHING);
         }});
     }
 
@@ -66,7 +67,7 @@ public class IntermittentRuleTest {
                     return null;
                 }
             }));
-            exactly(100).of(method).invokeExplosively(NOTHING);
+            exactly(100).of(method).invokeExplosively(ANYTHING);
         }});
     }
 

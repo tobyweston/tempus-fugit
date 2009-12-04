@@ -16,28 +16,29 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import static com.google.code.tempusfugit.concurrency.IntermittentRule.Repeat.repeat;
 import static org.hamcrest.core.Is.is;
+import org.junit.After;
 import static org.junit.Assert.assertThat;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class IntermittentTest {
 
-    @Rule public IntermittentRule rule = new IntermittentRule();
+    @Rule public IntermittentRule rule = new IntermittentRule(repeat(100));
 
-    private static final AtomicInteger counter = new AtomicInteger();
+
+    private static int counter = 0;
 
     @Test
     @Intermittent
     public void annotatedTest() {
-        counter.getAndIncrement();
+        counter++;
     }
-    
-    @Test
+
+    @After
     public void annotatedTestRunsMultipleTimes() {
-        assertThat(counter.get(), is(100));
+        assertThat(counter, is(100));
     }
 
 }

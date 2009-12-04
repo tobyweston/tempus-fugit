@@ -22,13 +22,17 @@ import org.junit.runners.model.Statement;
 
 public class IntermittentRule implements MethodRule {
 
-    private static final int REPEAT = 100;
+    private final Repeat repeat;
+
+    public IntermittentRule(Repeat repeat) {
+        this.repeat = repeat;
+    }
 
     public Statement apply(Statement base, final FrameworkMethod method, final Object target) {
         return new Statement() {
             public void evaluate() throws Throwable {
                 if (intermittent(method))
-                    for (int i = 0; i < REPEAT; i++, method.invokeExplosively(target)) ;
+                    for (int i = 0; i < repeat.count; i++, method.invokeExplosively(target)) ;
                 else
                     method.invokeExplosively(target);
             }
@@ -37,5 +41,18 @@ public class IntermittentRule implements MethodRule {
 
     private boolean intermittent(FrameworkMethod method) {
         return method.getAnnotation(Intermittent.class) != null;
+    }
+
+    static class Repeat {
+        private final int count;
+
+        private Repeat(int count) {
+            this.count = count;
+        }
+
+        public static Repeat repeat(int count) {
+            return new Repeat(count);
+        }
+
     }
 }
