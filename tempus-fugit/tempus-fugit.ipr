@@ -90,7 +90,7 @@
   </component>
   <component name="JavacSettings">
     <option name="DEBUGGING_INFO" value="true" />
-    <option name="GENERATE_NO_WARNINGS" value="false" />
+    <option name="GENERATE_NO_WARNINGS" value="true" />
     <option name="DEPRECATION" value="true" />
     <option name="ADDITIONAL_OPTIONS_STRING" value="-target 1.5" />
     <option name="MAXIMUM_HEAP_SIZE" value="128" />

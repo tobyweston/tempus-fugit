@@ -19,7 +19,7 @@ package com.google.code.tempusfugit.concurrency;
 import com.google.code.tempusfugit.temporal.Condition;
 import com.google.code.tempusfugit.temporal.Duration;
 
-public class ThreadUtils {
+public final class ThreadUtils {
 
     public static void sleep(final Duration duration) {
         resetInterruptFlagWhen(sleepingIsInterrupted(duration));

@@ -16,6 +16,8 @@
 
 package com.google.code.tempusfugit.temporal;
 
+import static com.google.code.tempusfugit.temporal.Duration.millis;
+
 import java.util.Date;
 
 public final class StopWatch {
@@ -38,16 +40,16 @@ public final class StopWatch {
         return startDate;
     }
 
-    public long markAndGetTotalElapsedTime() {
+    public Duration markAndGetTotalElapsedTime() {
         lastMarkDate = dateFactory.create();
         return getTotalElapsedTime();
     }
 
-    private long getTotalElapsedTime() {
+    private Duration getTotalElapsedTime() {
         final long startTime = startDate.getTime();
         final long lastMarkTime = lastMarkDate.getTime();
         assert(lastMarkTime >= startTime);
-        return lastMarkTime - startTime;
+        return millis(lastMarkTime - startTime);
     }
 
 }

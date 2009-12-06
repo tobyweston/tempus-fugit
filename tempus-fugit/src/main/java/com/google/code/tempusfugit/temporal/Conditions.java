@@ -16,20 +16,23 @@
 
 package com.google.code.tempusfugit.temporal;
 
-public final class Timeout {
+public final class Conditions {
 
-    private Duration duration;
-    private StopWatch stopWatch;
-
-    public Timeout(final Duration duration, final StopWatch stopWatch) {
-        if (duration.inMillis() <= 0)
-            throw new IllegalArgumentException();
-        this.duration = duration;
-        this.stopWatch = stopWatch;
+    public static Condition not(Condition condition) {
+        return new NotCondition(condition);
     }
 
-    public boolean hasExpired() {
-        return stopWatch.markAndGetTotalElapsedTime().greaterThan(duration);
+    private static class NotCondition implements Condition {
+
+        private final Condition condition;
+
+        public NotCondition(Condition condition) {
+            this.condition = condition;
+        }
+
+        public boolean isSatisfied() {
+            return !condition.isSatisfied();
+        }
     }
 
 }

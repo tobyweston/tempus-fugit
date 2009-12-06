@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2009, tempus-fugit committers
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+    <properties>
+        <title>Time-dependence</title>
+        <author>Toby Weston</author>
+    </properties>
+
+    <body>
+
+        <section name="Time-dependence">
+         <p>The <code>com.google.code.tempusfugit.temporal</code> package contains classes and interfaces
+                designed to help when writing time-dependant code. We've found it particularly useful when writing
+             test code and by implication, making code more testable.
+            </p>
+            <ul>
+                <li><p><a href="#Duration">Duration</a></p></li>
+                <li><p><a href="#Conditions_and_Waiting">Conditions and Waiting</a></p></li>
+                <ul>
+                    <li><p><a href="#Condition">Condition</a></p></li>
+                    <li><p><a href="#WaitFor">WaitFor</a></p></li>
+                    <li><p><a href="#Timeouts">Timeouts</a></p></li>
+                </ul>
+                <li><p><a href="#Time">Time</a></p></li>
+                <ul>
+                    <li><p><a href="#Stop_Watches">Stop Watches</a></p></li>
+                    <li><p><a href="#Controlling_Time_with_a_Date_Factory">Controlling Time with a Date Factory</a></p></li>
+                    <li><p><a href="#Deterministic_Date_Factory">Deterministic Date Factory</a></p></li>
+                    <li><p><a href="#The_Factory_Interface">The Factory Interface</a></p></li>
+                </ul>
+            </ul>
+        </section>
+
+        <section name="Duration">
+        <p>Frequently, some length of time is represented as a <code>long</code> in Java. The trouble here is that you
+        don't always know what time unit the <code>long</code> represents and as Effective Java recommends, you'll often end up with
+        something like the following</p>
+        <source>connection.setReadTimeout(TIMEOUT_IN_MILLIS);</source>
+        or you might come across unhelpful code like this;
+        <source>connection.setReadTimeout(1000 * 2 * 60);</source>
+        <p>This is all very error prone, ugly and in the second case, fails to convey the intent. The <code>Duration</code>
+        class captures a length of time and forces you to express the time unit. So, for example,</p>
+        <source>connection.setReadTimeout(seconds(2);</source>
+        </section>
+        <p>Using <code>Duration</code> in your own method forces your clients to create use an explict time unit and you
+        can convert back explicitly. for example,</p>
+        <source>
+public void setReadTimeout(Duration timeout) {
+   ...
+   readTimeout = timeout.inMillis();         
+   ...
+}</source>
+
+        <section name="Conditions and Waiting">
+            <subsection name="Condition">
+            <p>Conditions are part of our everyday language. The <code>Condition</code>
+            interface captures a conditional as something that can be reused. For example, waiting for something can be
+                achieved using the <code>WaitFor</code> class and an annonymous <code>Conditional</code>. For example,</p>
+        <source>
+private void waitForShutdown() throws TimeoutException {
+    waitOrTimeout(new Condition() {
+        public boolean isSatisfied() {
+            return server.isShutdown();
+        }
+    }, timeout);
+ } </source>
+            <p>
+                will wait for some <code>server</code> to indicate that it has shutdown. The <code>Conditions</code> class
+                collects useful <code>Condition</code> objects such as <code>not</code>. There is also a useful <code>Condition</code>
+                to indicate if a thread is in a waiting state in <code>ThreadUtils</code>.
+            </p>
+            </subsection>
+
+            <subsection name="WaitFor">
+                <p>The <code>WaitFor</code> class can be used to periodically check if a <code>Condition</code> is satisfied,
+                sleeping for a short period if it has not before checking again. The methods available are </p>
+                <ul>
+                    <li><p><code>waitOrTimeout</code></p></li>
+                    <li><p><code>waitUntil</code></p></li>
+                </ul>
+                <p>The <code>waitOrTimeout</code> will wait until the condition is satisfied or timeout after a specified
+                <code>Duration</code>. The <code>waitUntil</code> waits until a given timeout without checking against any
+                condition. Both methods can be interrupted and so throw an <code>InterruptedException</code>.</p>
+            </subsection>
+
+            <subsection name="Timeouts">
+            <p>The <code>Timeout</code> class takes a <code>Duration</code> representing a period after which a timeout
+            has occured. The timeout status of the object is checked using the <code>hasExpired</code> method.</p> The
+            <code>Timeout</code> class is combined with a <code>Condition</code> to implement the <code>waitUntil</code>
+            method of <code>WaitFor</code>.
+            </subsection>
+
+        </section>
+        <section name="Time">
+            <subsection name="Stop Watches">
+            <p>
+                The <code>StopWatch</code> class allows you to record the length of time taken between starting and stopping
+                the watch. It's used internally with the <code>WaitFor.waitUntil(Timeout timeout, ...)</code> class.
+            </p>
+            </subsection>
+            <subsection name="Controlling Time with a Date Factory">
+            <p>
+                The <code>DateFactory</code> interface along with its default implementation <code>DefaultDateFactory</code>
+                are aimed at making testing classes that require a date easier. Rather than pass around <code>java.util.Date</code>
+                classes around which will return the current date when constructed, you can pass around a factory which allows
+                you to control the date it represents on construction.
+            </p>
+                <p>
+                    For example, the <code>StopWatch</code> class maintains an internal <code>Date</code> which it can use
+                    to compare with the current time to work out the elapsed time. A straight forward implementation might look like this
+                </p>
+                <source>
+public class BadStopWatch {
+
+    private Date startDate;
+    private long elapsedTime;
+
+    public BadStopWatch() {
+        this.startDate = new Date();
+    }
+
+    public Duration getElapsedTime() {
+        return millis(new Date().getTime() - startDate.getTime());
+    }
+}</source>
+                <p>
+                    Writing the (rather silly) test below highlights a problem using real time in the class.
+                </p>
+                <source>
+public class BadStopWatchTest {
+    @Test
+    public void getElapsedTime() {
+        BadStopWatch watch = new BadStopWatch();
+        ThreadUtils.sleep(millis(100));
+        assertThat(watch.getElapsedTime(), is(millis(100)));
+    }
+ } </source>
+                <p>
+                    The test is unlikely to pass!
+                </p>
+                <source>
+    java.lang.AssertionError:
+Expected: is &lt;Duration 100 MILLISECONDS&gt;
+     got: &lt;Duration 103 MILLISECONDS&gt;
+
+	at org.junit.Assert.assertThat(Assert.java:778)
+	at org.junit.Assert.assertThat(Assert.java:736)
+	at com.google.code.tempusfugit.temporal.BadStopWatchTest.getElapsedTime(BadStopWatchTest.java:32) </source>
+
+                <p>
+                    Whereas, if we write the class using a controllable time, we can write a more deterministic test. Here,
+                    we create an alternative stop watch implementation and mock the factory using <a href="http://www.jmock.org/">jmock</a>.
+                </p>
+                <source>
+public class BetterStopWatch {
+
+    private Date startDate;
+    private long elapsedTime;
+    private DateFactory factory;
+
+    public BetterStopWatch(DateFactory factory) {
+        this.factory = factory;
+        this.startDate = factory.create();
+    }
+
+    public Duration getElapsedTime() {
+        return millis(factory.create().getTime() - startDate.getTime());
+    }
+}</source>
+          <p>The test becomes clearer</p>
+          <source>
+@Test
+public void getElapsedTimeFromBetterStopWatch() {
+    context.checking(new Expectations() {{
+        one(time).create(); will(returnValue(new Date(0)));
+        one(time).create(); will(returnValue(new Date(100)));
+    }});
+    BetterStopWatch watch = new BetterStopWatch(time);
+    assertThat(watch.getElapsedTime(), is(millis(100)));
+}</source>
+
+            </subsection>
+
+            <subsection name="Deterministic Date Factory">
+                <p>
+                    You can use the <code>DeterministicDateFactory</code> in tests to explicitly move time forward within
+                    the context of a test. For example, we can rewrite the test above as follows.
+                </p>
+                <source>
+@Test
+public void getElapsedTimeUsingDeterministicDateFactory() {
+    DeterministicDateFactory time = new DeterministicDateFactory();
+    BetterStopWatch watch = new BetterStopWatch(time);
+    assertThat(watch.getElapsedTime(), is(millis(0)));
+    time.moveTimeForwardBy(millis(100));
+    assertThat(watch.getElapsedTime(), is(millis(100)));
+} </source>
+            </subsection>
+
+            <subsection name="The Factory Interface">
+            <p><code>DateFactory</code> implements the generic <code>Factoy&lt;T&gt;</code> interface. You can implement
+                this interface yourself for general purpose factory classes or simply declare your factories in generic terms (ie
+                <code>Factory&lt;Date&gt; factory = ...</code>).</p>
+            </subsection>
+        </section>
+    </body>
+
+</document>
