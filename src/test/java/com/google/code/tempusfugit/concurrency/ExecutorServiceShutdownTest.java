@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import java.util.concurrent.TimeoutException;
 
@@ -37,7 +38,17 @@ public class ExecutorServiceShutdownTest {
         awaitingTermination(PASSES);
         awaitingTermination(FAILS);
     }
-
+    
+    @Test
+    public void awaitingTerminationIsInterrupted() throws InterruptedException {
+        context.checking(new Expectations() {{
+            allowing(executor).shutdown();
+            one(executor).awaitTermination(with(any(long.class)), with(any(TimeUnit.class))); will(throwException(new InterruptedException()));
+        }});
+        shutdown(executor).waitingForCompletion(TIMEOUT);
+        assertThat(Thread.currentThread().isInterrupted(), is(true)); // prob not right as it wont have called interrupt / set the flag :(
+    }
+                                                                   
     @Test
     public void waitingForShutdownWithNullExecutorService() throws TimeoutException, InterruptedException {
         assertThat(shutdown(null).waitingForShutdown(TIMEOUT), is(false));

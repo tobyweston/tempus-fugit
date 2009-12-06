@@ -39,9 +39,9 @@ public class StopWatchTest {
     public void markingStopWatchReturnsTotalEllapsedTime() {
         StopWatch stopWatch = StopWatch.start(dateFactory);
         advanceTime(millis(5));
-        assertThat(stopWatch.markAndGetTotalElapsedTime(), is(equalTo(5L)));
+        assertThat(stopWatch.markAndGetTotalElapsedTime(), is(equalTo(millis(5))));
         advanceTime(millis(5));
-        assertThat(stopWatch.markAndGetTotalElapsedTime(), is(equalTo(10l)));
+        assertThat(stopWatch.markAndGetTotalElapsedTime(), is(equalTo(millis(10l))));
     }
 
     @Test
@@ -50,7 +50,7 @@ public class StopWatchTest {
         advanceTime(millis(5));
         stopWatch.markAndGetTotalElapsedTime();
         advanceTime(millis(5));
-        assertThat(stopWatch.markAndGetTotalElapsedTime(), is(equalTo(10l)));
+        assertThat(stopWatch.markAndGetTotalElapsedTime(), is(equalTo(millis(10l))));
     }
 
     private void advanceTime(Duration duration) {

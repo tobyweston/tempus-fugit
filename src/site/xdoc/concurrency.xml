@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2009, tempus-fugit committers
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+    <properties>
+        <title>Concurrency</title>
+        <author>Toby Weston</author>
+    </properties>
+
+    <body>
+
+        <section name="Overview">
+            <p>The <code>com.google.code.tempusfugit.concurrency</code> package contains classes and interfaces
+                designed to help when developing concurrent code.
+            </p>
+        </section>
+
+        <section name="Sleeping and Interruptions">
+        <p>Often, you'll see code like the example below</p>
+            <source>
+try {
+   Thread.sleep(100);
+} catch (InterruptedException e) {
+   // nothing
+}</source>
+            <p>tempus-fugit captures the annoying boiler plate code needed to reset the interrupt flat in situations where you
+                can't or don't want to rethrow the <code>InterruptedException</code>.
+                </p>
+            <p>Using the <code>ThreadUtils.sleep</code> method, the above code is rewritten as.</p>
+<source>sleep(millis(100));</source>
+            <p>This ensures that the interrpt flag is reset and is more explict about the duration of the sleep.</p>
+            <p>If you want to ensure the interrupt flag is reset for other code, you can use the <code>ThreadUtils.resetInterruptFlagWhen</code>
+            method directly. The <code>Interruptable</code> interface is used to highlight that the closure-like call
+                you want to execute does infact throw the <code>InterruptedException</code>. For example;
+            </p>
+            <source>
+resetInterruptFlagWhen(new Interruptable&lt;Void&gt;() {
+    public Void call() throws InterruptedException {
+        Thread.sleep(100);
+        return null;
+    }
+}); </source>
+            <p>Extracting the closure-like <code>Interruptable</code> to a method makes the code more expressive;</p>
+            <source>resetInterruptFlagWhen(sleepingIsInterrupted()); </source>
+            <p>This is actually how the <code>ThreadUtils.sleep</code> method is implemented within tempus-fugit.</p>
+        </section>
+
+    </body>
+
+</document>
