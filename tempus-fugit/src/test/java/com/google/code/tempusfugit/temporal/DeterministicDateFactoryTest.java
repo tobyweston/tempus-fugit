@@ -32,11 +32,11 @@ public class DeterministicDateFactoryTest {
 
     @Test
     public void dateCanMoveOn() {
-        date.moveTimeForwardBy(seconds(1));
+        date.incrementBy(seconds(1));
         assertThat(date.create().getTime(), is(1000L));        
-        date.moveTimeForwardBy(seconds(2));
+        date.incrementBy(seconds(2));
         assertThat(date.create().getTime(), is(3000L));
-        date.moveTimeForwardBy(seconds(3));
+        date.incrementBy(seconds(3));
         assertThat(date.create().getTime(), is(6000L));        
     }
 

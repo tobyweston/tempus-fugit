@@ -30,7 +30,7 @@ public final class DeterministicDateFactory implements DateFactory {
         now.setTime(time.inMillis());
     }
 
-    public void moveTimeForwardBy(Duration time) {
+    public void incrementBy(Duration time) {
         now.setTime(now.getTime() + time.inMillis());
     }
 
