@@ -51,14 +51,13 @@ public class BetterStopWatchTest {
         DeterministicDateFactory time = new DeterministicDateFactory();
         BetterStopWatch watch = new BetterStopWatch(time);
         assertThat(watch.getElapsedTime(), is(millis(0)));
-        time.moveTimeForwardBy(millis(100));
+        time.incrementBy(millis(100));
         assertThat(watch.getElapsedTime(), is(millis(100)));
     }
 
     public static class BetterStopWatch {
 
     private Date startDate;
-    private long elapsedTime;
     private DateFactory factory;
 
     public BetterStopWatch(DateFactory factory) {
