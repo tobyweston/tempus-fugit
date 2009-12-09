@@ -21,38 +21,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public final class InterruptRecordingThread extends Thread {
+public final class InterruptCapturingThread extends Thread {
 
     private final CopyOnWriteArrayList<StackTraceElement[]> interrupterStackTraces = new CopyOnWriteArrayList<StackTraceElement[]>();
 
-    public InterruptRecordingThread() {
+    public InterruptCapturingThread() {
     }
 
-    public InterruptRecordingThread(Runnable runnable) {
+    public InterruptCapturingThread(Runnable runnable) {
         super(runnable);
     }
 
-    public InterruptRecordingThread(ThreadGroup threadGroup, Runnable runnable) {
+    public InterruptCapturingThread(ThreadGroup threadGroup, Runnable runnable) {
         super(threadGroup, runnable);
     }
 
-    public InterruptRecordingThread(String name) {
+    public InterruptCapturingThread(String name) {
         super(name);
     }
 
-    public InterruptRecordingThread(ThreadGroup threadGroup, String name) {
+    public InterruptCapturingThread(ThreadGroup threadGroup, String name) {
         super(threadGroup, name);
     }
 
-    public InterruptRecordingThread(Runnable runnable, String name) {
+    public InterruptCapturingThread(Runnable runnable, String name) {
         super(runnable, name);
     }
 
-    public InterruptRecordingThread(ThreadGroup threadGroup, Runnable runnable, String name) {
+    public InterruptCapturingThread(ThreadGroup threadGroup, Runnable runnable, String name) {
         super(threadGroup, runnable, name);
     }
 
-    public InterruptRecordingThread(ThreadGroup threadGroup, Runnable runnable, String name, long stackSize) {
+    public InterruptCapturingThread(ThreadGroup threadGroup, Runnable runnable, String name, long stackSize) {
         super(threadGroup, runnable, name, stackSize);
     }
 
