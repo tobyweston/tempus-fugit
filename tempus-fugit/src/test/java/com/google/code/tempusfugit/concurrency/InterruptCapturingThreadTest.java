@@ -28,11 +28,11 @@ import org.junit.Test;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-public class InterruptRecordingThreadTest {
+public class InterruptCapturingThreadTest {
 
     @Test (timeout = 500)
     public void interruptingThreadsStackTraceIsRecorded() throws TimeoutException, InterruptedException {
-        InterruptRecordingThread thread = sleepingThread();
+        InterruptCapturingThread thread = sleepingThread();
         thread.start();
         waitOrTimeout(threadIsWaiting(thread), millis(500));
         thread.interrupt();
@@ -48,8 +48,8 @@ public class InterruptRecordingThreadTest {
         assertThat(firstStackTrace[2].getMethodName(), is(equalTo("interruptingThreadsStackTraceIsRecorded")));
     }
 
-    private static InterruptRecordingThread sleepingThread() {
-        return new InterruptRecordingThread(new Runnable() {
+    private static InterruptCapturingThread sleepingThread() {
+        return new InterruptCapturingThread(new Runnable() {
             public void run() {
                 try {
                     Thread.sleep(500);
