@@ -17,82 +17,60 @@
 package com.google.code.tempusfugit.concurrency;
 
 import static com.google.code.tempusfugit.concurrency.ThreadUtils.threadIsWaiting;
-import com.google.code.tempusfugit.temporal.Condition;
 import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static org.hamcrest.Matchers.is;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.concurrent.TimeoutException;
 
+@RunWith(JMock.class)
 public class ThreadUtilsTest {
 
     private final Mockery context = new JUnit4Mockery();
-    private final Interruptable interruptable = context.mock(Interruptable.class);
+    private final Interruptible interruptible = context.mock(Interruptible.class);
 
     @Test
     public void resetInterruptFlagReturnsValue() throws InterruptedException {
         context.checking(new Expectations() {{
-            one(interruptable).call(); will(returnValue(true));
+            one(interruptible).call(); will(returnValue(true));
         }});
-        assertThat(ThreadUtils.<Boolean>resetInterruptFlagWhen(interruptable), is(true));
+        assertThat(ThreadUtils.<Boolean>resetInterruptFlagWhen(interruptible), is(true));
     }
 
     @Test
     public void resetInterruptFlagThrowsException() throws InterruptedException {
         context.checking(new Expectations() {{
-            one(interruptable).call(); will(throwException(new InterruptedException()));
+            one(interruptible).call(); will(throwException(new InterruptedException()));
         }});
         assertThat(Thread.currentThread().isInterrupted(), is(false));
-        ThreadUtils.resetInterruptFlagWhen(interruptable);
-        assertThat(Thread.currentThread().isInterrupted(), is(true));
+        ThreadUtils.resetInterruptFlagWhen(interruptible);
+        assertThat(Thread.interrupted(), is(true));
     }
 
     @Test
-    public void threadIsWaitingCondition() throws TimeoutException, InterruptedException {
-        Thread thread = threadSleepsForever();
-        thread.start();
-        waitForStartup(thread);
-        thread.interrupt();
-    }
-
-    @Test
-    @Ignore ("can't get this working with a reall thread, grrr")
     public void sleepInterrupted() throws InterruptedException, TimeoutException {
-        Thread thread = threadSleepsForever();
+        InterruptedIndicatingThread thread = threadSleepsForever();
         thread.start();
         waitForStartup(thread);
         thread.interrupt();
-//        waitForShutdown(thread);
-        waitForInterrupt(thread);
-//        assertThat(thread.getName() + " wasn't interrupted", thread.isInterrupted(), is(true));
-    }
-
-    private void waitForInterrupt(final Thread thread) throws InterruptedException {
-        try {
-            waitOrTimeout(new Condition() {
-               public boolean isSatisfied() {
-                   return thread.isInterrupted();
-               }
-           }, seconds(1));
-        } catch (TimeoutException e) {
-            fail(thread.getName() + " wasn't interrupted");
-        }
+        waitForShutdown(thread);
+        assertThat(thread.getName() + " wasn't interrupted", thread.hasBeenInterrupted(), is(true));
     }
 
     private void waitForStartup(Thread thread) throws TimeoutException, InterruptedException {
         waitOrTimeout(threadIsWaiting(thread), seconds(10));
     }
 
-    private Thread threadSleepsForever() {
-        return new Thread(new Runnable() {
+    private InterruptedIndicatingThread threadSleepsForever() {
+        return new InterruptedIndicatingThread(new Runnable() {
             public void run() {
                ThreadUtils.sleep(seconds(10));
             }
