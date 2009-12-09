@@ -16,8 +16,27 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public interface Interruptable<T> extends Callable<T> {
-    T call() throws InterruptedException;
+class InterruptedIndicatingThread extends Thread {
+
+    private final AtomicBoolean interrupted = new AtomicBoolean(false);
+
+    public InterruptedIndicatingThread(Runnable runnable) {
+        super(runnable);
+    }
+
+    public InterruptedIndicatingThread(Runnable target, String name) {
+        super(target, name);
+    }
+
+    @Override
+    public void interrupt() {
+        interrupted.set(true);
+        super.interrupt();
+    }
+
+    public boolean hasBeenInterrupted() {
+        return interrupted.get();
+    }
 }

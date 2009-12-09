@@ -38,7 +38,7 @@ public class ExecutorServiceShutdownTest {
         awaitingTermination(PASSES);
         awaitingTermination(FAILS);
     }
-    
+
     @Test
     public void awaitingTerminationIsInterrupted() throws InterruptedException {
         context.checking(new Expectations() {{
@@ -46,9 +46,9 @@ public class ExecutorServiceShutdownTest {
             one(executor).awaitTermination(with(any(long.class)), with(any(TimeUnit.class))); will(throwException(new InterruptedException()));
         }});
         shutdown(executor).waitingForCompletion(TIMEOUT);
-        assertThat(Thread.currentThread().isInterrupted(), is(true)); // prob not right as it wont have called interrupt / set the flag :(
+        assertThat(Thread.interrupted(), is(true)); 
     }
-                                                                   
+
     @Test
     public void waitingForShutdownWithNullExecutorService() throws TimeoutException, InterruptedException {
         assertThat(shutdown(null).waitingForShutdown(TIMEOUT), is(false));
@@ -63,7 +63,7 @@ public class ExecutorServiceShutdownTest {
         assertThat(shutdown(executor).waitingForShutdown(TIMEOUT), is(true));
     }
 
-    @Test (expected = TimeoutException.class)
+    @Test(expected = TimeoutException.class)
     public void waitingForShutdownTimesOut() throws TimeoutException, InterruptedException {
         context.checking(new Expectations() {{
             one(executor).shutdownNow();
@@ -79,4 +79,5 @@ public class ExecutorServiceShutdownTest {
         }});
         assertThat(shutdown(executor).waitingForCompletion(TIMEOUT), is(result));
     }
+
 }

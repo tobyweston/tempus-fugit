@@ -56,8 +56,8 @@ public final class ExecutorServiceShutdown {
         return true;
     }
 
-    private Interruptable<Boolean> awaitingTerminationIsInterrupted(final Duration timeout) {
-        return new Interruptable<Boolean>(){
+    private Interruptible<Boolean> awaitingTerminationIsInterrupted(final Duration timeout) {
+        return new Interruptible<Boolean>(){
             public Boolean call() throws InterruptedException {
                 return executor.awaitTermination(timeout.inMillis(), MILLISECONDS);
             }

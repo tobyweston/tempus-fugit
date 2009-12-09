@@ -25,8 +25,8 @@ public final class ThreadUtils {
         resetInterruptFlagWhen(sleepingIsInterrupted(duration));
     }
 
-    private static Interruptable<Void> sleepingIsInterrupted(final Duration duration) {
-        return new Interruptable<Void>() {
+    private static Interruptible<Void> sleepingIsInterrupted(final Duration duration) {
+        return new Interruptible<Void>() {
             public Void call() throws InterruptedException {
                 Thread.sleep(duration.inMillis());
                 return null;
@@ -34,9 +34,9 @@ public final class ThreadUtils {
         };
     }
 
-    public static <T> T resetInterruptFlagWhen(Interruptable<T> interruptable) {
+    public static <T> T resetInterruptFlagWhen(Interruptible<T> interruptible) {
         try {
-            return interruptable.call();
+            return interruptible.call();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
