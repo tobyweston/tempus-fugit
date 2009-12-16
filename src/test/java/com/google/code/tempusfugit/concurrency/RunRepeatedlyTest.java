@@ -16,53 +16,64 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import static com.google.code.tempusfugit.concurrency.IntermittentRule.Repeat.repeat;
+import static junit.framework.Assert.fail;
+import junit.framework.AssertionFailedError;
+import static org.hamcrest.Matchers.containsString;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
 @RunWith(JMock.class)
-public class IntermittentRuleTest {
+public class RunRepeatedlyTest {
 
     private final Mockery context = new JUnit4Mockery() {{
         setImposteriser(ClassImposteriser.INSTANCE);
     }};
-    private final FrameworkMethod method = context.mock(FrameworkMethod.class);
-
-    private static final Object ANYTHING = new Object();
-    private static final EmptyAnnotation NO_ANNOTATION = null;
     private static final EmptyAnnotation VALID_ANNOTATION = new EmptyAnnotation();
+    private static final EmptyAnnotation NO_ANNOTATION = null;
 
-    private final IntermittentRule rule = new IntermittentRule(repeat(100));
+    private final FrameworkMethod method = context.mock(FrameworkMethod.class);
+    private final Statement statement = context.mock(Statement.class);
+    private final RunRepeatedly runner = new RunRepeatedly(method, statement);
+
+
+    @Test
+    public void evaulateIntermittenMethod() throws Throwable {
+        context.checking(new Expectations() {{
+            one(method).getAnnotation(with(Intermittent.class)); will(returnValue(VALID_ANNOTATION));
+            exactly(100).of(statement).evaluate();
+        }});
+        runner.evaluate();
+    }
 
     @Test
     public void nonAnnotatedMethod() throws Throwable {
         context.checking(new Expectations() {{
             one(method).getAnnotation(with(Intermittent.class)); will(returnValue(NO_ANNOTATION));
-            one(method).invokeExplosively(ANYTHING);
+            one(statement).evaluate();
         }});
-        rule.apply(new VoidStatement(), method, ANYTHING).evaluate();
+        runner.evaluate();
     }
 
     @Test
-    public void annotatedMethod() throws Throwable {
+    public void exceptionOnEvaulation() throws Throwable {
         context.checking(new Expectations() {{
             one(method).getAnnotation(with(Intermittent.class)); will(returnValue(VALID_ANNOTATION));
-            exactly(100).of(method).invokeExplosively(ANYTHING);
+            one(statement).evaluate(); will(throwException(new AssertionFailedError("chazzwazzer")));
         }});
-        rule.apply(new VoidStatement(), method, ANYTHING).evaluate();
-    }
-
-    private static class VoidStatement extends Statement {
-        @Override
-        public void evaluate() throws Throwable {
+        try {
+            runner.evaluate();
+            fail();
+        } catch (AssertionFailedError e) {
+            assertThat(e.getMessage(), containsString("(failed after 0 successful attempts)"));
         }
     }
-
+    
 }
