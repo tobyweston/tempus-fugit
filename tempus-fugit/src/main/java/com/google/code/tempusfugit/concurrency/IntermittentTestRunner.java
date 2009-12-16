@@ -16,28 +16,20 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import static com.google.code.tempusfugit.concurrency.IntermittentRule.Repeat.repeat;
-import static org.hamcrest.core.Is.is;
-import org.junit.After;
-import static org.junit.Assert.assertThat;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.Statement;
 
-public class IntermittentTest {
+public class IntermittentTestRunner extends BlockJUnit4ClassRunner {
 
-    @Rule public IntermittentRule rule = new IntermittentRule(repeat(100));
-
-    private static int counter = 0;
-
-    @Test
-    @Intermittent
-    public void annotatedTest() {
-        counter++;
+    public IntermittentTestRunner(Class<?> type) throws InitializationError {
+        super(type);
     }
 
-    @After
-    public void annotatedTestRunsMultipleTimes() {
-        assertThat(counter, is(100));
+    @Override
+    protected Statement methodBlock(FrameworkMethod method) {
+        return new RunRepeatedly(method, super.methodBlock(method));
     }
 
 }
