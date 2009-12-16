@@ -16,53 +16,27 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import static com.google.code.tempusfugit.concurrency.IntermittentRule.Repeat.repeat;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
+import static org.hamcrest.core.Is.is;
+import org.junit.After;
+import static org.junit.Assert.assertThat;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.Statement;
 
-@RunWith(JMock.class)
 public class IntermittentRuleTest {
 
-    private final Mockery context = new JUnit4Mockery() {{
-        setImposteriser(ClassImposteriser.INSTANCE);
-    }};
-    private final FrameworkMethod method = context.mock(FrameworkMethod.class);
+    @Rule public IntermittentRule rule = new IntermittentRule();
 
-    private static final Object ANYTHING = new Object();
-    private static final EmptyAnnotation NO_ANNOTATION = null;
-    private static final EmptyAnnotation VALID_ANNOTATION = new EmptyAnnotation();
-
-    private final IntermittentRule rule = new IntermittentRule(repeat(100));
+    private static int counter = 0;
 
     @Test
-    public void nonAnnotatedMethod() throws Throwable {
-        context.checking(new Expectations() {{
-            one(method).getAnnotation(with(Intermittent.class)); will(returnValue(NO_ANNOTATION));
-            one(method).invokeExplosively(ANYTHING);
-        }});
-        rule.apply(new VoidStatement(), method, ANYTHING).evaluate();
+    @Intermittent
+    public void annotatedTest() {
+        counter++;
     }
 
-    @Test
-    public void annotatedMethod() throws Throwable {
-        context.checking(new Expectations() {{
-            one(method).getAnnotation(with(Intermittent.class)); will(returnValue(VALID_ANNOTATION));
-            exactly(100).of(method).invokeExplosively(ANYTHING);
-        }});
-        rule.apply(new VoidStatement(), method, ANYTHING).evaluate();
-    }
-
-    private static class VoidStatement extends Statement {
-        @Override
-        public void evaluate() throws Throwable {
-        }
+    @After
+    public void annotatedTestRunsMultipleTimes() {
+        assertThat(counter, is(100));
     }
 
 }

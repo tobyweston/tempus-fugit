@@ -25,8 +25,6 @@ class RunRepeatedly extends Statement {
     private final FrameworkMethod method;
     private final Statement statement;
 
-    private static final int REPEAT = 100;
-
     public RunRepeatedly(FrameworkMethod method, Statement statement) {
         this.method = method;
         this.statement = statement;
@@ -34,7 +32,7 @@ class RunRepeatedly extends Statement {
 
     public void evaluate() throws Throwable {
         if (intermittent(method))
-            for (int i = 0; i < REPEAT; i++) {
+            for (int i = 0; i < repition(method); i++) {
                 try {
                     statement.evaluate();
                 } catch (AssertionFailedError e) {
@@ -47,5 +45,9 @@ class RunRepeatedly extends Statement {
 
     private boolean intermittent(FrameworkMethod method) {
         return method.getAnnotation(Intermittent.class) != null;
+    }
+
+    private int repition(FrameworkMethod method) {
+        return method.getAnnotation(Intermittent.class).repition();
     }
 }
