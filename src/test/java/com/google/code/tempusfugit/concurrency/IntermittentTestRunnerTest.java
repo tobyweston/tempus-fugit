@@ -32,7 +32,7 @@ public class IntermittentTestRunnerTest {
     private static int afterClassCounter = 0;
 
     @Test
-    @Intermittent
+    @Intermittent(repition = 99)
     public void annotatedTest() {
         testCounter++;
     }
@@ -49,7 +49,7 @@ public class IntermittentTestRunnerTest {
 
     @AfterClass
     public static void assertannotatedTestRunsMultipleTimes() {
-        assertThat(testCounter, is(equalTo(100)));
+        assertThat(testCounter, is(equalTo(99)));
     }
 
 }

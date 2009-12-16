@@ -28,5 +28,6 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 public @interface Intermittent {
     String value() default "";
+    int repition() default 100;
 }
 
