@@ -32,12 +32,17 @@
             </p>
             <ul>
                 <li><p><a href="#Thread_Utilities">Thread Utilities</a></p></li>
-                    <ul>
-                        <li><p><a href="#Sleeping_and_Interruptions">Sleeping and Interruptions</a></p></li>
-                        <li><p><a href="#Thread Dumps">Thread Dumps</a></p></li>
-                        <li><p><a href="#Miscellaneous">Miscellaneous</a></p></li>
-                    </ul>
-
+                <ul>
+                    <li><p><a href="#Sleeping_and_Interruptions">Sleeping and Interruptions</a></p></li>
+                    <li><p><a href="#Thread Dumps">Thread Dumps</a></p></li>
+                    <li><p><a href="#Miscellaneous">Miscellaneous</a></p></li>
+                </ul>
+                <li><p><a href="Intermittent_Tests">Intermittent Tests</a></p></li>
+                <li><p><a href="#Callables">Callables</a></p></li>
+                <ul>
+                    <li><p>Convert to a <code>Runnable</code> using <a href="Callable_Adapter">Callable Adapter</a></p></li>
+                    <li><p>Throw specific exceptions with <a href="#tempus-fugit_Callable">tempus-fugit Callable</a></p></li>
+                </ul>
             </ul>
             
         </section>
@@ -103,14 +108,73 @@ Thread Finalizer@3: (state = WAITING)
         </subsection>
 
          <subsection name="Miscellaneous">
+            <p>Some additional thread utilities include the following</p>
+            <ul>
+                <li><p><code>ThreadUtils.threadIsWaiting</code></p>
             <p>The static method <code>ThreadUtils.threadIsWaiting(Thread)</code> ofters a <code><a href="xref/com/google/code/tempusfugit/temporal/Condition.html">Condition</a></code>
-                that allows you to test if a thread is waiting. Combining the condition with some classes from the <a href="time.html#Conditions_and_Waiting">temporal</a> package allows you to wait for a
-                thread to <b>not</b> be in the waiting state, for example. Using tempus-fugit, you would express is something like the following.
-                </p>
-<source>waitOrTimeout(not(threadIsWaiting(thread)), seconds(10)); </source>
-        </subsection>
+             that allows you to test if a thread is waiting. Combining the condition with some classes from the <a href="time.html#Conditions_and_Waiting">temporal</a> package allows you to wait for a
+             thread to <b>not</b> be in the waiting state, for example. Using tempus-fugit, you would express is something like the following.
+         </p>
+             <source>waitOrTimeout(not(threadIsWaiting(thread)), seconds(10)); </source>
+            </li>
+                <li>
+             <p>As a convenience class, the <code><a href="xref/com/google/code/tempusfugit/concurrency/DefaultThreadFactory.html">DefaultThreadFactory</a></code> offers an implementation of <code>java.util.concurrent.ThreadFactory</code>
+             that creates a thread using the single argument constructor of <code>Thread</code>.</p>
+                 </li>          
+            </ul>
+
+         </subsection>
         </section>
 
+        <!--<section name="Intermittent Tests">-->
+        <!--</section>-->
+
+        <section name="Callables">
+            <subsection name="Callable Adapter">
+                <p>
+                    The <code>java.util.concurrent.Executors</code> class has helper methods to convert from a
+                    <code>Runnable</code> to a <code>Callable</code> but lacks a counterpart to convert a <code>Callable</code>
+                    to a <code>Runnable</code>. This is presumably because a <code>Runnable</code> lacks the ability to
+                    throw exceptions or return values.
+                </p>
+                <p>
+                    Both <code>Runnable</code> and <code>Callable</code> are handy interfaces to express closure-like functionality
+                    in Java. Discounting their close relationship to concurrency mechanisms in Java, they both really
+                    just represent something that can be called. Choosing between the two, the <code>Callable</code> is
+                    more powerful.
+                </p>
+                <p>
+                    The <code><a href="xref/com/google/code/tempusfugit/concurrency/CallableAdapter.html">CallableAdapter</a></code> class will convert from a <code>Callable</code> into a <code>Runnable</code>
+                    wrapping any exception as a <code>RuntimeException</code> and discarding any return type. This allows
+                    you to write general task code in the form of a <code>Callable</code> without necessarily being hampered
+                    if you need to pass in a <code>Runnable</code> to some framework code.
+                </p>
+                <p>
+                    As a concrete example, Java's <code>ScheduledExecutorService</code> class doesn't allow you to schedule
+                    a task with a fixed delay or at a fixed rate. The interface takes a <code>Runnable</code>. However,
+                    using the adapter you can schedule a <code>Callable</code> at a fixed rate (ignoring the result). The
+                    underlying <code>Callable</code> task could then be used elsewhere where the result is actually used.
+                </p>
+            </subsection>
+
+            <subsection name="tempus-fugit Callable">
+            <p>The <code><a href="xref/com/google/code/tempusfugit/concurrency/Callable.html">Callable</a></code> interface extends <code>java.util.concurrent.Callable</code> but allows you to specify the
+                exception as a generic type. This class has a fairly limited usage and isn't recommended over the standard
+                Java version. Instead, if you create a method that takes a <code>java.util.concurrent.Callable</code> as a
+                argument, calling it will force the method to throw <code>Exception</code>. If instead, you pass in a
+                <code>com.google.code.tempusfugit.concurrency.Callable</code>, you can specify the specific exception to
+                throw and therefore avoid being forced to throw <code>Exception</code>. For example</p>
+                <source>
+public &lt;T&gt; T foo(java.util.concurrent.Callable&lt;T&gt; callable) throws <b>Exception</b> {
+    return callable.call();
+} </source>
+                <p>Whereas using the tempus-fugit version allows a more specific exception to be thrown.</p>
+                <source>
+public &lt;T&gt; T bar(com.google.code.tempusfugit.concurrency.Callable&lt;T, <b>RuntimeException</b>&gt; callable) {
+    return callable.call();
+} </source>
+            </subsection>
+        </section>
     </body>
 
 </document>
