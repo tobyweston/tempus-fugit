@@ -26,13 +26,25 @@
 
     <body>
 
-        <section name="Overview">
+        <section name="Concurrency">
             <p>The <code>com.google.code.tempusfugit.concurrency</code> package contains classes and interfaces
-                designed to help when developing concurrent code.
+                designed to help when developing concurrent code.    
             </p>
+            <ul>
+                <li><p><a href="#Thread_Utilities">Thread Utilities</a></p></li>
+                    <ul>
+                        <li><p><a href="#Sleeping_and_Interruptions">Sleeping and Interruptions</a></p></li>
+                        <li><p><a href="#Thread Dumps">Thread Dumps</a></p></li>
+                        <li><p><a href="#Miscellaneous">Miscellaneous</a></p></li>
+                    </ul>
+
+            </ul>
+            
         </section>
 
-        <section name="Sleeping and Interruptions">
+        <section name="Thread Utilities">
+
+        <subsection name="Sleeping and Interruptions">
         <p>Often, you'll see code like the example below</p>
             <source>
 try {
@@ -43,11 +55,11 @@ try {
             <p>tempus-fugit captures the annoying boiler plate code needed to reset the interrupt flat in situations where you
                 can't or don't want to rethrow the <code>InterruptedException</code>.
                 </p>
-            <p>Using the <code>ThreadUtils.sleep</code> method, the above code is rewritten as.</p>
+            <p>Using the <code><a href="xref/com/google/code/tempusfugit/concurrency/ThreadUtils.html">ThreadUtils</a>.sleep</code> method, the above code is rewritten as.</p>
 <source>sleep(millis(100));</source>
-            <p>This ensures that the interrpt flag is reset and is more explict about the duration of the sleep.</p>
+            <p>This ensures that the interrpt flag is reset and is more explict about the <a href="time.html#Duration">duration</a> of the sleep.</p>
             <p>If you want to ensure the interrupt flag is reset for other code, you can use the <code>ThreadUtils.resetInterruptFlagWhen</code>
-            method directly. The <code>Interruptable</code> interface is used to highlight that the closure-like call
+            method directly. The <code><a href="xref/com/google/code/tempusfugit/concurrency/Interruptible.html">Interruptible</a></code> interface is used to highlight that the closure-like call
                 you want to execute does infact throw the <code>InterruptedException</code>. For example;
             </p>
             <source>
@@ -60,6 +72,43 @@ resetInterruptFlagWhen(new Interruptable&lt;Void&gt;() {
             <p>Extracting the closure-like <code>Interruptable</code> to a method makes the code more expressive;</p>
             <source>resetInterruptFlagWhen(sleepingIsInterrupted()); </source>
             <p>This is actually how the <code>ThreadUtils.sleep</code> method is implemented within tempus-fugit.</p>
+        </subsection>
+
+        <subsection name="Thread Dumps">
+            <p>The <a href="xref/com/google/code/tempusfugit/concurrency/ThreadDump.html">ThreadDump</a> class offers a programatic way to print a thread dump. It's not recommended for production
+            code but can be handy in tracking down unexpected behaviour interractively. Using <code>ThreadDump.dumpThreads(System.out)</code>,
+            for example, would yeild something like the following (formating inspired by <code>jstack</code>).</p>
+ <source>
+ Thread Reference Handler@2: (state = WAITING)
+ - java.lang.Object.wait(Native Method)
+ - java.lang.Object.wait(Object.java:474)
+ - java.lang.ref.Reference$ReferenceHandler.run(Reference.java:116)
+
+Thread main@1: (state = RUNNABLE)
+ - java.lang.Thread.dumpThreads(Native Method)
+ - java.lang.Thread.getAllStackTraces(Thread.java:1460)
+ - com.google.code.tempusfugit.concurrency.ThreadDump.dumpThreads(ThreadDump.java:25)
+  ...
+ - com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:118)
+ - com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:40)
+
+Thread Signal Dispatcher@4: (state = RUNNABLE)
+
+Thread Finalizer@3: (state = WAITING)
+ - java.lang.Object.wait(Native Method)
+ - java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:120)
+ - java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:136)
+ - java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:159)
+ </source>
+        </subsection>
+
+         <subsection name="Miscellaneous">
+            <p>The static method <code>ThreadUtils.threadIsWaiting(Thread)</code> ofters a <code><a href="xref/com/google/code/tempusfugit/temporal/Condition.html">Condition</a></code>
+                that allows you to test if a thread is waiting. Combining the condition with some classes from the <a href="time.html#Conditions_and_Waiting">temporal</a> package allows you to wait for a
+                thread to <b>not</b> be in the waiting state, for example. Using tempus-fugit, you would express is something like the following.
+                </p>
+<source>waitOrTimeout(not(threadIsWaiting(thread)), seconds(10)); </source>
+        </subsection>
         </section>
 
     </body>
