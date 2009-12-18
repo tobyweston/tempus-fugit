@@ -29,13 +29,13 @@ public final class TimeoutExceptionWithFutures extends TimeoutException {
     }
 
     public <T> TimeoutExceptionWithFutures(String message, List<T> futures) {
-        super(message);
+        this(message);
         this.futures = new ArrayList<T>(futures);
     }
 
     public <T> TimeoutExceptionWithFutures(List<T> futures) {
         super();
-        this.futures = futures;
+        this.futures = new ArrayList<T>(futures);
     }
 
     public <T> List<T> getFutures() {
