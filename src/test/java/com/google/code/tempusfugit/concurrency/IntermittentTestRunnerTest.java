@@ -16,13 +16,14 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 @RunWith(IntermittentTestRunner.class)
 public class IntermittentTestRunnerTest {
@@ -32,7 +33,7 @@ public class IntermittentTestRunnerTest {
     private static int afterClassCounter = 0;
 
     @Test
-    @Intermittent(repition = 99)
+    @Intermittent(repetition = 99)
     public void annotatedTest() {
         testCounter++;
     }

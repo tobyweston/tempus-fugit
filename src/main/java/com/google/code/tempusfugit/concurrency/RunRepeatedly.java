@@ -32,7 +32,7 @@ class RunRepeatedly extends Statement {
 
     public void evaluate() throws Throwable {
         if (intermittent(method))
-            for (int i = 0; i < repition(method); i++) {
+            for (int i = 0; i < repetition(method); i++) {
                 try {
                     statement.evaluate();
                 } catch (AssertionFailedError e) {
@@ -47,7 +47,7 @@ class RunRepeatedly extends Statement {
         return method.getAnnotation(Intermittent.class) != null;
     }
 
-    private int repition(FrameworkMethod method) {
-        return method.getAnnotation(Intermittent.class).repition();
+    private int repetition(FrameworkMethod method) {
+        return method.getAnnotation(Intermittent.class).repetition();
     }
 }
