@@ -101,6 +101,8 @@ try {
             It then just calls <code>interrupt</code> on the passed in thread. It is important therefore to ensure you cancel the interrupt as above for the case when the long running process
             could finish before the timeout. The <code>cancel</code> has no affect if the timeout has already expired so using a <code>finally</code> block is recommended.
         </p>
+        <p>The <code><a href="xref/com/google/code/tempusfugit/concurrency/DefaultTimeoutableCompletionService.html">DefaultTimeoutableCompletionService</a></code> classes uses this
+            approach to implement a <code>java.util.concurrent.CompletionService</code>-like service that will timeout and return any completed tasks and abandoning any remaining.</p>
             
         </subsection>
 
