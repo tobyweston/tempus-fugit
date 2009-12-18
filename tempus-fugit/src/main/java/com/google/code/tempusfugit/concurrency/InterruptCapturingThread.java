@@ -69,7 +69,7 @@ public final class InterruptCapturingThread extends Thread {
     public void printStackTraceOfInterruptingThreads(PrintStream out) {
         for (StackTraceElement[] stackTraceElements : interrupterStackTraces) {
             for (StackTraceElement stackTraceElement : stackTraceElements) {
-                out.print(stackTraceElement + "\n   ");
+                out.print(stackTraceElement + "\n");
             }
             out.print("\n");
         }

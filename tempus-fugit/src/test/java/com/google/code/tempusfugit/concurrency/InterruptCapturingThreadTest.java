@@ -20,32 +20,66 @@ import static com.google.code.tempusfugit.concurrency.ThreadUtils.threadIsWaitin
 import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.Sequence;
+import org.jmock.integration.junit4.JMock;
+import org.jmock.lib.legacy.ClassImposteriser;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import java.io.PrintStream;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+@RunWith(JMock.class)
 public class InterruptCapturingThreadTest {
+
+    private final Mockery context = new Mockery() {{
+        setImposteriser(ClassImposteriser.INSTANCE);
+    }};
+
+    private PrintStream stream = context.mock(PrintStream.class);
+
 
     @Test (timeout = 500)
     public void interruptingThreadsStackTraceIsRecorded() throws TimeoutException, InterruptedException {
+        verify(startSleepingThreadAndInterrupt().getInterrupters());
+    }
+
+    @Test
+    public void outputsStackTraceDetails() throws TimeoutException, InterruptedException {
+        final Sequence sequence = context.sequence("order");
+        context.checking(new Expectations() {{
+            one(stream).print(with(containsString("java.lang.Thread.getStackTrace(Thread.java"))); inSequence(sequence);
+            one(stream).print(with(containsString("com.google.code.tempusfugit.concurrency.InterruptCapturingThread.interrupt(InterruptCapturingThread.java"))); inSequence(sequence);
+            one(stream).print(with(containsString("com.google.code.tempusfugit.concurrency.InterruptCapturingThreadTest.startSleepingThreadAndInterrupt(InterruptCapturingThreadTest"))); inSequence(sequence);
+            one(stream).print(with(containsString("com.google.code.tempusfugit.concurrency.InterruptCapturingThreadTest.outputsStackTraceDetails(InterruptCapturingThreadTest.java"))); inSequence(sequence);
+            allowing(stream).print(with(any(String.class)));
+        }});
+        startSleepingThreadAndInterrupt().printStackTraceOfInterruptingThreads(stream);
+    }
+
+    private InterruptCapturingThread startSleepingThreadAndInterrupt() throws TimeoutException, InterruptedException {
         InterruptCapturingThread thread = sleepingThread();
         thread.start();
         waitOrTimeout(threadIsWaiting(thread), millis(500));
         thread.interrupt();
         waitOrTimeout(not(threadIsWaiting(thread)), millis(500));
-        verify(thread.getInterrupters());
+        return thread;
     }
-    
+
     private void verify(List<StackTraceElement[]> stackTraceElements) {
         assertThat(stackTraceElements.size(), is(1));
         StackTraceElement[] firstStackTrace = stackTraceElements.get(0);
         assertThat(firstStackTrace[0].getMethodName(), is(equalTo("getStackTrace")));
         assertThat(firstStackTrace[1].getMethodName(), is(equalTo("interrupt")));
-        assertThat(firstStackTrace[2].getMethodName(), is(equalTo("interruptingThreadsStackTraceIsRecorded")));
+        assertThat(firstStackTrace[2].getMethodName(), is(equalTo("startSleepingThreadAndInterrupt")));
+        assertThat(firstStackTrace[3].getMethodName(), is(equalTo("interruptingThreadsStackTraceIsRecorded")));
     }
 
     private static InterruptCapturingThread sleepingThread() {
