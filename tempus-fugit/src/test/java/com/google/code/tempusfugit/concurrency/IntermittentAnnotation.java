@@ -28,7 +28,7 @@ class IntermittentAnnotation implements Intermittent {
         throw new RuntimeException();
     }
 
-    public int repition() {
+    public int repetition() {
         return 100;
     }
 }

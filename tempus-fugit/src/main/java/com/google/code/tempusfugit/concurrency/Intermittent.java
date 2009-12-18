@@ -16,10 +16,11 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import static java.lang.annotation.ElementType.METHOD;
 import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Annotation to highlight intermittently failure tests.
@@ -28,6 +29,6 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 public @interface Intermittent {
     String value() default "";
-    int repition() default 100;
+    int repetition() default 100;
 }
 

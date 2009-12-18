@@ -63,19 +63,19 @@ try {
                 </p>
             <p>Using the <code><a href="xref/com/google/code/tempusfugit/concurrency/ThreadUtils.html">ThreadUtils</a>.sleep</code> method, the above code is rewritten as.</p>
 <source>sleep(millis(100));</source>
-            <p>This ensures that the interrpt flag is reset and is more explict about the <a href="time.html#Duration">duration</a> of the sleep.</p>
+            <p>This ensures that the interrupt flag is reset and is more explicit about the <a href="time.html#Duration">duration</a> of the sleep.</p>
             <p>If you want to ensure the interrupt flag is reset for other code, you can use the <code>ThreadUtils.resetInterruptFlagWhen</code>
             method directly. The <code><a href="xref/com/google/code/tempusfugit/concurrency/Interruptible.html">Interruptible</a></code> interface is used to highlight that the closure-like call
-                you want to execute does infact throw the <code>InterruptedException</code>. For example;
+                you want to execute does in fact throw the <code>InterruptedException</code>. For example;
             </p>
             <source>
-resetInterruptFlagWhen(new Interruptable&lt;Void&gt;() {
+resetInterruptFlagWhen(new Interruptible&lt;Void&gt;() {
     public Void call() throws InterruptedException {
         Thread.sleep(100);
         return null;
     }
 }); </source>
-            <p>Extracting the closure-like <code>Interruptable</code> to a method makes the code more expressive;</p>
+            <p>Extracting the closure-like <code>Interruptible</code> to a method makes the code more expressive;</p>
             <source>resetInterruptFlagWhen(sleepingIsInterrupted()); </source>
             <p>This is actually how the <code>ThreadUtils.sleep</code> method is implemented within tempus-fugit.</p>
         </subsection>
@@ -85,7 +85,7 @@ resetInterruptFlagWhen(new Interruptable&lt;Void&gt;() {
             The <code><a href="xref/com/google/code/tempusfugit/concurrency/Interrupter.html">Interrupter</a></code> class allows you to schedule an <code>interrupt</code> on a thread after a
             specified duration. This can be useful when implementing timeouts on classes that support the use of <code>interrupt</code> as an interruption policy. For example, the code below
             sets up an interrupt to be scheduled after some timeout, before embarking on some potentially long running process. The <code>Interrupter</code> and <code>Thread</code> classes
-            have been staticially imported.
+            have been statically imported.
         </p>
 <source>
 Interrupter interrupter = interrupt(currentThread()).after(timeout);
@@ -108,7 +108,7 @@ try {
 
         <subsection name="Interrupt Capturing Thread Stub">
         <p>
-            It can be tricky to test that an interrupt has been called on a thread becuase of the possibility of race conditions between calling <code>interrupt</code> and checking
+            It can be tricky to test that an interrupt has been called on a thread because of the possibility of race conditions between calling <code>interrupt</code> and checking
             the status of the interrupt flag using <code>Thread.isInterrupted()</code> or <code>Thread.interrupted</code>. For example, the interrupt status can be reset when a thread
             goes into the <code>TERMINATED</code> state. You can use the <code>WaitFor</code> class to express an assertion must be true within a given time (as below) but in this case,
             the race conditions can still occur (due to the frequency of the check whilst waiting). In the example below, the created thread will perform some blocking function that can
@@ -161,9 +161,9 @@ java.lang.Thread.getStackTrace(Thread.java:1409)
         </subsection>
 
         <subsection name="Thread Dumps">
-            <p>The <a href="xref/com/google/code/tempusfugit/concurrency/ThreadDump.html">ThreadDump</a> class offers a programatic way to print a thread dump. It's not recommended for production
-            code but can be handy in tracking down unexpected behaviour interractively. Using <code>ThreadDump.dumpThreads(System.out)</code>,
-            for example, would yeild something like the following (formating inspired by <code>jstack</code>).</p>
+            <p>The <a href="xref/com/google/code/tempusfugit/concurrency/ThreadDump.html">ThreadDump</a> class offers a programmatic way to print a thread dump. It's not recommended for production
+            code but can be handy in tracking down unexpected behaviour interactively. Using <code>ThreadDump.dumpThreads(System.out)</code>,
+            for example, would yield something like the following (formatting inspired by <code>jstack</code>).</p>
  <source>
  Thread Reference Handler@2: (state = WAITING)
  - java.lang.Object.wait(Native Method)
@@ -192,7 +192,7 @@ Thread Finalizer@3: (state = WAITING)
             <p>Some additional thread utilities include the following</p>
             <ul>
                 <li><p><code>ThreadUtils.threadIsWaiting</code></p>
-            <p>The static method <code>ThreadUtils.threadIsWaiting(Thread)</code> ofters a <code><a href="xref/com/google/code/tempusfugit/temporal/Condition.html">Condition</a></code>
+            <p>The static method <code>ThreadUtils.threadIsWaiting(Thread)</code> offers a <code><a href="xref/com/google/code/tempusfugit/temporal/Condition.html">Condition</a></code>
              that allows you to test if a thread is waiting. Combining the condition with some classes from the <a href="time.html#Conditions_and_Waiting">temporal</a> package allows you to wait for a
              thread to <b>not</b> be in the waiting state, for example. Using tempus-fugit, you would express is something like the following.
          </p>

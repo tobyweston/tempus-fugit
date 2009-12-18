@@ -50,18 +50,24 @@
         </section>
 
         <section name="Duration">
-        <p>Frequently, some length of time is represented as a <code>long</code> in Java. The trouble here is that you
-        don't always know what time unit the <code>long</code> represents and as Effective Java recommends, you'll often end up with
-        something like the following</p>
+        <p>
+            Frequently, some length of time is represented as a <code>long</code> in Java. The trouble here is that you
+            don't always know what time unit the <code>long</code> represents and as <a href="http://java.sun.com/docs/books/effective/">Effective Java</a> recommends, you'll often end up with
+            something like the following
+        </p>
         <source>connection.setReadTimeout(TIMEOUT_IN_MILLIS);</source>
         or you might come across unhelpful code like this;
         <source>connection.setReadTimeout(1000 * 2 * 60);</source>
-        <p>This is all very error prone, ugly and in the second case, fails to convey the intent. The <code>Duration</code>
-        class captures a length of time and forces you to express the time unit. So, for example,</p>
+        <p>
+            This is all very error prone, ugly and in the second case, fails to convey the intent. The <code><a href="xref/com/google/code/tempusfugit/temporal/Duration.html">Duration</a></code>
+            class captures a length of time and forces you to express the time unit. So, for example,
+        </p>
         <source>connection.setReadTimeout(seconds(2);</source>
         </section>
-        <p>Using <code>Duration</code> in your own method forces your clients to create use an explict time unit and you
-        can convert back explicitly. for example,</p>
+        <p>
+            Using <code>Duration</code> in your own method forces your clients to create use an explicit time unit and you
+            can convert back explicitly. for example,
+        </p>
         <source>
 public void setReadTimeout(Duration timeout) {
    ...
@@ -71,9 +77,11 @@ public void setReadTimeout(Duration timeout) {
 
         <section name="Conditions and Waiting">
             <subsection name="Condition">
-            <p>Conditions are part of our everyday language. The <code>Condition</code>
-            interface captures a conditional as something that can be reused. For example, waiting for something can be
-                achieved using the <code>WaitFor</code> class and an annonymous <code>Conditional</code>. For example,</p>
+            <p>
+                Conditions are part of our everyday language. The <code><a href="xref/com/google/code/tempusfugit/temporal/Condition.html">Condition</a></code>
+                interface captures a conditional as something that can be reused. For example, waiting for something can be
+                achieved using the <code><a href="xref/com/google/code/tempusfugit/temporal/WaitFor.html">WaitFor</a></code> class and an anonymous <code>Condition</code>. For example,
+            </p>
         <source>
 private void waitForShutdown() throws TimeoutException {
     waitOrTimeout(new Condition() {
@@ -90,43 +98,52 @@ private void waitForShutdown() throws TimeoutException {
             </subsection>
 
             <subsection name="WaitFor">
-                <p>The <code>WaitFor</code> class can be used to periodically check if a <code>Condition</code> is satisfied,
-                sleeping for a short period if it has not before checking again. The methods available are </p>
+                <p>
+                    The <code><a href="xref/com/google/code/tempusfugit/temporal/WaitFor.html">WaitFor</a></code> class can be used to periodically 
+                    check if a <code><a href="xref/com/google/code/tempusfugit/temporal/Condition.html">Condition</a></code> is satisfied,
+                    sleeping for a short period if it has not before checking again. The methods available are </p>
                 <ul>
                     <li><p><code>waitOrTimeout</code></p></li>
                     <li><p><code>waitUntil</code></p></li>
                 </ul>
-                <p>The <code>waitOrTimeout</code> will wait until the condition is satisfied or timeout after a specified
-                <code>Duration</code>. The <code>waitUntil</code> waits until a given timeout without checking against any
-                condition. Both methods can be interrupted and so throw an <code>InterruptedException</code>.</p>
+                <p>
+                    The <code>waitOrTimeout</code> will wait until the condition is satisfied or timeout after a specified
+                    <code>Duration</code>. The <code>waitUntil</code> waits until a given timeout without checking against any
+                    condition. Both methods can be interrupted and so throw an <code>InterruptedException</code>.
+                </p>
             </subsection>
 
             <subsection name="Timeouts">
-            <p>The <code>Timeout</code> class takes a <code>Duration</code> representing a period after which a timeout
-            has occured. The timeout status of the object is checked using the <code>hasExpired</code> method.</p> The
-            <code>Timeout</code> class is combined with a <code>Condition</code> to implement the <code>waitUntil</code>
-            method of <code>WaitFor</code>.
+            <p>
+                The <code>Timeout</code> class takes a <code>Duration</code> representing a period after which a timeout
+                has occurred. The timeout status of the object is checked using the <code>hasExpired</code> method.
+            </p>
+            <p>
+                <code>Timeout</code> class is combined with a <code>Condition</code> to implement the <code>waitUntil</code>
+                method of <code>WaitFor</code>.
+            </p>
             </subsection>
 
         </section>
         <section name="Time">
             <subsection name="Stop Watches">
             <p>
-                The <code>StopWatch</code> class allows you to record the length of time taken between starting and stopping
+                The <code><a href="xref/com/google/code/tempusfugit/temporal/StopWatch.html">StopWatch</a></code> class allows you to record the length of time taken between starting and stopping
                 the watch. It's used internally with the <code>WaitFor.waitUntil(Timeout timeout, ...)</code> class.
             </p>
             </subsection>
             <subsection name="Controlling Time with a Date Factory">
             <p>
-                The <code>DateFactory</code> interface along with its default implementation <code>DefaultDateFactory</code>
+                The <code><a href="xref/com/google/code/tempusfugit/temporal/DateFactory">DateFactory</a></code> interface along with its default implementation
+                <code><a href="xref/com/google/code/tempusfugit/temporal/DefaultDateFactory">DefaultDateFactory</a></code>
                 are aimed at making testing classes that require a date easier. Rather than pass around <code>java.util.Date</code>
                 classes around which will return the current date when constructed, you can pass around a factory which allows
                 you to control the date it represents on construction.
             </p>
-                <p>
-                    For example, the <code>StopWatch</code> class maintains an internal <code>Date</code> which it can use
-                    to compare with the current time to work out the elapsed time. A straight forward implementation might look like this
-                </p>
+            <p>
+                For example, the <code>StopWatch</code> class maintains an internal <code>Date</code> which it can use
+                to compare with the current time to work out the elapsed time. A straight forward implementation might look like this
+            </p>
                 <source>
 public class BadStopWatch {
 
@@ -160,7 +177,6 @@ public class BadStopWatchTest {
     java.lang.AssertionError:
 Expected: is &lt;Duration 100 MILLISECONDS&gt;
      got: &lt;Duration 103 MILLISECONDS&gt;
-
 	at org.junit.Assert.assertThat(Assert.java:778)
 	at org.junit.Assert.assertThat(Assert.java:736)
 	at com.google.code.tempusfugit.temporal.BadStopWatchTest.getElapsedTime(BadStopWatchTest.java:32) </source>
@@ -201,7 +217,7 @@ public void getElapsedTimeFromBetterStopWatch() {
 
             <subsection name="Deterministic Date Factory">
                 <p>
-                    You can use the <code>DeterministicDateFactory</code> in tests to explicitly move time forward within
+                    You can use the <code><a href="xref/com/google/code/tempusfugit/temporal/DeterministicDateFactory.html">DeterministicDateFactory</a></code> in tests to explicitly move time forward within
                     the context of a test. For example, we can rewrite the test above as follows.
                 </p>
                 <source>
@@ -216,9 +232,11 @@ public void getElapsedTimeUsingDeterministicDateFactory() {
             </subsection>
 
             <subsection name="The Factory Interface">
-            <p><code>DateFactory</code> implements the generic <code>Factoy&lt;T&gt;</code> interface. You can implement
+            <p>
+                <code>DateFactory</code> implements the generic <code><a href="xref/com/google/code/tempusfugit/Factory.html">Factoy&lt;T&gt;</a></code> interface. You can implement
                 this interface yourself for general purpose factory classes or simply declare your factories in generic terms (ie
-                <code>Factory&lt;Date&gt; factory = ...</code>).</p>
+                <code>Factory&lt;Date&gt; factory = ...</code>).
+            </p>
             </subsection>
         </section>
     </body>
