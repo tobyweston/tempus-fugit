@@ -209,8 +209,8 @@ Thread Finalizer@3: (state = WAITING)
              <ul>
                  <li><p>Java monitor cyclic locking dependency</p></li>
                  <li><p>Java <code>Lock</code> cyclic locking dependency</p></li>
-                 <li><p>Internal resource starvation <i>or</i> live lock</p></li>
-                 <li><p>External resource based</p></li>
+                 <li><p>External resource based dependency</p></li>
+                 <li><p>Live lock</p></li>
              </ul>
              <p>
                  The <code>DeadlockDecector</code> class can only spot Java monitor cyclic locking problems. It's implementation
@@ -253,12 +253,12 @@ Deadlock detected
 =================
 
 "Negotiator-Thread-1":
- waiting to lock Monitor of com.google.code.tempusfugit.concurrency.DeadlockDetectorTest$Cat@ce4a8a
- which is held by "Kidnapper-Thread-0"
+  waiting to lock Monitor of com.google.code.tempusfugit.concurrency.DeadlockDetectorTest$Cat@ce4a8a
+  which is held by "Kidnapper-Thread-0"
 
 "Kidnapper-Thread-0":
- waiting to lock Monitor of com.google.code.tempusfugit.concurrency.DeadlockDetectorTest$Cash@7fc8b2
- which is held by "Negotiator-Thread-1"
+  waiting to lock Monitor of com.google.code.tempusfugit.concurrency.DeadlockDetectorTest$Cash@7fc8b2
+  which is held by "Negotiator-Thread-1"
              </source>
          </subsection>
 
