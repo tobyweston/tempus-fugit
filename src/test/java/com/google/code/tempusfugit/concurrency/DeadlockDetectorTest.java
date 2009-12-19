@@ -51,14 +51,11 @@ public class DeadlockDetectorTest {
 
     @Test (timeout = 1000)
     public void deadlock() throws InterruptedException {
-        Kidnapper kidnapper = new Kidnapper();
-        Negotiator negotiator = new Negotiator();
-
-        kidnapper.start();
-        negotiator.start();
+        new Kidnapper().start();
+        new Negotiator().start();
 
         setExpectationsOn(stream);
-        DeadlockDetector.printDeadlocks(stream);
+        DeadlockDetector.printDeadlocks(System.out);
     }
     
     private void setExpectationsOn(final PrintStream stream) {
@@ -88,8 +85,13 @@ public class DeadlockDetectorTest {
         private void notWillingToLetNibblesGoWithoutCash() {
             synchronized (nibbles) {
                 countdownAndAwait(latch);
-                cash.take();
+                synchronized (cash) {
+                    take(cash);
+                }
             }
+        }
+
+        private void take(Cash cash) {
         }
 
     }
@@ -108,8 +110,13 @@ public class DeadlockDetectorTest {
         private void notWillingToLetCashGoWithoutNibbles() {
             synchronized (cash) {
                 countdownAndAwait(latch);
-                nibbles.take();
+                synchronized (nibbles) {
+                    take(nibbles);
+                }
             }
+        }
+
+        private void take(Cat nibbles) {
         }
 
     }
@@ -129,14 +136,8 @@ public class DeadlockDetectorTest {
     }
 
 
-    static class Cash {
-        public synchronized void take() {
-        }
-    }
+    static class Cash { }
 
-    static class Cat {
-        public synchronized void take() {
-        }
-    }
+    static class Cat { }
 
 }

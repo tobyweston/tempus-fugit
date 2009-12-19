@@ -47,8 +47,8 @@ public class DeadlockDetector {
         writer.println("Deadlock detected\n=================\n");
         for (ThreadInfo thread : deadlocks) {
             writer.println(format("\"%s\":", thread.getThreadName()));
-            writer.println(format(" waiting to lock Monitor of %s ", thread.getLockName()));
-            writer.println(format(" which is held by \"%s\"", thread.getLockOwnerName()));
+            writer.println(format("  waiting to lock Monitor of %s ", thread.getLockName()));
+            writer.println(format("  which is held by \"%s\"", thread.getLockOwnerName()));
             writer.println();
         }
     }
