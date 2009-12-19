@@ -35,7 +35,8 @@
                 <ul>
                     <li><p><a href="#Sleeping_and_Interruptions">Sleeping and Interruptions</a></p></li>
                     <li><p><a href="#Scheduled_Interruption">Scheduled Interruption</a></p></li>
-                    <li><p><a href="#Thread Dumps">Thread Dumps</a></p></li>
+                    <li><p><a href="#Thread_Dumps">Thread Dumps</a></p></li>
+                    <li><p><a href="Deadlock_Detection">Deadlock Detection</a></p></li>
                     <li><p><a href="#Miscellaneous">Miscellaneous</a></p></li>
                 </ul>
                 <li><p><a href="Intermittent_Tests">Intermittent Tests</a></p></li>
@@ -161,9 +162,11 @@ java.lang.Thread.getStackTrace(Thread.java:1409)
         </subsection>
 
         <subsection name="Thread Dumps">
-            <p>The <a href="xref/com/google/code/tempusfugit/concurrency/ThreadDump.html">ThreadDump</a> class offers a programmatic way to print a thread dump. It's not recommended for production
-            code but can be handy in tracking down unexpected behaviour interactively. Using <code>ThreadDump.dumpThreads(System.out)</code>,
-            for example, would yield something like the following (formatting inspired by <code>jstack</code>).</p>
+            <p>
+                The <a href="xref/com/google/code/tempusfugit/concurrency/ThreadDump.html">ThreadDump</a> class offers a programmatic way to print a thread dump. It's not recommended for production
+                code but can be handy in tracking down unexpected behaviour interactively. Using <code>ThreadDump.dumpThreads(System.out)</code>,
+                for example, would yield something like the following (formatting inspired by <code>jstack</code>).
+            </p>
  <source>
  Thread Reference Handler@2: (state = WAITING)
  - java.lang.Object.wait(Native Method)
@@ -186,7 +189,78 @@ Thread Finalizer@3: (state = WAITING)
  - java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:136)
  - java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:159)
  </source>
+            <p>
+                 The <code>dumpThreads</code> method will also detect any Java-level deadlocks, see the
+                <a href="#Deadlock_Detection">Deadlock Detection</a> section for details.
+            </p>
         </subsection>
+
+         <subsection name="Deadlock Detection">
+             <p>
+                 The <code><a href="xref/com/google/code/tempusfugit/concurrency/DeadlockDetector.html">DeadlockDetector</a></code> class allows you to programmatically detect basic deadlocks in your 
+                 Java code. You can output deadlocks using the following code (note that printing a thread dump using the <code>ThreadDump</code> class will automatically attempt to find
+                 any deadlocks).
+             </p>
+             <source>DeadlockDetector.printDeadlocks(System.out);</source>
+             <p>
+                 There are various types of deadlock in concurrent systems, broadly speaking with regard to Java,
+                 they can be categorised as
+             </p>
+             <ul>
+                 <li><p>Java monitor cyclic locking dependency</p></li>
+                 <li><p>Java <code>Lock</code> cyclic locking dependency</p></li>
+                 <li><p>Internal resource starvation <i>or</i> live lock</p></li>
+                 <li><p>External resource based</p></li>
+             </ul>
+             <p>
+                 The <code>DeadlockDecector</code> class can only spot Java monitor cyclic locking problems. It's implementation
+                 is basically the same as <code>jconsole</code> and <code>jstack</code> and suffers the same limitations.
+                 Java 1.6 versions of <code>jstack</code> and <code>jconsole</code> can additionally detect <code>Lock</code>
+                 based cyclic problems. The types of deadlock it can detect can be illustrated in the example below.
+             </p>
+             <source>
+ public void potentialDeadlock() {
+     new Kidnapper().start();
+     new Negotiator().start();
+ }
+
+ public class Kidnapper extends Thread {
+     public void run() {
+         synchronized (nibbles) {
+             synchronized (cash) {
+                 take(cash);
+             }
+         }
+     }
+ }
+
+ public class Negotiator extends Thread {
+     public void run() {
+         synchronized (cash) {
+             synchronized (nibbles) {
+                 take(nibbles);
+             }
+         }
+     }
+ } </source>
+             <p>
+                 Here, the <code>Kidnapper</code> is unwilling to release poor Nibbles the <code>Cat</code> until he
+                 has the <code>Cash</code> but our <code>Negotiator</code> is unwilling to part with the <code>Cash</code>
+                 until he has poor Nibbles back in his arms. The deadlock detector displays this woeful situation as follows.
+             </p>
+             <source>
+Deadlock detected
+=================
+
+"Negotiator-Thread-1":
+ waiting to lock Monitor of com.google.code.tempusfugit.concurrency.DeadlockDetectorTest$Cat@ce4a8a
+ which is held by "Kidnapper-Thread-0"
+
+"Kidnapper-Thread-0":
+ waiting to lock Monitor of com.google.code.tempusfugit.concurrency.DeadlockDetectorTest$Cash@7fc8b2
+ which is held by "Negotiator-Thread-1"
+             </source>
+         </subsection>
 
          <subsection name="Miscellaneous">
             <p>Some additional thread utilities include the following</p>
