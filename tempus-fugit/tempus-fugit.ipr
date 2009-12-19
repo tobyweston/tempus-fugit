@@ -237,6 +237,13 @@
   <component name="ProjectDetails">
     <option name="projectName" value="tempus-fugit" />
   </component>
+  <component name="ProjectDictionaryState">
+    <dictionary name="toby">
+      <words>
+        <w>programmatically</w>
+      </words>
+    </dictionary>
+  </component>
   <component name="ProjectKey">
     <option name="state" value="https://tempus-fugit.googlecode.com/svn/trunk/tempus-fugit/tempus-fugit.ipr" />
   </component>
