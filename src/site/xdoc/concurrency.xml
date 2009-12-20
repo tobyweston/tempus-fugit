@@ -281,8 +281,84 @@ Deadlock detected
          </subsection>
         </section>
 
-        <!--<section name="Intermittent Tests">-->
-        <!--</section>-->
+        <section name="Intermittent Tests">
+        <p>
+            As much as possible, you aim to have a completely deterministic tests but despite your best efforts,
+            the odd flickering test can still get through. Occasionally, you might want to run such a test repeatedly to
+            get an idea of its indeterminacy. The <code><a href="xref/com/google/code/tempusfugit/concurrency/Intermittent.html">Intermittent</a></code>
+            annotation can be combined with the <code><a href="xref/com/google/code/tempusfugit/concurrency/IntermittentRule.html">IntermittentRule</a></code> or
+            <code><a href="xref/com/google/code/tempusfugit/concurrency/IntermittentTestRunner.html">IntermittentTestRunner</a></code>
+            to provide this behaviour along with <a href="http://junit.org/">junit</a>.
+        </p>
+        <p>
+            Both mechanisms require you to mark a junit test method as potentially intermittent using the <code>Intermittent</code>
+            annotation as follows.
+        </p>
+        <source>
+@Test
+@Intermittent
+public void flickering() {
+   // ...
+}</source>       
+        <p>
+            You can then use the <code>IntermittentRule</code> to run the test method repeatedly in which case, any
+            <code>@Before</code> or <code>@After</code> methods will only be run once. By default, the suspect method
+            will be run <code>100</code> times.
+        </p>
+            <source>
+public class IntermittentRuleTest {
+
+    <b>@Rule public IntermittentRule rule = new IntermittentRule();</b>
+
+    private static int counter = 0;
+
+    @Test
+    <b>@Intermittent</b>
+    public void annotatedTest() {
+        counter++;
+    }
+
+    @After
+    public void annotatedTestRunsMultipleTimes() {
+        assertThat(counter, is(100));
+    }
+
+} </source>
+        <p>
+            Or you can use the <code>@RunWith</code> annotation to run the test using the <code>IntermittentTestRunner</code>
+            in which case, any <code>@Before</code> or <code>@After</code> methods will be run once for each test repetition. The
+            example below also shows that the repetition count can be overridden on the method annotation.
+        </p>
+        <source>
+<b>@RunWith(IntermittentTestRunner.class)</b>
+public class IntermittentTestRunnerTest {
+
+    private static int testCounter = 0;
+    private static int afterCounter = 0;
+    private static int afterClassCounter = 0;
+
+    @Test
+    @Intermittent(<b>repetition = 99</b>)
+    public void annotatedTest() {
+        testCounter++;
+    }
+
+    @After
+    public void assertAfterIsCalledRepeatedlyForAnnotatedTests() {
+        assertThat(testCounter, is(equalTo(++afterCounter)));
+    }
+
+    @AfterClass
+    public static void assertAfterClassIsCalledOnce() {
+        assertThat(++afterClassCounter, is(equalTo(1)));
+    }
+
+    @AfterClass
+    public static void assertannotatedTestRunsMultipleTimes() {
+        assertThat(testCounter, is(equalTo(99)));
+    }
+}</source>
+        </section>
 
         <section name="Callables">
             <subsection name="Callable Adapter">
