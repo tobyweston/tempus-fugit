@@ -16,6 +16,8 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import static com.google.code.tempusfugit.concurrency.ThreadUtils.resetInterruptFlagWhen;
+import static org.hamcrest.Matchers.containsString;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
@@ -26,9 +28,6 @@ import org.junit.runner.RunWith;
 
 import java.io.PrintStream;
 import java.util.concurrent.CountDownLatch;
-
-import static com.google.code.tempusfugit.concurrency.ThreadUtils.resetInterruptFlagWhen;
-import static org.hamcrest.Matchers.containsString;
 
 @RunWith(JMock.class)
 public class DeadlockDetectorTest {
@@ -55,7 +54,7 @@ public class DeadlockDetectorTest {
         new Negotiator().start();
 
         setExpectationsOn(stream);
-        DeadlockDetector.printDeadlocks(System.out);
+        DeadlockDetector.printDeadlocks(stream);
     }
     
     private void setExpectationsOn(final PrintStream stream) {
