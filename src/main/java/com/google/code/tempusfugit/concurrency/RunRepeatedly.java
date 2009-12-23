@@ -43,11 +43,11 @@ class RunRepeatedly extends Statement {
             statement.evaluate();
     }
 
-    private boolean intermittent(FrameworkMethod method) {
+    private static boolean intermittent(FrameworkMethod method) {
         return method.getAnnotation(Intermittent.class) != null;
     }
 
-    private int repetition(FrameworkMethod method) {
+    private static int repetition(FrameworkMethod method) {
         return method.getAnnotation(Intermittent.class).repetition();
     }
 }

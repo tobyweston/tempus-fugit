@@ -16,7 +16,17 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-public interface Callable<V, E extends Exception> extends java.util.concurrent.Callable<V> {
-    V call() throws E;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+/**
+ * Annotation to mark a test to be run concurrently
+ */
+@Target(METHOD)
+@Retention(RUNTIME)
+public @interface Concurrent {
+    public abstract int count() default 5;
 }

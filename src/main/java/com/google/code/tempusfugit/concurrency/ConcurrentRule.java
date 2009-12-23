@@ -16,7 +16,14 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import org.junit.rules.MethodRule;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.Statement;
 
-public interface Callable<V, E extends Exception> extends java.util.concurrent.Callable<V> {
-    V call() throws E;
+public class ConcurrentRule implements MethodRule {
+
+    public Statement apply(Statement base, final FrameworkMethod method, final Object target) {
+        return new RunConcurrently(method, base);
+    }
+
 }
