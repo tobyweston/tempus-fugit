@@ -53,7 +53,6 @@ public class RunConcurrentlyTest {
     @Concurrent (count = 5)
     public void spawnTestThreads() {
         threads.add(Thread.currentThread().getName());
-        System.out.println(threads.size() + " " + Thread.currentThread().getName());
     }
 
     @AfterClass

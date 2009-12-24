@@ -23,11 +23,15 @@
     <publishDate position="right" format="dd-MMMM-yyyy"/>
     <version position="right"/>
 
+    <!--<skin>-->
+       <!--<groupId>org.apache.maven.skins</groupId>-->
+       <!--<artifactId>maven-stylus-skin</artifactId>-->
+     <!--</skin>-->
     <skin>
-       <groupId>org.apache.maven.skins</groupId>
-       <artifactId>maven-classic-skin</artifactId>
-       <version>1.0</version>
-     </skin>
+        <groupId>com.google.code.tempus-fugit</groupId>
+        <artifactId>skin</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </skin>
 
     <body>
         <menu name="Overview">
