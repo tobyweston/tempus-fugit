@@ -52,6 +52,12 @@
         </repository>
     </distributionManagement>
 
+    <!-- Workaround for SUREFIRE-300 -->
+    <!--<properties>-->
+        <!--<maven.test.skip>true</maven.test.skip>-->
+    <!--</properties>-->
+
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
