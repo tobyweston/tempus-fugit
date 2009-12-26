@@ -214,7 +214,7 @@ Thread Finalizer@3: (state = WAITING)
              </ul>
              <p>
                  The <code>DeadlockDecector</code> class can only spot Java monitor cyclic locking problems. It's implementation
-                 is basically the same as <code>jconsole</code> and <code>jstack</code> and suffers the same limitations.
+                 is basically the same as that used by <code>jconsole</code> and <code>jstack</code> and suffers the same limitations.
                  Java 1.6 versions of <code>jstack</code> and <code>jconsole</code> can additionally detect <code>Lock</code>
                  based cyclic problems. The types of deadlock it can detect can be illustrated in the example below.
              </p>
