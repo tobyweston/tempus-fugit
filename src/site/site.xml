@@ -36,7 +36,8 @@
     <body>
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
-            <item name="Usage" href="index.html">
+            <item name="Download" href="download.html"/>
+            <item name="Usage" href="usage.html">
                 <item name="Concurrency" href="concurrency.html"/>
                 <item name="Time-dependence" href="time.html"/>
              </item>

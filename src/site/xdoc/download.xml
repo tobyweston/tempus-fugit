@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2009, tempus-fugit committers
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+    <properties>
+        <title>Download Instructions</title>
+        <author>Toby Weston</author>
+    </properties>
+
+    <body>
+        <section name="Download Instructions">
+            <p>
+                The project is published via the <a href="https://maven-repository.dev.java.net/">java.net</a>
+                Maven repository.
+            </p>
+            <p>
+                You can download the source and binary jar directly from
+                <a href="http://download.java.net/maven/2/com/google/code/tempus-fugit/">
+                http://download.java.net/maven/2/com/google/code/tempus-fugit/</a> or use Maven or Ivy.
+            </p>
+            <subsection name="Maven 2">
+            <p>
+                Add the java.net repository to your project's <code>pom.xml</code>, or into Maven's configuration
+                (using <code>conf/settings.xml</code>).
+            </p>
+<source>
+&lt;repository&gt;
+  &lt;id&gt;java.net&lt;/id&gt;
+  &lt;url&gt;http://download.java.net/maven/1&lt;/url&gt;
+  &lt;layout&gt;legacy&lt;/layout&gt;
+&lt;/repository&gt;
+</source>
+            </subsection>
+            <p>
+                Then add a <code>dependency</code> as usualy to your <code>pom.xml</code>.
+            </p>
+            <source>
+&lt;dependency&gt;
+  &lt;groupId&gt;com.google.code.tempus-fugit&lt;/groupId&gt;
+  &lt;artifactId&gt;tempus-fugit&lt;/artifactId&gt;
+  &lt;version&gt;${project.version}&lt;/version&gt;
+&lt;/dependency&gt; </source>
+            <subsection name="Ivy">
+            <p>
+                For Ivy, add the following definition to your <code>ivysettings.xml</code> to download from the repository.
+            </p>
+            <source>
+&lt;ibiblio name="java.net" root="http://download.java.net/maven/1/" namespace="java.net" pattern="[organization]/jars/[module]-[revision].[ext]" /&gt;
+</source>
+            <p>
+                You can then add the following to your project's <code>ivy.xml</code>.
+            </p>
+            <source>&lt;dependency org="com.google.code.tempus-fugit" name="tempus-fugit" rev="1.0-SNAPSHOT" conf="netstream-runtime"/&gt; </source>
+            </subsection>
+
+            <subsection name="Source Code and Issue Tracking">
+                <p>
+                    Feel free to browse the source code and send comments and feedback. Any issues (bugs) you might
+                    discover can be raised and tracked through the issue management system.
+                </p>
+                <ul>
+                    <li><p><a href="source-repository.html">Source</a></p></li>
+                    <li><p><a href="issue-tracking.html">Issue Tracking</a></p></li>
+                </ul>
+            </subsection>
+        </section>
+
+    </body>
+</document>
