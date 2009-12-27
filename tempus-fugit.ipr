@@ -251,6 +251,7 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../documentation/documentation.iml" filepath="$PROJECT_DIR$/../documentation/documentation.iml" />
       <module fileurl="file://$PROJECT_DIR$/../skin/skin.iml" filepath="$PROJECT_DIR$/../skin/skin.iml" />
       <module fileurl="file://$PROJECT_DIR$/tempus-fugit.iml" filepath="$PROJECT_DIR$/tempus-fugit.iml" />
     </modules>
@@ -300,7 +301,7 @@
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="VcsDirectoryMappings">
-    <mapping directory="" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../documentation" vcs="svn" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="libraryTable">

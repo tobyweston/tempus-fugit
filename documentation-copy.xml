@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2009, tempus-fugit committers
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project default="copy-documentation" basedir=".">
+
+    <property name="documentation.folder" value="../documentation"/>
+    <property name="site.folder" value="target/site"/>
+
+    <target name="copy-documentation" description="copy artifacts from mvn site to documentation folder ready for svn to commit">
+        <mkdir dir="${documentation.folder}"/>
+        <copy todir="${documentation.folder}">
+            <fileset dir="${site.folder}" excludes="**/.svn" />    
+        </copy>
+    </target>
+
+</project>
