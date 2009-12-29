@@ -35,6 +35,11 @@
                 <a href="http://download.java.net/maven/2/com/google/code/tempus-fugit/">
                 http://download.java.net/maven/2/com/google/code/tempus-fugit/</a> or use Maven or Ivy.
             </p>
+            <p>
+               <font color="red"><b>Note</b> that if the current version is a SNAPSHOT version (see top right), the Maven repository version
+               may not contain the bleeding edge jar and so may not include all the classes described in this document. </font>
+            </p>
+
             <subsection name="Maven 2">
             <p>
                 Add the java.net repository to your project's <code>pom.xml</code>, or into Maven's configuration
