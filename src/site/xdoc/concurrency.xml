@@ -31,7 +31,7 @@
                 designed to help when developing concurrent code.    
             </p>
             <ul>
-                <li><p><a href="#Thread_Utilities">Thread Utilities</a></p></li>
+                <li><p><a href="#Thread_Utilities">Thread Utilities</a></p></li> 
                 <ul>
                     <li><p><a href="#Sleeping_and_Interruptions">Sleeping and Interruptions</a></p></li>
                     <li><p><a href="#Scheduled_Interruption">Scheduled Interruption</a></p></li>
@@ -371,11 +371,72 @@ public class IntermittentTestRunnerTest {
         </subsection>
 
         <subsection name="Parallel Tests">
+        <p>There are two methods to run tests in parallel available using tempus-fugit</p>
+        <ul>
+            <li>
+                <p><b>Running tests methods within classes in parallel</b></p>
+                <p>
+                    Here, each test method within a class will run on its own thread and in parallel with any other
+                    test methods in that class. The number of threads for a given test class will be equal to the number
+                    of test methods within that class.
+                </p>
+                <p>Use the <a href="xref/com/google/code/tempusfugit/concurrency/ConcurrentTestRunner.html"><code>ConcurrentTestRunner</code></a>
+                    class with junit's <code>@RunWith</code> for this method.</p>
+            </li>
+
+            <li><p><b>Running individual tests in multiple threads</b></p>
+                <p>
+                    More for soak or stress testing, this method will run an individual test method in <i>n</i> number of
+                    threads where <i>n</i> is specified by you.
+                </p>
+                <p>
+                    Use the <a href="xref/com/google/code/tempusfugit/concurrency/ConcurrentRule.html"><code>ConcurrentRule</code></a>
+                    and associated <a href="xref/com/google/code/tempusfugit/concurrency/Concurrent.html"><code>Concurrent</code></a>
+                    annotation for this method.
+                </p>
+            </li>
+        </ul>
+
+        <h3>Running tests methods within classes in parallel</h3>
+        <p>
+            You can use the <a href="xref/com/google/code/tempusfugit/concurrency/ConcurrentTestRunner.html"><code>ConcurrentTestRunner</code></a>
+            runner to run all test methods within a class in parallel. Simply mark your test to be <code>@RunWith</code>
+            the <code>ConcurrentTestRunner</code> class as below.
+        </p>
+        <source>
+@RunWith(ConcurrentTestRunner.class)
+public class ConcurrentTestRunnerTest {
+
+    @Test
+    public void shouldRunInParallel1() {
+        System.out.println("I'm running on thread " + Thread.currentThread().getName());
+    }
+
+    @Test
+    public void shouldRunInParallel2() {
+        System.out.println("I'm running on thread " + Thread.currentThread().getName());
+    }
+
+    @Test
+    public void shouldRunInParallel3() {
+        System.out.println("I'm running on thread " + Thread.currentThread().getName());
+    }
+}        </source>
+        <p>
+            In this example, each of the individual test methods are run once but in their own thread, all spawned roughly
+            at the same time. The output from the above might look like the following.
+        </p>
+            <source>
+I'm running on thread ConcurrentTestRunner-Thread-0
+I'm running on thread ConcurrentTestRunner-Thread-2
+I'm running on thread ConcurrentTestRunner-Thread-1 </source>
+
+            <h3>Running individual tests in multiple threads</h3>
         <p>
             Like the <code><a href="#Intermittent_Tests">IntermittentRule</a></code> above, tempus-fugit offers a
             <a href="xref/com/google/code/tempusfugit/concurrency/ConcurrentRule.html"><code>ConcurrentRule</code></a> and
             associated <a href="xref/com/google/code/tempusfugit/concurrency/Concurrent.html"><code>Concurrent</code></a>
-            annotation for running tests in parallel.
+            annotation for running individual tests in parallel.
         </p>
         <p>
             Using the simple form of the rule against a test method, you can run multiple instances of the test in parallel.
