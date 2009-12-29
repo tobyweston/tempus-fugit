@@ -40,7 +40,7 @@ public class RunConcurrentlyTest {
 
     @Test
     @Concurrent (count = 5)
-    public void runsMultipleTimes() {        
+    public void runsMultipleTimes() {
         counter.getAndIncrement();
     }
 

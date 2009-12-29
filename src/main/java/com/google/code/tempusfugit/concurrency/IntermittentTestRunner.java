@@ -16,10 +16,10 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
-import org.junit.runners.model.Statement;
 
 public class IntermittentTestRunner extends BlockJUnit4ClassRunner {
 
@@ -28,8 +28,22 @@ public class IntermittentTestRunner extends BlockJUnit4ClassRunner {
     }
 
     @Override
-    protected Statement methodBlock(FrameworkMethod method) {
-        return new RunRepeatedly(method, super.methodBlock(method));
+    protected void runChild(final FrameworkMethod method, final RunNotifier notifier) {
+        if (intermittent(method))
+            for (int i = 0; i < repetition(method); i++) {
+                super.runChild(method, notifier);
+            }
+        else
+            super.runChild(method, notifier);
+    }
+
+    private static boolean intermittent(FrameworkMethod method) {
+        return method.getAnnotation(Intermittent.class) != null;
+    }
+
+    private static int repetition(FrameworkMethod method) {
+        return method.getAnnotation(Intermittent.class).repetition();
     }
 
 }
+

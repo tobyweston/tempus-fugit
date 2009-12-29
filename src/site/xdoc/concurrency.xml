@@ -39,7 +39,12 @@
                     <li><p><a href="Deadlock_Detection">Deadlock Detection</a></p></li>
                     <li><p><a href="#Miscellaneous">Miscellaneous</a></p></li>
                 </ul>
-                <li><p><a href="Intermittent_Tests">Intermittent Tests</a></p></li>
+                <li><p><a href="#JUnit_Integration">JUnit Integration</a></p></li>
+                <ul>
+                    <li><p><a href="Intermittent_Tests">Intermittent Tests</a></p></li>
+                    <li><p><a href="Parallel_Tests">Parallel Tests</a></p></li>
+                    <li><p><a href="Wait_for_Assertions">Wait for Assertions</a></p></li>
+                </ul>
                 <li><p><a href="#Callables">Callables</a></p></li>
                 <ul>
                     <li><p>Convert to a <code>Runnable</code> using <a href="Callable_Adapter">Callable Adapter</a></p></li>
@@ -281,7 +286,12 @@ Deadlock detected
          </subsection>
         </section>
 
-        <section name="Intermittent Tests">
+        <section name="JUnit Integration">
+        <p>
+            The majority of abstractions and classes from tempus-fugit can be used within your testing framework of choice
+            but there are also a couple of direct <a href="http://junit.org">junit</a> integrations that may be of use to you.
+        </p>
+        <subsection name="Intermittent Tests">
         <p>
             As much as possible, you aim to have a completely deterministic tests but despite your best efforts,
             the odd flickering test can still get through. Occasionally, you might want to run such a test repeatedly to
@@ -358,6 +368,124 @@ public class IntermittentTestRunnerTest {
         assertThat(testCounter, is(equalTo(99)));
     }
 }</source>
+        </subsection>
+
+        <subsection name="Parallel Tests">
+        <p>
+            Like the <code><a href="#Intermittent_Tests">IntermittentRule</a></code> above, tempus-fugit offers a
+            <a href="xref/com/google/code/tempusfugit/concurrency/ConcurrentRule.html"><code>ConcurrentRule</code></a> and
+            associated <a href="xref/com/google/code/tempusfugit/concurrency/Concurrent.html"><code>Concurrent</code></a>
+            annotation for running tests in parallel.
+        </p>
+        <p>
+            Using the simple form of the rule against a test method, you can run multiple instances of the test in parallel.
+            This might be useful during debugging to stress test synchronised code. For example, you might test the
+            <code>AtomicInteger</code> class in a similar way to this.
+        </p>
+        <source>
+public class RunConcurrentlyTest {
+
+    @Rule public ConcurrentRule rule = new ConcurrentRule();
+
+    private static final AtomicInteger counter = new AtomicInteger();
+
+    @Test
+    @Concurrent (count = 5)
+    public void runsMultipleTimes() {
+        counter.getAndIncrement();
+    }
+ } </source>
+        <p>
+           Here, the test method is run in parallel across five threads which may or may not expose potential threading
+           issues. It's not recommended you use this as your only concurrent testing strategy but it may occasionally
+           find a use.
+        </p>
+        <p>
+            Combining <a href="xref/com/google/code/tempusfugit/concurrency/Concurrent.html"><code>Concurrent</code></a>
+            with the <a href="xref/com/google/code/tempusfugit/concurrency/Intermittent.html"><code>Intermittent</code></a>
+            annotation allows you to run a test method repeatedly across threads. For example, running the following
+        </p>
+        <source>
+public class RunConcurrentlyTest {
+
+    @Rule public ConcurrentRule concurrently = new ConcurrentRule();
+    @Rule public IntermittentRule repeatedly = new IntermittentRule();
+
+    private static final AtomicInteger counter = new AtomicInteger();
+
+    @Test
+    <b>@Concurrent (count = 5)
+    @Intermittent (repetition = 10)</b>
+    public void runsMultipleTimes() {
+        counter.getAndIncrement();
+    }
+ } </source>
+        <p>
+            Will repeat the test method ten times in five threads. Each thread will run the test method ten times, so in
+            our example, the counter will be incremented to fifty.
+        </p>
+        </subsection>
+
+        <subsection name="Wait for Assertions">
+        <p>
+            The <a href="xref/com/google/code/tempusfugit/temporal/WaitFor.html"><code>WaitFor</code></a> class can be
+            used to wait for a condition to hold. You can use it within your tests to wait for some asynchronous process
+            to complete and so make an assertion in a test.
+        </p>
+        <p>
+            In the example below, a test verifies that the action of clicking a button will toggle some switch to a
+            different position. However, this test may or may not pass if the <code>clickButton()</code> kicks off an
+            asynchronous process to update the toggle position. It may return immediatly having not yet changed the position.
+        </p>
+<source>
+@Test
+public void toggleButton() {
+    assertThat(toggle, is(ON));
+    clickButton();
+    assertThat(toggle, is(OFF));
+} </source>
+        <p>
+            Rewriting the test using a <code>WaitFor</code> would look like this
+        </p>
+<source>
+@Test
+public void toggleButton() throws TimeoutException {
+    assertThat(toggle, is(ON));
+    clickButton();
+    waitOrTimeout(new Condition() {
+        public boolean isSatisfied() {
+            return toggle == OFF;
+        }
+    }, seconds(5));
+} </source>
+
+        <p>
+            Here, the test will retry the <code>Condition</code> for five seconds before finally giving up and failing the
+            test. If the condition is true immediately, the wait will continue immediately and the test will continue.
+            By extracting a method to create the <code>Condition</code>, you can further refactor the test to be more
+            expressive and start to create a library of reusable conditions.
+        </p>
+<source>
+@Test
+public void toggleButton() throws TimeoutException {
+    assertThat(toggle, is(ON));
+    clickButton();
+    waitOrTimeout(toggleIs(OFF), seconds(5));
+}
+
+private Condition toggleIs(final Position position) {
+    return new Condition() {
+        public boolean isSatisfied() {
+            return toggle == position;
+        }
+    };
+}
+</source>
+        <p>
+            These mechanism are more fully described in the <a href="time.html">time-dependence</a> section.
+        </p>
+        </subsection>
+
         </section>
 
         <section name="Callables">

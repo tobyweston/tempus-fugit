@@ -19,9 +19,10 @@ package com.google.code.tempusfugit.concurrency;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorCompletionService;
 
 class RunConcurrently extends Statement {
 
@@ -35,28 +36,42 @@ class RunConcurrently extends Statement {
 
     public void evaluate() throws Throwable {
         if (concurrent(method)) {
-            List<StatementEvaluatingThread> threads = createThreads();
-            start(threads);
-            join(threads);
+            ExecutorCompletionService<Void> service = createCompletionService();
+            startThreads(service);
+            Throwable throwable = waitFor(service);
+            if (throwable != null)
+                throw throwable;
         } else
             statement.evaluate();
     }
 
-    private List<StatementEvaluatingThread> createThreads() {
-        List<StatementEvaluatingThread> threads = new ArrayList<StatementEvaluatingThread>();
+    private ExecutorCompletionService createCompletionService() {
+        return new ExecutorCompletionService(new Executor() {
+            private int count;
+            public void execute(Runnable runnable) {
+                new Thread(runnable, method.getName() + "-Thread-" + count++).start();
+            }
+        });
+    }
+
+    private void startThreads(ExecutorCompletionService<Void> service) {
         for (int i = 0; i < threadCount(method); i++)
-            threads.add(new StatementEvaluatingThread(statement));
-        return threads;
+            service.submit(new StatementEvaluatingTask(statement));
     }
 
-    private void start(List<StatementEvaluatingThread> threads) {
-        for (Thread thread : threads)
-            thread.start();
-    }
-
-    private void join(List<StatementEvaluatingThread> threads) throws Throwable {
-        for (StatementEvaluatingThread thread : threads)
-            thread.joinAndRethrowExceptions();
+    private Throwable waitFor(ExecutorCompletionService<Void> service) {
+        Throwable throwable = null;
+        for (int i = 0; i < threadCount(method); i++) {
+            try {
+                service.take().get();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException e) {
+                throwable = e.getCause();
+                break;
+            }
+        }
+        return throwable;
     }
 
     private static boolean concurrent(FrameworkMethod method) {
@@ -67,38 +82,20 @@ class RunConcurrently extends Statement {
         return method.getAnnotation(Concurrent.class).count();
     }
 
-    private class StatementEvaluatingThread extends Thread {
-
+    private static class StatementEvaluatingTask implements Callable<Void> {
         private final Statement statement;
-        private final CountDownLatch finished = new CountDownLatch(1);
 
-        private Throwable throwable;
-
-        private StatementEvaluatingThread(Statement statement) {
+        public StatementEvaluatingTask(Statement statement) {
             this.statement = statement;
         }
 
-        @Override
-        public void run() {
+        public Void call() throws Exception {
             try {
                 statement.evaluate();
             } catch (Throwable throwable) {
-                this.throwable = throwable;
-            } finally {
-                finished.countDown();
+                throw new RuntimeException(throwable);
             }
+            return null;
         }
-
-        public void joinAndRethrowExceptions() throws Throwable {
-            try {
-                finished.await();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            } finally {
-                if (throwable != null)
-                    throw throwable;
-            }
-        }
-
     }
 }
