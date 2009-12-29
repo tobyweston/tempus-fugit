@@ -32,8 +32,10 @@ public class IntermittentTestRunnerTest {
     private static int afterCounter = 0;
     private static int afterClassCounter = 0;
 
+    private static final int REPEAT_COUNT = 10;
+
     @Test
-    @Intermittent(repetition = 99)
+    @Intermittent(repetition = REPEAT_COUNT)
     public void annotatedTest() {
         testCounter++;
     }
@@ -49,8 +51,8 @@ public class IntermittentTestRunnerTest {
     }
 
     @AfterClass
-    public static void assertannotatedTestRunsMultipleTimes() {
-        assertThat(testCounter, is(equalTo(99)));
+    public static void assertAnnotatedTestRunsMultipleTimes() {
+        assertThat(testCounter, is(equalTo(REPEAT_COUNT)));
     }
 
 }
