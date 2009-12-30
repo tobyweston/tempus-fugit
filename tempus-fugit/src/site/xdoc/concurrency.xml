@@ -39,6 +39,11 @@
                     <li><p><a href="Deadlock_Detection">Deadlock Detection</a></p></li>
                     <li><p><a href="#Miscellaneous">Miscellaneous</a></p></li>
                 </ul>
+                <li><p><a href="#Concurrency_Utilities">Concurrency Utilities</a></p></li>
+                <ul>
+                    <li><p><a href="#Countdown_Latch_with_Timeout">Countdown Latch with Timeout</a></p></li>
+                    <li><p><a href="#Timeoutable_Completion_Service">Timeoutable Completion Service</a></p></li>
+                </ul>
                 <li><p><a href="#JUnit_Integration">JUnit Integration</a></p></li>
                 <ul>
                     <li><p><a href="Intermittent_Tests">Intermittent Tests</a></p></li>
@@ -231,6 +236,93 @@ Deadlock detected
             </ul>
 
          </subsection>
+        </section>
+
+        <section name="Concurrency Utilities">
+        <subsection name="Countdown Latch with Timeout">
+        <p>
+            Using an instance of a <code>java.util.concurrent.CountDownLatch</code>, we can wait for the latch to count
+            down to zero, blocking the calling thread before continuing. When passing in a timeout, the method returns <code>true</code>
+            if the count reached zero or false if the timeout expires.
+        </p>
+        <p>
+            To make the timeout more explicit, the <code><a href="xref/com/google/code/tempusfugit/concurrency/CountDownLatchWithTimeout.html">CountDownLatchWithTimeout</a></code>
+            class will throw a <code>TimeoutException</code> rather than force you to check. Using a static import, the
+            example looks like the following.
+        </p>
+        <source>
+private final CountDownLatch startup = new CountDownLatch(1);
+
+public void waitForStartup() throws InterruptedException, TimeoutException {
+    await(startup).with(TIMEOUT);
+} </source>
+        <p>
+            The use of the <code>with</code> method is required. Following the <a href="http://pequenoperro.blogspot.com/2009/02/more-on-micro-dsls.html">micro-DSL</a>
+            approach, it is the <code>with</code> that actually does the waiting. Calling the <code>await</code> method
+            on it's own will not block.
+        </p>
+        </subsection>
+
+       <subsection name="Timeoutable Completion Service">
+       <p>
+           The <code><a href="xref/com/google/code/tempusfugit/concurrency/TimeoutableCompletionService.html">TimeoutableCompletionService</a></code>
+           interface describes a service similar to a <code>java.util.concurrent.CompletionService</code> except that it
+           will timeout after a specified duration if all results havn't yet been retrieved.
+       </p>
+       <p>
+           The default implementation, <code><a href="xref/com/google/code/tempusfugit/concurrency/DefaultTimeoutableCompletionService.html">DefaultTimeoutableCompletionService</a></code>,
+           delegates to an underlying <code>CompletionService</code> but will stop waiting for submitted tasks to complete
+           after a given timeout.
+       </p>
+       <p>
+           If the timeout expires before all tasks have been completed, the <code>DefaultTimeoutableCompletionService</code>
+           will throw a <code>TimeoutException</code>. The exception thrown will also contain the results from any tasks
+           that did manage to complete before the timeout. If all the submitted tasks complete before the timeout expires, the
+           results are returned from the <code>submit</code> method and no exceptions are thrown.
+       </p>
+       <p>
+           In the example below, we'd like to create a status monitoring application that will output the status of a
+           set of probes to a web page. However, the web page must be loaded within a few seconds regardless of whether
+           all the probes have returned their results. The completion service can be used to execute individual status
+           probe tasks in parallel, timing out after some duration.
+       </p>
+           <source>
+private DefaultTimeoutableCompletionService completionService = new DefaultTimeoutableCompletionService(new ExecutorCompletionService(...));               
+
+public void probe() {
+    try {
+        List&lt;Callable&lt;Result&gt;&gt; probes = factory.create();
+        List&lt;Result&gt; results = completionService.submit(probes);
+        write(results);
+    } catch (TimeoutExceptionWithFutures e) {
+        write(getResultsFrom(e));
+    } catch (ExecutionException e) {
+        throw new RuntimeException(e);
+    }
+} </source>
+       <p>
+           Here, the list of tasks to run in parallel is created by some factory class and assigned to the <code>probes</code>
+           variable. These are just a list of <code>Callable</code> objects which will be executed by the underlying
+           <code>Executor</code>, in our case, they'll look up the status of some probe and return a <code>Result</code>
+           object.
+       </p>
+       <p>
+           The <code>DefaultTimeoutableCompletionService</code> is then used to schedule execution of the tasks with the
+           <code>submit</code> method. At this point, the code will block and wait for all results to be returned or for
+           the <code><a href="xref/com/google/code/tempusfugit/concurrency/TimeoutExceptionWithFutures.html">TimeoutExceptionWithFutures</a></code>
+           to be thrown. In the case of all tasks completing within the timeout, the results are just outputted using the
+           <code>write</code> method.
+       </p>
+       <p>
+           For the case where the completion service timed out, a <code>TimeoutException</code> is thrown which includes
+           any completed results. The <code>write</code> method in this case can just extract the partial set of results
+           from the exception.
+       </p>
+       <p>
+           The default timeout for the service is thirty seconds but this can be changed using an alternative constructor.
+       </p>
+       </subsection>
+
         </section>
 
         <section name="JUnit Integration">
