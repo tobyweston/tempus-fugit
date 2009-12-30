@@ -16,26 +16,31 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import static com.google.code.tempusfugit.concurrency.ThreadUtils.threadIsWaiting;
-import static com.google.code.tempusfugit.temporal.Conditions.not;
-import static com.google.code.tempusfugit.temporal.Duration.seconds;
-import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
-import static org.hamcrest.Matchers.is;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
-import static org.junit.Assert.assertThat;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.concurrent.TimeoutException;
 
+import static com.google.code.tempusfugit.concurrency.ThreadUtils.threadIsWaiting;
+import static com.google.code.tempusfugit.temporal.Conditions.not;
+import static com.google.code.tempusfugit.temporal.Duration.seconds;
+import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
 @RunWith(JMock.class)
 public class ThreadUtilsTest {
 
-    private final Mockery context = new JUnit4Mockery();
+    private final Mockery context = new JUnit4Mockery() {{
+        setImposteriser(ClassImposteriser.INSTANCE);
+    }};
     private final Interruptible interruptible = context.mock(Interruptible.class);
+    private final Thread thread = context.mock(Thread.class);
 
     @Test
     public void resetInterruptFlagReturnsValue() throws InterruptedException {
@@ -63,6 +68,30 @@ public class ThreadUtilsTest {
         thread.interrupt();
         waitForShutdown(thread);
         assertThat(thread.getName() + " wasn't interrupted", thread.hasBeenInterrupted(), is(true));
+    }
+
+    @Test
+    public void threadIsInTimedWaitingState() {
+        context.checking(new Expectations() {{
+            allowing(thread).getState(); will(returnValue(Thread.State.TIMED_WAITING));
+        }});
+        assertThat(ThreadUtils.threadIsWaiting(thread).isSatisfied(), is(true));
+    }
+
+    @Test
+    public void threadIsInWaitingState() {
+        context.checking(new Expectations() {{
+            allowing(thread).getState(); will(returnValue(Thread.State.WAITING));
+        }});
+        assertThat(ThreadUtils.threadIsWaiting(thread).isSatisfied(), is(true));
+    }
+    
+    @Test
+    public void threadIsNotInWaitingState() {
+        context.checking(new Expectations() {{
+            allowing(thread).getState(); will(returnValue(Thread.State.BLOCKED));
+        }});
+        assertThat(ThreadUtils.threadIsWaiting(thread).isSatisfied(), is(false));
     }
 
     private void waitForStartup(Thread thread) throws TimeoutException, InterruptedException {
