@@ -16,17 +16,18 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import static com.google.code.tempusfugit.concurrency.Interrupter.interrupt;
 import com.google.code.tempusfugit.temporal.DateFactory;
 import com.google.code.tempusfugit.temporal.DefaultDateFactory;
 import com.google.code.tempusfugit.temporal.Duration;
-import static com.google.code.tempusfugit.temporal.Duration.seconds;
 
-import static java.lang.Thread.currentThread;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.*;
+
+import static com.google.code.tempusfugit.concurrency.Interrupter.interrupt;
+import static com.google.code.tempusfugit.temporal.Duration.seconds;
+import static java.lang.Thread.currentThread;
 
 public class DefaultTimeoutableCompletionService implements TimeoutableCompletionService {
 
@@ -70,7 +71,7 @@ public class DefaultTimeoutableCompletionService implements TimeoutableCompletio
                     Future<T> future = completionService.take();
                     completed.add(future.get());
                 } catch (InterruptedException e) {
-                    throw new TimeoutExceptionWithFutures("timed out after " + timeout.toString(), completed);
+                    throw new TimeoutExceptionWithResults("timed out after " + timeout.toString(), completed);
                 }
             }
         } finally {
