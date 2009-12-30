@@ -20,25 +20,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-public final class TimeoutExceptionWithFutures extends TimeoutException {
+public final class TimeoutExceptionWithResults extends TimeoutException {
 
-    private List<?> futures = new ArrayList();
+    private List<?> results = new ArrayList();
 
-    public TimeoutExceptionWithFutures(String message) {
+    public TimeoutExceptionWithResults(String message) {
         super(message);
     }
 
-    public <T> TimeoutExceptionWithFutures(String message, List<T> futures) {
+    public <T> TimeoutExceptionWithResults(String message, List<T> results) {
         this(message);
-        this.futures = new ArrayList<T>(futures);
+        this.results = new ArrayList<T>(results);
     }
 
-    public <T> TimeoutExceptionWithFutures(List<T> futures) {
+    public <T> TimeoutExceptionWithResults(List<T> results) {
         super();
-        this.futures = new ArrayList<T>(futures);
+        this.results = new ArrayList<T>(results);
     }
 
-    public <T> List<T> getFutures() {
-        return (List<T>) futures;
+    public <T> List<T> getResults() {
+        return (List<T>) results;
     }
 }

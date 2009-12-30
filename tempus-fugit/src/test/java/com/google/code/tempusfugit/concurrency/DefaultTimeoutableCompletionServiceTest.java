@@ -21,11 +21,7 @@ import com.google.code.tempusfugit.temporal.Condition;
 import com.google.code.tempusfugit.temporal.DateFactory;
 import com.google.code.tempusfugit.temporal.DefaultDateFactory;
 import com.google.code.tempusfugit.temporal.Duration;
-import static com.google.code.tempusfugit.temporal.Duration.millis;
-import static com.google.code.tempusfugit.temporal.Duration.seconds;
-import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import org.hamcrest.Description;
-import static org.hamcrest.core.Is.is;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
@@ -34,17 +30,22 @@ import org.jmock.api.Invocation;
 import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static java.util.Arrays.asList;
 import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.*;
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.google.code.tempusfugit.temporal.Duration.millis;
+import static com.google.code.tempusfugit.temporal.Duration.seconds;
+import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
+import static java.util.Arrays.asList;
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(JMock.class)
 public class DefaultTimeoutableCompletionServiceTest {
@@ -111,8 +112,8 @@ public class DefaultTimeoutableCompletionServiceTest {
         try {
             new DefaultTimeoutableCompletionService(completionService, TIMEOUT, time).submit(asList(task1, task2));
             fail("should have timed out");
-        } catch (final TimeoutExceptionWithFutures e) {
-            assertThat((String) e.getFutures().get(0), is(TASK1_RESULT));
+        } catch (final TimeoutExceptionWithResults e) {
+            assertThat((String) e.getResults().get(0), is(TASK1_RESULT));
         }
     }
 
