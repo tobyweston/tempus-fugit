@@ -44,6 +44,7 @@
                     <li><p><a href="Intermittent_Tests">Intermittent Tests</a></p></li>
                     <li><p><a href="Parallel_Tests">Parallel Tests</a></p></li>
                     <li><p><a href="Wait_for_Assertions">Wait for Assertions</a></p></li>
+                    <li><p><a href="Interrupt_Capturing_Thread_Stub">Interrupt Capturing Thread Stub</a></p></li>
                 </ul>
                 <li><p><a href="#Callables">Callables</a></p></li>
                 <ul>
@@ -110,60 +111,6 @@ try {
         <p>The <code><a href="xref/com/google/code/tempusfugit/concurrency/DefaultTimeoutableCompletionService.html">DefaultTimeoutableCompletionService</a></code> classes uses this
             approach to implement a <code>java.util.concurrent.CompletionService</code>-like service that will timeout and return any completed tasks and abandoning any remaining.</p>
             
-        </subsection>
-
-        <subsection name="Interrupt Capturing Thread Stub">
-        <p>
-            It can be tricky to test that an interrupt has been called on a thread because of the possibility of race conditions between calling <code>interrupt</code> and checking
-            the status of the interrupt flag using <code>Thread.isInterrupted()</code> or <code>Thread.interrupted</code>. For example, the interrupt status can be reset when a thread
-            goes into the <code>TERMINATED</code> state. You can use the <code>WaitFor</code> class to express an assertion must be true within a given time (as below) but in this case,
-            the race conditions can still occur (due to the frequency of the check whilst waiting). In the example below, the created thread will perform some blocking function that can
-            be interrupted (for example, sleeping) and we're testing that the call to <code>interrupt</code> will wake and change the interrupt status flag (asserting against <code>thread.isInterrupted</code>).
-        </p>
-            <source>
-@Test (timeout = 500)
-public void interrupted() throws TimeoutException, InterruptedException {
-    final Thread thread = new Thread(new Runnable(...));
-    thread.start();
-    waitOrTimeout(threadIsWaiting(thread), millis(500));
-    thread.interrupt();
-    <b>waitOrTimeout(new Condition() {
-        public boolean isSatisfied() {
-            return thread.isInterrupted();
-        }
-    }</b>, millis(500));
-} </source>
-            <p>
-                It may be simpler to use a <i>stub</i> to capture the interrupt. The <code><a href="xref/com/google/code/tempusfugit/concurrency/InterruptCapturingThread.html">InterruptCapturingThread</a></code> class of tempus-fugit is just a stub extending <code>Thread</code>
-                which records and gives access to stack traces of threads that call <code>interrupt</code> on it.
-            </p>
-            <source>
-@Test (timeout = 500)
-public void interrupted() throws TimeoutException, InterruptedException {
-    InterruptCapturingThread thread = new InterruptCapturingThread(new Runnable(...));
-    thread.start();
-    waitOrTimeout(threadIsWaiting(thread), millis(500));
-    thread.interrupt();
-    waitOrTimeout(not(threadIsWaiting(thread)), millis(500));
-    <b>assertThat(thread.getInterrupters().isEmpty(), is(false));</b>
-} </source>
-            <p>
-                For testing purposes, you can also get a view on the stack traces of the threads that called <code>interrupt</code> on your thread. Calling <code>thread.printStackTraceOfInterruptingThreads(System.out)</code>
-                from the example above would show something like the following.
-            </p>
-            <source>
-java.lang.Thread.getStackTrace(Thread.java:1409)
-   com.google.code.tempusfugit.concurrency.InterruptCapturingThread.interrupt(InterruptCapturingThread.java:61)
-   com.google.code.tempusfugit.concurrency.InterruptCapturingThreadTest.interrupted(InterruptCapturingThreadTest.java:39)
-   sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-   sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
-   sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-   java.lang.reflect.Method.invoke(Method.java:585)
-   org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
-   org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
-   org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
-   org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
-   org.junit.internal.runners.statements.FailOnTimeout$1.run(FailOnTimeout.java:28) </source>
         </subsection>
 
         <subsection name="Thread Dumps">
@@ -546,6 +493,61 @@ private Condition toggleIs(final Position position) {
             These mechanism are more fully described in the <a href="time.html">time-dependence</a> section.
         </p>
         </subsection>
+
+        <subsection name="Interrupt Capturing Thread Stub">
+        <p>
+            It can be tricky to test that an interrupt has been called on a thread because of the possibility of race conditions between calling <code>interrupt</code> and checking
+            the status of the interrupt flag using <code>Thread.isInterrupted()</code> or <code>Thread.interrupted</code>. For example, the interrupt status can be reset when a thread
+            goes into the <code>TERMINATED</code> state. You can use the <code>WaitFor</code> class to express an assertion must be true within a given time (as below) but in this case,
+            the race conditions can still occur (due to the frequency of the check whilst waiting). In the example below, the created thread will perform some blocking function that can
+            be interrupted (for example, sleeping) and we're testing that the call to <code>interrupt</code> will wake and change the interrupt status flag (asserting against <code>thread.isInterrupted</code>).
+        </p>
+            <source>
+@Test (timeout = 500)
+public void interrupted() throws TimeoutException, InterruptedException {
+    final Thread thread = new Thread(new Runnable(...));
+    thread.start();
+    waitOrTimeout(threadIsWaiting(thread), millis(500));
+    thread.interrupt();
+    <b>waitOrTimeout(new Condition() {
+        public boolean isSatisfied() {
+            return thread.isInterrupted();
+        }
+    }</b>, millis(500));
+} </source>
+            <p>
+                It may be simpler to use a <i>stub</i> to capture the interrupt. The <code><a href="xref/com/google/code/tempusfugit/concurrency/InterruptCapturingThread.html">InterruptCapturingThread</a></code> class of tempus-fugit is just a stub extending <code>Thread</code>
+                which records and gives access to stack traces of threads that call <code>interrupt</code> on it.
+            </p>
+            <source>
+@Test (timeout = 500)
+public void interrupted() throws TimeoutException, InterruptedException {
+    InterruptCapturingThread thread = new InterruptCapturingThread(new Runnable(...));
+    thread.start();
+    waitOrTimeout(threadIsWaiting(thread), millis(500));
+    thread.interrupt();
+    waitOrTimeout(not(threadIsWaiting(thread)), millis(500));
+    <b>assertThat(thread.getInterrupters().isEmpty(), is(false));</b>
+} </source>
+            <p>
+                For testing purposes, you can also get a view on the stack traces of the threads that called <code>interrupt</code> on your thread. Calling <code>thread.printStackTraceOfInterruptingThreads(System.out)</code>
+                from the example above would show something like the following.
+            </p>
+            <source>
+java.lang.Thread.getStackTrace(Thread.java:1409)
+   com.google.code.tempusfugit.concurrency.InterruptCapturingThread.interrupt(InterruptCapturingThread.java:61)
+   com.google.code.tempusfugit.concurrency.InterruptCapturingThreadTest.interrupted(InterruptCapturingThreadTest.java:39)
+   sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+   sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+   sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+   java.lang.reflect.Method.invoke(Method.java:585)
+   org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+   org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+   org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:41)
+   org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+   org.junit.internal.runners.statements.FailOnTimeout$1.run(FailOnTimeout.java:28) </source>
+        </subsection>
+
 
         </section>
 
