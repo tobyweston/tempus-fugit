@@ -24,9 +24,9 @@
     <version position="right"/>
 
     <!--<skin>-->
-       <!--<groupId>org.apache.maven.skins</groupId>-->
-       <!--<artifactId>maven-stylus-skin</artifactId>-->
-     <!--</skin>-->
+    <!--<groupId>org.apache.maven.skins</groupId>-->
+    <!--<artifactId>maven-stylus-skin</artifactId>-->
+    <!--</skin>-->
     <skin>
         <groupId>com.google.code.tempus-fugit</groupId>
         <artifactId>skin</artifactId>
@@ -34,13 +34,18 @@
     </skin>
 
     <body>
+        <links>
+            <item name="Blog" href="http://pequenoperro.blogspot.com"/>
+        </links>
+
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
             <item name="Download" href="download.html"/>
+
             <item name="Usage" href="usage.html">
                 <item name="Concurrency" href="concurrency.html"/>
                 <item name="Time-dependence" href="time.html"/>
-             </item>
+            </item>
         </menu>
         <menu ref="reports"/>
 
