@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, tempus-fugit committers
+ * Copyright (c) 2009-2010, tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,16 @@
 package com.google.code.tempusfugit.temporal;
 
 import com.google.code.tempusfugit.concurrency.ThreadUtils;
-import static com.google.code.tempusfugit.temporal.Duration.millis;
-import static org.hamcrest.core.Is.is;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
-import static org.junit.Assert.assertThat;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Date;
+
+import static com.google.code.tempusfugit.temporal.Duration.millis;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 @Ignore
 public class BadStopWatchTest {
