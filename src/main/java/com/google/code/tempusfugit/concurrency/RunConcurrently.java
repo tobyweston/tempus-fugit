@@ -20,9 +20,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.*;
 
 class RunConcurrently extends Statement {
 
@@ -55,8 +53,10 @@ class RunConcurrently extends Statement {
     }
 
     private void startThreads(ExecutorCompletionService<Void> service) {
+        CountDownLatch start = new CountDownLatch(1);
         for (int i = 0; i < threadCount(method); i++)
-            service.submit(new StatementEvaluatingTask(statement));
+            service.submit(new StatementEvaluatingTask(statement, start));
+        start.countDown();
     }
 
     private Throwable waitFor(ExecutorCompletionService<Void> service) {
@@ -84,13 +84,16 @@ class RunConcurrently extends Statement {
 
     private static class StatementEvaluatingTask implements Callable<Void> {
         private final Statement statement;
+        private final CountDownLatch start;
 
-        public StatementEvaluatingTask(Statement statement) {
+        public StatementEvaluatingTask(Statement statement, CountDownLatch start) {
             this.statement = statement;
+            this.start = start;
         }
 
         public Void call() throws Exception {
             try {
+                start.await();
                 statement.evaluate();
             } catch (Throwable throwable) {
                 throw new RuntimeException(throwable);
