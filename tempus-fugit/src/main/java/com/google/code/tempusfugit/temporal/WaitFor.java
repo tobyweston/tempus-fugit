@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, tempus-fugit committers
+ * Copyright (c) 2009-2010, tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package com.google.code.tempusfugit.temporal;
 
-import static com.google.code.tempusfugit.temporal.Duration.millis;
-
 import java.util.concurrent.TimeoutException;
+
+import static com.google.code.tempusfugit.temporal.Duration.millis;
 
 public final class WaitFor {
 

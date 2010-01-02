@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, tempus-fugit committers
+ * Copyright (c) 2009-2010, tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,15 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import static com.google.code.tempusfugit.concurrency.ThreadUtils.resetInterruptFlagWhen;
 import com.google.code.tempusfugit.temporal.Condition;
 import com.google.code.tempusfugit.temporal.Duration;
-import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 
 import java.util.concurrent.ExecutorService;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import java.util.concurrent.TimeoutException;
+
+import static com.google.code.tempusfugit.concurrency.ThreadUtils.resetInterruptFlagWhen;
+import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public final class ExecutorServiceShutdown {
 

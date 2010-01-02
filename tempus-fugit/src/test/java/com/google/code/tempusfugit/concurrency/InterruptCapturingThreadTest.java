@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, tempus-fugit committers
+ * Copyright (c) 2009-2010, tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,18 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.Sequence;
+import org.jmock.integration.junit4.JMock;
+import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.PrintStream;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
+
 import static com.google.code.tempusfugit.concurrency.ThreadUtils.threadIsWaiting;
 import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
@@ -23,18 +35,7 @@ import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.Sequence;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.lib.legacy.ClassImposteriser;
 import static org.junit.Assert.assertThat;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.io.PrintStream;
-import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 @RunWith(JMock.class)
 public class InterruptCapturingThreadTest {

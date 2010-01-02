@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, tempus-fugit committers
+ * Copyright (c) 2009-2010, tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import static com.google.code.tempusfugit.concurrency.ThreadUtils.resetInterruptFlagWhen;
-import static org.hamcrest.Matchers.containsString;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
@@ -28,6 +26,9 @@ import org.junit.runner.RunWith;
 
 import java.io.PrintStream;
 import java.util.concurrent.CountDownLatch;
+
+import static com.google.code.tempusfugit.concurrency.ThreadUtils.resetInterruptFlagWhen;
+import static org.hamcrest.Matchers.containsString;
 
 @RunWith(JMock.class)
 public class DeadlockDetectorTest {

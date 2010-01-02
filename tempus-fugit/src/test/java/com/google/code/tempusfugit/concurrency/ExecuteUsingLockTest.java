@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, tempus-fugit committers
+ * Copyright (c) 2009-2010, tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import static com.google.code.tempusfugit.concurrency.ExecuteUsingLock.execute;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
@@ -27,6 +26,8 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import static com.google.code.tempusfugit.concurrency.ExecuteUsingLock.execute;
 
 @RunWith(JMock.class)
 public class ExecuteUsingLockTest {
