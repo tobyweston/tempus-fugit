@@ -28,13 +28,19 @@
 
         <section name="Introduction">
 
-            <p>The tempus-fugit library is a small collection of classes and interfaces capturing common abstractions
+            <p>
+                The tempus-fugit library is a small collection of classes and interfaces capturing common abstractions
                 useful when writing concurrent and time-dependant code.
             </p>
-            <p>The best way to get a feel for what the library can offer is to have a look through the usage section of
+            <p>
+                It's hosted on Google Code at<a href="http://code.google.com/p/tempus-fugit/">
+                http://code.google.com/p/tempus-fugit/</a>.
+            </p>
+            <p>
+                The best way to get a feel for what the library can offer is to have a look through the usage section of
                 the site. You can also look through the source code and in particular the test code for examples.
             </p>
-            <img src="images/fugitsm.jpg"/>
+            <img src="images/fugitsm.jpg" alt="time flies"/>
 
         </section>
 
