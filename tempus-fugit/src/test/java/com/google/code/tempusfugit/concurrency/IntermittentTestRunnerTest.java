@@ -16,6 +16,7 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import com.google.code.tempusfugit.concurrency.annotations.Intermittent;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;

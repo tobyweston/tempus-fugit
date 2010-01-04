@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package com.google.code.tempusfugit.concurrency;
+package com.google.code.tempusfugit.concurrency.annotations;
 
-import com.google.code.tempusfugit.concurrency.annotations.Intermittent;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import java.lang.annotation.Annotation;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-class IntermittentAnnotation implements Intermittent {
-
-    public Class<? extends Annotation> annotationType() {
-        return null;
-    }
-
-    public String value() {
-        throw new RuntimeException();
-    }
-
-    public int repetition() {
-        return 100;
-    }
+/**
+ * Annotation to mark a method as being potentially run concurrently.
+ * <p>
+ * @see com.google.code.tempusfugit.concurrency.ConcurrentTestRunner
+ * @see com.google.code.tempusfugit.concurrency.ConcurrentRule
+ */
+@Documented
+@Target(METHOD)
+@Retention(RUNTIME)
+public @interface Concurrent {
+    int count() default 5;
 }

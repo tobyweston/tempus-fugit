@@ -16,6 +16,8 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
+
 import java.lang.annotation.Annotation;
 
 class ConcurrentAnnotation implements Concurrent {

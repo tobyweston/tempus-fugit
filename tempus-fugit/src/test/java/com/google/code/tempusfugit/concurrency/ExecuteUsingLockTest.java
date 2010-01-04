@@ -51,7 +51,7 @@ public class ExecuteUsingLockTest {
         execute(something()).using(writeLock);
     }
 
-    @Test (expected = Exception.class)
+    @Test(expected = Exception.class)
     public void readLockThrowingException() throws Exception {
         setExpectationsOn(readLock);
         execute(somethingThatThrowsException()).using(readLock);

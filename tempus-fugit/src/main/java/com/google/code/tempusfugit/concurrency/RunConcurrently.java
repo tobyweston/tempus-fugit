@@ -16,6 +16,7 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
@@ -27,7 +28,7 @@ class RunConcurrently extends Statement {
     private final FrameworkMethod method;
     private final Statement statement;
 
-    public RunConcurrently(FrameworkMethod method, Statement statement) {
+    RunConcurrently(FrameworkMethod method, Statement statement) {
         this.method = method;
         this.statement = statement;
     }

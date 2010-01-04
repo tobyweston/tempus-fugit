@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package com.google.code.tempusfugit.concurrency;
+package com.google.code.tempusfugit.concurrency.annotations;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-/**
- * Annotation to mark a test to be run concurrently
- */
-@Target(METHOD)
+
+@Documented
+@Target(TYPE)
 @Retention(RUNTIME)
-public @interface Concurrent {
-    public abstract int count() default 5;
+public @interface Not {
+    Class<? extends Annotation>[] value();
 }
