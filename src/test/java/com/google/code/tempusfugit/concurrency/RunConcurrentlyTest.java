@@ -16,6 +16,7 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
 import junit.framework.AssertionFailedError;
 import org.jmock.Expectations;
 import org.jmock.Mockery;

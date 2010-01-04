@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package com.google.code.tempusfugit.concurrency;
+package com.google.code.tempusfugit.concurrency.annotations;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-/**
- * Annotation to highlight intermittently failure tests.
- */
-@Target(METHOD)
+@Documented
+@Target(TYPE)
 @Retention(RUNTIME)
-public @interface Intermittent {
-    String value() default "";
-    int repetition() default 100;
+/**
+ * Based on the annotation of the same name by Brian Goetz and Tim Tim Peierls.
+ * <p/>
+ * Indicates that a class is intended to be immutable. Can be combined with the {@link DeclareImmutableError} AspectJ
+ * aspect to force compilation errors for basic mutator methods on @Immutable classes.
+ * <p/>
+ */
+public @interface Immutable {
 }
-

@@ -1,0 +1,251 @@
+<!--
+  ~ Copyright (c) 2009-2010, tempus-fugit committers
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+    <properties>
+        <title>Concurrency</title>
+        <author>Toby Weston</author>
+    </properties>
+
+    <body>
+        <section name="Annotations">
+            <p>
+                The <code>com.google.code.tempusfugit.concurrency.annotations</code> package contains variations or
+                implementations of Brian Goetz and Tim Peierls' <a href="http://www.javaconcurrencyinpractice.com/">
+                Concurrency In Practice</a> annotations as well as some additional annotations useful when writing concurrent code.
+            </p>
+            <p>
+                The orginal annotations from Concurrency In Practice are available from the book's
+                <a href="http://www.javaconcurrencyinpractice.com/">site</a> and are licensed under the Creative Commons
+                Attribution License.
+            </p>
+            <ul>
+                <li><p><a href="#aConcurrent">Concurrent</a></p></li>
+                <li><p><a href="#aGuardedBy">GuardedBy</a></p></li>
+                <li><p><a href="#aImmutable">Immutable</a></p></li>
+                <li><p><a href="#aIntermittent">Intermittent</a></p></li>
+                <li><p><a href="#aNot">Not</a></p></li>
+                <li><p><a href="#aThreadSafe">ThreadSafe</a></p></li>
+            </ul>
+
+            <subsection name="@Concurrent">
+                <p>
+                    The <code>Concurrent</code> annotation is fully documented in the <a href="concurrency.html#Parallel_Tests">concurrency</a>
+                    section but offers a way to either
+                </p>
+                <ul>
+                    <li><p>document a method as potentially being run from a concurrent context, <b>or</b></p></li>
+                    <li>
+                        <p>combined with a <code>ConcurrentRule</code> or <code>ConcurrentTestRunner</code>, mark a junit
+                        test method to run several instances concurrently or run in parallel with other tests respectively. 
+                        </p>
+                    </li>
+                </ul>
+            </subsection>
+
+            <subsection name="@GuardedBy">
+                <p>
+                    The <code>GaurdedBy</code> annotation is a variation on the Goetz version whereby the the lock and
+                    lock details are explicitly set as parameter types. See <a href="http://www.javaconcurrencyinpractice.com/">
+                    Concurrency In Practice</a> for an in-depth description of it's use.
+                </p>
+                <p>
+                    The enum <code>GuardedBy.Type</code> defines the following lock types based on the Goetz version.
+                </p>
+                <ul>
+                    <li><p><code><a href="#THIS">THIS</a></code></p></li>
+                    <li><p><code><a href="#INNER_CLASS_THIS">INNER_CLASS_THIS</a></code></p></li>
+                    <li><p><code><a href="#ITSELF">ITSELF</a></code></p></li>
+                    <li><p><code><a href="#FIELD">FIELD</a></code></p></li>
+                    <li><p><code><a href="#FIELD">STATIC_FIELD</a></code></p></li>
+                    <li><p><code><a href="#METHOD">METHOD</a></code></p></li>
+                </ul>
+                <h4><a name="THIS">THIS</a></h4>
+                <p>
+                    In the example below, shows how the <code>THIS</code> lock type is used. All access to the <code>bar</code>
+                    member is guarded by the instance monitor object off <code>Foo</code>.
+                </p>
+                <source>
+public class Foo {
+    @GuardedBy(lock = THIS) private final Bar bar = ...
+                    
+    public synchronized void raise() {
+        bar.raise();
+    }
+
+    public void lower() {
+        synchronized(this) {
+            bar.lower();
+        }
+    }
+} </source>
+
+                <h4><a name="INNER_CLASS_THIS">INNER_CLASS_THIS</a></h4>
+                <p>
+                    The <code>INNER_CLASS_THIS</code> type is a way of disambiguating from <code>THIS</code> when it's
+                    used from an inner class. However, it's marked as deprecated as <code>THIS</code> can still be used
+                    and disambiguated by using the <code>details</code> parameter. For example,
+                </p>
+                <source>
+public class Foo {
+    @GuardedBy(lock = THIS, details = "Callable.class") private final Bar bar = ...
+
+    public void raise() {
+        new Callable() {
+            public synchronized void call() {
+                bar.raise();
+            }
+        };
+    }
+}</source>
+
+                <h4><a name="ITSELF">ITSELF</a></h4>
+                <p>
+                    It may be necessary to indicate that another object is responsible for its own synchronisation policy.
+                    For example, when avoiding <code>ConcurrentModificaitonException</code> on summing a list of numbers
+                    below, we declare our <code>List</code> using <code>Collections.synchronizedList</code>. Internally,
+                    this thread-safe list uses itself to guard access, we reflect this using the annotation as below.
+                </p>
+                <source>
+public class Foo {
+    @GuardedBy(lock = ITSELF) private final List&lt;Integer&gt; numbers = Collections.synchronizedList(new ArrayList&lt;Integer&gt;);
+
+    public void addNumber(int number) {
+        numbers.add(number);
+    }
+
+    public int sum() {
+        int sum = 0;
+        synchronized(numbers) {
+            for (int number : numbers) {
+                sum += number;
+            }
+        }
+        return sum;
+    }
+} </source>
+                <h4><a name="FIELD">FIELD and STATIC_FIELD</a></h4>
+                <p>
+                    Using a field to synchronise access can be seen in the example below (based on an example from Goetz).
+                </p>
+                <source>
+public class PrivateLock {
+    private final Object myLock = new Object();
+    @GuardedBy(lock = FIELD, details = "myLock") Widget widget;
+
+    void someMethod() {
+        synchronized (myLock) {
+            // Access or modify the state of widget
+        }
+    }
+} </source>
+
+            <h4><a name="METHOD">METHOD</a></h4>
+                <p>
+                    When a lock is obtained via some method, the <code>METHOD</code> type along with a <code>details</code>
+                    can be used. A trivial example is shown below. We havn't found much use for this type, but that's
+                    not to say that you won't
+                </p>
+                <source>
+public class Foo {
+    @GuardedBy(lock = METHOD, details = "getLock()") private final Bar bar = ...
+
+    public void raise() {
+        synchronized(getLock()) {
+            bar.raise();
+        }
+    }
+
+    private Object getLock() {
+        // ...                
+    }
+} </source>
+
+            </subsection>
+
+            <subsection name="@Immutable">
+                <p>
+                    The <code>Immutable</code> annotation offers a way to document the intent that a class should be immutable.
+                </p>
+                <p>
+                    Although potentially difficult to implement fully, this can be combined with AOP to try and enforce
+                    immutability. An example of a partially implemented AspectJ aspect is provided with tempus-fugit and
+                    reproduced here.
+                </p>
+                <source>
+package com.google.code.tempusfugit.concurrency.annotations;
+
+import java.lang.reflect.Field;
+import junit.framework.TestCase;
+import com.google.code.tempusfugit.concurrency.annotations.Immutable;
+
+public abstract aspect DeclareImmutableError {
+
+	pointcut testCase() : within(TestCase+);
+
+	pointcut mutators() : call(*.new()) || call(* *.set*(..)) || call(* *.add*(..));
+
+	pointcut immutable() : @within(Immutable);
+
+	declare error : mutators() &amp;&amp; immutable() &amp;&amp; !testCase() : "Immutable objects should not be mutated";
+
+} </source>
+                <p>
+                    Note that the example above doesn't ensure that all members are themselves <code>Immutable</code>
+                    or that constructors / accessors against collections ensure immutability. It also doesn't support junit
+                    tests that do not extend <code>TestCase</code>.
+                </p>
+            </subsection>
+
+            <subsection name="@Intermittent">
+                 <p>
+                    The <code>Intermittent</code> annotation is fully documented in the
+                    <a href="concurrency.html#Intermittent_Tests">concurrency</a> section but offers a way to indicate
+                     tests intermittently fail. If you're using junit, you can also re-run the tests several times using
+                     the <code>IntermittentRule</code> and <code>IntermmittentTestRunner</code> classes.
+                </p>
+            </subsection>
+
+            <subsection name="@Not">
+                <p>
+                    The <code>Not</code> annotation can be used to explicitly document the intent to <i>not</i> another
+                    annotation. For example, to document that some class is not thread-safe and doesn't and should not
+                    be immutable (ie, it's intentionally mutable), you could write
+                </p>
+                <source>
+@Not({ThreadSafe.class, Immutable.class})
+public class Yagni {
+    // ...
+} </source>
+                <p>
+                    You can supply as many arguments as you like as long as they make sense to you. 
+                </p>
+            </subsection>
+
+            <subsection name="@ThreadSafe">
+                <p>
+                    The <code>ThreadSafe</code> annotation is a direct implementation of the Goetz version. It is used
+                    to document that the author <i>thinks</i> a class is thread safe.
+                </p>
+            </subsection>
+        </section>
+
+
+    </body>
+</document>

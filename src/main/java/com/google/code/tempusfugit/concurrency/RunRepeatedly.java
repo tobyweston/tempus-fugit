@@ -16,6 +16,7 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import com.google.code.tempusfugit.concurrency.annotations.Intermittent;
 import junit.framework.AssertionFailedError;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
@@ -25,7 +26,7 @@ class RunRepeatedly extends Statement {
     private final FrameworkMethod method;
     private final Statement statement;
 
-    public RunRepeatedly(FrameworkMethod method, Statement statement) {
+    RunRepeatedly(FrameworkMethod method, Statement statement) {
         this.method = method;
         this.statement = statement;
     }
