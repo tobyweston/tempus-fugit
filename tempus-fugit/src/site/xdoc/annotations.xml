@@ -41,6 +41,7 @@
                 <li><p><a href="#aImmutable">Immutable</a></p></li>
                 <li><p><a href="#aIntermittent">Intermittent</a></p></li>
                 <li><p><a href="#aNot">Not</a></p></li>
+                <li><p><a href="#aRepeating">Repeating</a></p></li>
                 <li><p><a href="#aThreadSafe">ThreadSafe</a></p></li>
             </ul>
 
@@ -216,9 +217,9 @@ public abstract aspect DeclareImmutableError {
             <subsection name="@Intermittent">
                  <p>
                     The <code>Intermittent</code> annotation is fully documented in the
-                    <a href="concurrency.html#Intermittent_Tests">concurrency</a> section but offers a way to indicate
+                    <a href="concurrency.html#Intermittent_Tests">concurrency</a> section and offers a way to indicate
                      tests intermittently fail. If you're using junit, you can also re-run the tests several times using
-                     the <code>IntermittentRule</code> and <code>IntermmittentTestRunner</code> classes.
+                     the <code>IntermittentTestRunner</code> classes.
                 </p>
             </subsection>
 
@@ -237,6 +238,14 @@ public class Yagni {
                     You can supply as many arguments as you like as long as they make sense to you. 
                 </p>
             </subsection>
+
+            <subsection name="@Repeating">
+                <p>
+                    The <code>Repeating</code> annotation is documented in the <a href="concurrency.html#Load__Soak_Tests">concurrency</a>
+                    section and offers a mechanism to repeatedly run a test method for load or soak test purposes. It can be combined
+                    with the <code>Concurrent</code> annotation to run test methods multiple times across multiple threads.
+                </p>
+           </subsection>
 
             <subsection name="@ThreadSafe">
                 <p>

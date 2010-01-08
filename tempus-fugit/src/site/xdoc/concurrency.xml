@@ -48,6 +48,7 @@
                 <ul>
                     <li><p><a href="Intermittent_Tests">Intermittent Tests</a></p></li>
                     <li><p><a href="Parallel_Tests">Parallel Tests</a></p></li>
+                    <li><p><a href="Load__Soak_Tests">Load / Soak Tests</a></p></li>
                     <li><p><a href="Wait_for_Assertions">Wait for Assertions</a></p></li>
                     <li><p><a href="Interrupt_Capturing_Thread_Stub">Interrupt Capturing Thread Stub</a></p></li>
                 </ul>
@@ -335,12 +336,11 @@ public void probe() {
             As much as possible, you aim to have a completely deterministic tests but despite your best efforts,
             the odd flickering test can still get through. Occasionally, you might want to run such a test repeatedly to
             get an idea of its indeterminacy. The <code><a href="xref/com/google/code/tempusfugit/concurrency/Intermittent.html">Intermittent</a></code>
-            annotation can be combined with the <code><a href="xref/com/google/code/tempusfugit/concurrency/IntermittentRule.html">IntermittentRule</a></code> or
-            <code><a href="xref/com/google/code/tempusfugit/concurrency/IntermittentTestRunner.html">IntermittentTestRunner</a></code>
-            to provide this behaviour along with <a href="http://junit.org/">junit</a>.
+            annotation can be combined with the <code><a href="xref/com/google/code/tempusfugit/concurrency/IntermittentTestRunner.html">IntermittentTestRunner</a></code>
+            to provide this behaviour along side <a href="http://junit.org/">junit</a>.
         </p>
         <p>
-            Both mechanisms require you to mark a junit test method as potentially intermittent using the <code>Intermittent</code>
+            You simply mark a junit test method (or class) as potentially intermittent using the <code>Intermittent</code>
             annotation as follows.
         </p>
         <source>
@@ -349,33 +349,10 @@ public void probe() {
 public void flickering() {
    // ...
 }</source>       
+       
         <p>
-            You can then use the <code>IntermittentRule</code> to run the test method repeatedly in which case, any
-            <code>@Before</code> or <code>@After</code> methods will only be run once. By default, the suspect method
-            will be run <code>100</code> times.
-        </p>
-            <source>
-public class IntermittentRuleTest {
-
-    <b>@Rule public IntermittentRule rule = new IntermittentRule();</b>
-
-    private static int counter = 0;
-
-    @Test
-    <b>@Intermittent</b>
-    public void annotatedTest() {
-        counter++;
-    }
-
-    @After
-    public void annotatedTestRunsMultipleTimes() {
-        assertThat(counter, is(100));
-    }
-
-} </source>
-        <p>
-            Or you can use the <code>@RunWith</code> annotation to run the test using the <code>IntermittentTestRunner</code>
-            in which case, any <code>@Before</code> or <code>@After</code> methods will be run once for each test repetition. The
+            You can then use the <code>@RunWith</code> annotation to run the test using the <code>IntermittentTestRunner</code>.
+            Any <code>@Before</code> or <code>@After</code> methods will be run once for each test repetition. The
             example below also shows that the repetition count can be overridden on the method annotation.
         </p>
         <source>
@@ -407,41 +384,47 @@ public class IntermittentTestRunnerTest {
         assertThat(testCounter, is(equalTo(99)));
     }
 }</source>
+            <p>
+                If you annotate the class rather than individual test methods, every test method of the class will be
+                treated as if it were marked as <code>@Intermittent</code>.
+            </p>
+            <source>
+@RunWith(IntermittentTestRunner.class)
+@Intermittent(repetition = 10)
+public class IntermittentTestRunnerTest {
+
+    private static int testCounter = 0;
+
+    @Test
+    public void annotatedTest() {
+        testCounter++;
+    }
+
+    @Test
+    public void anotherAnnotatedTest() {
+        testCounter++;
+    }
+
+    @AfterClass
+    public static void assertAnnotatedTestRunsMultipleTimes() {
+        assertThat(testCounter, is(equalTo(20)));
+    }
+
+}</source>
         </subsection>
 
         <subsection name="Parallel Tests">
-        <p>There are two methods to run tests in parallel available using tempus-fugit</p>
-        <ul>
-            <li>
-                <p><b>Running tests methods within classes in parallel</b></p>
-                <p>
-                    Here, each test method within a class will run on its own thread and in parallel with any other
-                    test methods in that class. The number of threads for a given test class will be equal to the number
-                    of test methods within that class.
-                </p>
-                <p>Use the <a href="xref/com/google/code/tempusfugit/concurrency/ConcurrentTestRunner.html"><code>ConcurrentTestRunner</code></a>
-                    class with junit's <code>@RunWith</code> for this method.</p>
-            </li>
-
-            <li><p><b>Running individual tests in multiple threads</b></p>
-                <p>
-                    More for soak or stress testing, this method will run an individual test method in <i>n</i> number of
-                    threads where <i>n</i> is specified by you.
-                </p>
-                <p>
-                    Use the <a href="xref/com/google/code/tempusfugit/concurrency/ConcurrentRule.html"><code>ConcurrentRule</code></a>
-                    and associated <a href="xref/com/google/code/tempusfugit/concurrency/Concurrent.html"><code>Concurrent</code></a>
-                    annotation for this method.
-                </p>
-            </li>
-        </ul>
-
-        <h3>Running tests methods within classes in parallel</h3>
-        <p>
-            You can use the <a href="xref/com/google/code/tempusfugit/concurrency/ConcurrentTestRunner.html"><code>ConcurrentTestRunner</code></a>
-            runner to run all test methods within a class in parallel. Simply mark your test to be <code>@RunWith</code>
-            the <code>ConcurrentTestRunner</code> class as below.
-        </p>
+            <p>
+                The tempus-fugit library allows you to run tests methods within classes in parallel.
+                Each test method within a class will run on its own thread and in parallel with any other
+                test methods in that class. The number of threads for a given test class will be equal to the number
+                of test methods within that class.
+            </p>
+            <p>
+                You can use the <a href="xref/com/google/code/tempusfugit/concurrency/ConcurrentTestRunner.html"><code>ConcurrentTestRunner</code></a>
+                runner to run all test methods within a class in parallel. Simply mark your test to be <code>@RunWith</code>
+                the <code>ConcurrentTestRunner</code> class as below.
+            </p>
         <source>
 @RunWith(ConcurrentTestRunner.class)
 public class ConcurrentTestRunnerTest {
@@ -470,16 +453,21 @@ I'm running on thread ConcurrentTestRunner-Thread-0
 I'm running on thread ConcurrentTestRunner-Thread-2
 I'm running on thread ConcurrentTestRunner-Thread-1 </source>
 
-            <h3>Running individual tests in multiple threads</h3>
+        </subsection>
+
+        <subsection name="Load / Soak Tests">
+
         <p>
-            Like the <code><a href="#Intermittent_Tests">IntermittentRule</a></code> above, tempus-fugit offers a
-            <a href="xref/com/google/code/tempusfugit/concurrency/ConcurrentRule.html"><code>ConcurrentRule</code></a> and
-            associated <a href="xref/com/google/code/tempusfugit/concurrency/Concurrent.html"><code>Concurrent</code></a>
-            annotation for running individual tests in parallel.
+            The tempus-fugit library offers a <a href="xref/com/google/code/tempusfugit/concurrency/RepeatingRule.html"><code>RepeatingRule</code></a>
+            and <a href="xref/com/google/code/tempusfugit/concurrency/ConcurrentRule.html"><code>ConcurrentRule</code></a>
+            that can be used to run a test method multiple times and across multiple threads. This can be useful when
+            writing load or soak tests. For example, you might want to sanity check that your synchronisation is working
+            under load. Both rules work use an annotation and can be used independently or together.
         </p>
         <p>
-            Using the simple form of the rule against a test method, you can run multiple instances of the test in parallel.
-            This might be useful during debugging to stress test synchronised code. For example, you might test the
+            To run multiple instances of a single test method in parallel, you annotate the test method with the
+            associated <a href="xref/com/google/code/tempusfugit/concurrency/Concurrent.html"><code>Concurrent</code></a>
+            annotation and declare the rule in your test class. For example, you might test the
             <code>AtomicInteger</code> class in a similar way to this.
         </p>
         <source>
@@ -501,21 +489,48 @@ public class RunConcurrentlyTest {
            find a use.
         </p>
         <p>
-            Combining <a href="xref/com/google/code/tempusfugit/concurrency/Concurrent.html"><code>Concurrent</code></a>
-            with the <a href="xref/com/google/code/tempusfugit/concurrency/Intermittent.html"><code>Intermittent</code></a>
-            annotation allows you to run a test method repeatedly across threads. For example, running the following
+            To run a test method multiple times, you can take advantage of the <a href="xref/com/google/code/tempusfugit/Repeating/Repeating.html"><code>Repeating</code></a>
+            annotation and declare the rule in your test class. This is similar to using the <code>Intermittent</code>
+            annotation but unlike using the <code>@RunWith</code> mechanism, using the <code>Rule</code> will <i>not</i>
+            execute any <code>@Before</code> or <code>@After</code> methods between runs. Using <code>Repeating</code> is
+            also more explicit that you intend to run some kind of load test rather than indicating that a test is intermittently 
+            failing.
+        </p>
+        <source>
+public class RepeatingRuleTest {
+
+    @Rule public RepeatingRule rule = new RepeatingRule();
+
+    private static int counter = 0;
+
+    @Test
+    @Repeating(repetition = 99)
+    public void annotatedTest() {
+        counter++;
+    }
+
+    @After
+    public void annotatedTestRunsMultipleTimes() {
+        assertThat(counter, is(99));
+    }
+} </source>
+
+        <p>
+            Combining the <a href="xref/com/google/code/tempusfugit/concurrency/Concurrent.html"><code>Concurrent</code></a>
+            with the <a href="xref/com/google/code/tempusfugit/Repeating/Repeating.html"><code>Repeating</code></a>
+            annotation allows you to run a test method repeatedly and across threads. For example, running the following
         </p>
         <source>
 public class RunConcurrentlyTest {
 
     @Rule public ConcurrentRule concurrently = new ConcurrentRule();
-    @Rule public IntermittentRule repeatedly = new IntermittentRule();
+    @Rule public RepeatingRule repeatedly = new RepeatingRule();
 
     private static final AtomicInteger counter = new AtomicInteger();
 
     @Test
     <b>@Concurrent (count = 5)
-    @Intermittent (repetition = 10)</b>
+    @Repeating (repetition = 10)</b>
     public void runsMultipleTimes() {
         counter.getAndIncrement();
     }
@@ -524,6 +539,7 @@ public class RunConcurrentlyTest {
             Will repeat the test method ten times in five threads. Each thread will run the test method ten times, so in
             our example, the counter will be incremented to fifty.
         </p>
+
         </subsection>
 
         <subsection name="Wait for Assertions">
