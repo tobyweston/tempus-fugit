@@ -20,17 +20,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Annotation to highlight intermittently failing test methods or classes.
+ * Annotation to indicate that a method should be repeated.
  * <p>
- * @see com.google.code.tempusfugit.concurrency.IntermittentTestRunner
+ * @see com.google.code.tempusfugit.concurrency.RepeatingRule
  */
-@Target({METHOD, TYPE})
+@Target(METHOD)
 @Retention(RUNTIME)
-public @interface Intermittent {
-    int repetition() default 100;
+public @interface Repeating {
+    public abstract int repetition() default 100;
 }
-

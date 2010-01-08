@@ -23,14 +23,16 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 
 public class IntermittentTestRunner extends BlockJUnit4ClassRunner {
+    private final Class<?> type;
 
     public IntermittentTestRunner(Class<?> type) throws InitializationError {
         super(type);
+        this.type = type;
     }
 
     @Override
     protected void runChild(final FrameworkMethod method, final RunNotifier notifier) {
-        if (intermittent(method))
+        if (intermittent(type) || intermittent(method))
             for (int i = 0; i < repetition(method); i++) {
                 super.runChild(method, notifier);
             }
@@ -40,6 +42,10 @@ public class IntermittentTestRunner extends BlockJUnit4ClassRunner {
 
     private static boolean intermittent(FrameworkMethod method) {
         return method.getAnnotation(Intermittent.class) != null;
+    }
+
+    private boolean intermittent(Class<?> type) {
+        return type.getAnnotation(Intermittent.class) != null;
     }
 
     private static int repetition(FrameworkMethod method) {

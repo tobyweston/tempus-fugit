@@ -16,29 +16,17 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import com.google.code.tempusfugit.concurrency.annotations.Intermittent;
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
+import com.google.code.tempusfugit.concurrency.annotations.Repeating;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import java.lang.annotation.Annotation;
 
-public class IntermittentRuleTest {
+class RepeatingAnnotation implements Repeating {
 
-    @Rule public IntermittentRule rule = new IntermittentRule();
-
-    private static int counter = 0;
-
-    @Test
-    @Intermittent
-    public void annotatedTest() {
-        counter++;
+    public Class<? extends Annotation> annotationType() {
+        return null;
     }
 
-    @After
-    public void annotatedTestRunsMultipleTimes() {
-        assertThat(counter, is(100));
+    public int repetition() {
+        return 100;
     }
-
 }

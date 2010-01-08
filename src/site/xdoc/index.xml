@@ -30,7 +30,7 @@
 
             <p>
                 The tempus-fugit library is a small collection of classes and interfaces capturing common abstractions
-                useful when writing concurrent and time-dependant code.
+                useful when writing concurrent and time sensitive code.
             </p>
             <p>
                 It's hosted on Google Code at<a href="http://code.google.com/p/tempus-fugit/">

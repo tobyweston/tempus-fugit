@@ -16,7 +16,7 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import com.google.code.tempusfugit.concurrency.annotations.Intermittent;
+import com.google.code.tempusfugit.concurrency.annotations.Repeating;
 import junit.framework.AssertionFailedError;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -38,8 +38,8 @@ public class RunRepeatedlyTest {
     private final Mockery context = new JUnit4Mockery() {{
         setImposteriser(ClassImposteriser.INSTANCE);
     }};
-    private static final Intermittent VALID_ANNOTATION = new IntermittentAnnotation();
-    private static final Intermittent NO_ANNOTATION = null;
+    private static final Repeating VALID_ANNOTATION = new RepeatingAnnotation();
+    private static final Repeating NO_ANNOTATION = null;
 
     private final FrameworkMethod method = context.mock(FrameworkMethod.class);
     private final Statement statement = context.mock(Statement.class);
@@ -47,9 +47,9 @@ public class RunRepeatedlyTest {
 
 
     @Test
-    public void evaulateIntermittenMethod() throws Throwable {
+    public void evaluateIntermittentMethod() throws Throwable {
         context.checking(new Expectations() {{
-            allowing(method).getAnnotation(with(Intermittent.class)); will(returnValue(VALID_ANNOTATION));
+            allowing(method).getAnnotation(with(Repeating.class)); will(returnValue(VALID_ANNOTATION));
             exactly(100).of(statement).evaluate();
         }});
         runner.evaluate();
@@ -58,16 +58,16 @@ public class RunRepeatedlyTest {
     @Test
     public void nonAnnotatedMethod() throws Throwable {
         context.checking(new Expectations() {{
-            one(method).getAnnotation(with(Intermittent.class)); will(returnValue(NO_ANNOTATION));
+            one(method).getAnnotation(with(Repeating.class)); will(returnValue(NO_ANNOTATION));
             one(statement).evaluate();
         }});
         runner.evaluate();
     }
 
     @Test
-    public void exceptionOnEvaulation() throws Throwable {
+    public void exceptionOnEvaluation() throws Throwable {
         context.checking(new Expectations() {{
-            allowing(method).getAnnotation(with(Intermittent.class)); will(returnValue(VALID_ANNOTATION));
+            allowing(method).getAnnotation(with(Repeating.class)); will(returnValue(VALID_ANNOTATION));
             one(statement).evaluate(); will(throwException(new AssertionFailedError("chazzwazzer")));
         }});
         try {

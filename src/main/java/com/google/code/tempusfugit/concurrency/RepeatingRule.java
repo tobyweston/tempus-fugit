@@ -20,7 +20,7 @@ import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-public class IntermittentRule implements MethodRule {
+public class RepeatingRule implements MethodRule {
 
     public Statement apply(Statement base, final FrameworkMethod method, final Object target) {
         return new RunRepeatedly(method, base);
