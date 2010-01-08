@@ -27,17 +27,19 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(IntermittentTestRunner.class)
-public class IntermittentTestRunnerTest {
-
+@Intermittent(repetition = 10)
+public class IntermittentTestRunnerTestClassTest {
     private static int testCounter = 0;
     private static int afterCounter = 0;
     private static int afterClassCounter = 0;
 
-    private static final int REPEAT_COUNT = 10;
+    @Test
+    public void annotatedTest() {
+        testCounter++;
+    }
 
     @Test
-    @Intermittent(repetition = REPEAT_COUNT)
-    public void annotatedTest() {
+    public void anotherAnnotatedTest() {
         testCounter++;
     }
 
@@ -53,7 +55,6 @@ public class IntermittentTestRunnerTest {
 
     @AfterClass
     public static void assertAnnotatedTestRunsMultipleTimes() {
-        assertThat(testCounter, is(equalTo(REPEAT_COUNT)));
+        assertThat(testCounter, is(equalTo(20)));
     }
-
 }

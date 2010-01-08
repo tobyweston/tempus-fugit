@@ -32,24 +32,32 @@ public class IntermittentTestRunner extends BlockJUnit4ClassRunner {
 
     @Override
     protected void runChild(final FrameworkMethod method, final RunNotifier notifier) {
-        if (intermittent(type) || intermittent(method))
-            for (int i = 0; i < repetition(method); i++) {
-                super.runChild(method, notifier);
-            }
-        else
+        for (int i = 0; i < repeatCount(method); i++)
             super.runChild(method, notifier);
+    }
+
+    private int repeatCount(FrameworkMethod method) {
+        if (intermittent(type))
+            return repetition(type);
+        if (intermittent(method))
+            return repetition(method);
+        return 1;
     }
 
     private static boolean intermittent(FrameworkMethod method) {
         return method.getAnnotation(Intermittent.class) != null;
     }
 
-    private boolean intermittent(Class<?> type) {
+    private static boolean intermittent(Class<?> type) {
         return type.getAnnotation(Intermittent.class) != null;
     }
 
     private static int repetition(FrameworkMethod method) {
         return method.getAnnotation(Intermittent.class).repetition();
+    }
+
+    private static int repetition(Class<?> type) {
+        return type.getAnnotation(Intermittent.class).repetition();
     }
 
 }
