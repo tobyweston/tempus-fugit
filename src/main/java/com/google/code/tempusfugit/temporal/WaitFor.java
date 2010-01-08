@@ -22,7 +22,7 @@ import static com.google.code.tempusfugit.temporal.Duration.millis;
 
 public final class WaitFor {
 
-    public static final Duration SLEEP_PERIOD = millis(100);
+    public static final Duration SLEEP_PERIOD = millis(50);
 
     private WaitFor() {
     }
