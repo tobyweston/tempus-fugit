@@ -45,7 +45,7 @@
 
             <item name="Usage" href="usage.html">
                 <item name="Concurrency" href="concurrency.html"/>
-                <item name="Time-dependence" href="time.html"/>
+                <item name="Time" href="time.html"/>
                 <item name="Annotations" href="annotations.html"/>
             </item>
         </menu>

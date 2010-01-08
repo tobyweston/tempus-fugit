@@ -36,8 +36,9 @@
                 http://download.java.net/maven/2/com/google/code/tempus-fugit/</a> or use Maven or Ivy.
             </p>
             <p>
-               <font color="red"><b>Note</b> that if the current version is a SNAPSHOT version (see top right), the Maven repository version
-               may not contain the bleeding edge jar and so may not include all the classes described in this document. </font>
+               <font color="red"><b>Note</b> that if the current version is a SNAPSHOT version (see top right), the Maven repository 
+               may not contain the bleeding edge jar and so may not include all the classes described in this document. You may want to 
+               <a href="http://code.google.com/p/tempus-fugit/source/checkout">checkout directly form Subversion</a> and build using Maven.</font>
             </p>
 
             <subsection name="Maven 2">
@@ -54,7 +55,7 @@
 </source>
             </subsection>
             <p>
-                Then add a <code>dependency</code> as usualy to your <code>pom.xml</code>.
+                Then add a <code>dependency</code> as usually to your <code>pom.xml</code>.
             </p>
             <source>
 &lt;dependency&gt;

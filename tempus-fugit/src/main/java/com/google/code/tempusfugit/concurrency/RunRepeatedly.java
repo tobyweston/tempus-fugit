@@ -16,7 +16,7 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import com.google.code.tempusfugit.concurrency.annotations.Intermittent;
+import com.google.code.tempusfugit.concurrency.annotations.Repeating;
 import junit.framework.AssertionFailedError;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
@@ -32,7 +32,7 @@ class RunRepeatedly extends Statement {
     }
 
     public void evaluate() throws Throwable {
-        if (intermittent(method))
+        if (repeating(method))
             for (int i = 0; i < repetition(method); i++) {
                 try {
                     statement.evaluate();
@@ -44,11 +44,11 @@ class RunRepeatedly extends Statement {
             statement.evaluate();
     }
 
-    private static boolean intermittent(FrameworkMethod method) {
-        return method.getAnnotation(Intermittent.class) != null;
+    private static boolean repeating(FrameworkMethod method) {
+        return method.getAnnotation(Repeating.class) != null;
     }
 
     private static int repetition(FrameworkMethod method) {
-        return method.getAnnotation(Intermittent.class).repetition();
+        return method.getAnnotation(Repeating.class).repetition();
     }
 }
