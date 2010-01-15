@@ -19,6 +19,7 @@ package com.google.code.tempusfugit.temporal;
 import java.util.concurrent.TimeUnit;
 
 public class Duration {
+
     private final Long value;
     private final TimeUnit unit;
 
@@ -53,9 +54,8 @@ public class Duration {
 
     private static void validate(long value, TimeUnit unit) {
         Duration duration = new Duration(value, unit);
-        if (duration.inMillis() == Long.MAX_VALUE) {
+        if (duration.inMillis() == Long.MAX_VALUE)
             throw new IllegalArgumentException();
-        }
     }
 
     public long inMillis() {
@@ -82,8 +82,16 @@ public class Duration {
         return millis(duration.inMillis() + this.inMillis());
     }
 
-    public Boolean greaterThan(Duration comparator) {
-        return this.inMillis() > comparator.inMillis();
+    public Duration minus(Duration duration) {
+        return millis(this.inMillis() - duration.inMillis());
+    }
+
+    public Boolean greaterThan(Duration duration) {
+        return this.inMillis() > duration.inMillis();
+    }
+
+    public Boolean lessThan(Duration duration) {
+        return this.inMillis() < duration.inMillis();
     }
 
     @Override

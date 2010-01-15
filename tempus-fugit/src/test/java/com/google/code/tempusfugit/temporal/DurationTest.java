@@ -31,7 +31,7 @@ public final class DurationTest {
     private static final long MILLIS_IN_A_SECOND = SECONDS.toMillis(1);
 
     @Test
-    public void secondsConversionTest() {
+    public void convertSeconds() {
         Duration duration = seconds(60);
         assertThat(duration.inMillis(), is(60000L));
         assertThat(duration.inSeconds(), is(60L));
@@ -41,7 +41,7 @@ public final class DurationTest {
     }
 
     @Test
-    public void secondsConversionRounding() {
+    public void convertSecondsRoundingResult() {
         Duration duration = seconds(95);
         assertThat(duration.inMillis(), is(95000L));
         assertThat(duration.inSeconds(), is(95L));
@@ -51,7 +51,7 @@ public final class DurationTest {
     }
 
     @Test
-    public void minutesConversionTest() {
+    public void convertMinutes() {
         Duration duration = minutes(50);
         assertThat(duration.inMillis(), is(3000000L));
         assertThat(duration.inSeconds(), is(3000L));
@@ -61,7 +61,7 @@ public final class DurationTest {
     }
 
     @Test
-    public void hoursConversionTest() {
+    public void conversionHours() {
         Duration duration = hours(24);
         assertThat(duration.inMillis(), is(86400000L));
         assertThat(duration.inSeconds(), is(86400L));
@@ -71,7 +71,7 @@ public final class DurationTest {
     }
 
     @Test
-    public void daysConversionTest() {
+    public void convertDays() {
         Duration duration = Duration.days(10L);
         assertThat(duration.inDays(), is(10L));
         assertThat(duration.inHours(), is(duration.inDays() * HOURS_IN_A_DAY));
@@ -86,17 +86,21 @@ public final class DurationTest {
         assertThat(millis(1).plus(seconds(1)), is(equalTo(millis(1001))));
     }
 
-
+    @Test
+    public void canSubtractDurations() {
+        assertThat(days(1).minus(days(1)), is(equalTo(days(0))));
+        assertThat(seconds(1).minus(millis(1)), is(equalTo(millis(999))));
+    }
+    
     @Test(expected = IllegalArgumentException.class)
-    public void maxSecondsLongTest() {
+    public void tooManySeconds() {
         seconds(Long.MAX_VALUE);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void maxMillisLongTest() {
+    public void tooManyMillis() {
         millis(Long.MAX_VALUE);
     }
-
 
     @Test
     public void sameUnitEquality() {
@@ -130,6 +134,14 @@ public final class DurationTest {
         assertThat(seconds(2).greaterThan(seconds(1)), is(true));
         assertThat(seconds(1).greaterThan(seconds(1)), is(false));
         assertThat(seconds(-1).greaterThan(seconds(1)), is(false));
+    }
+
+    @Test
+    public void lessThan() {
+        assertThat(seconds(1).lessThan(seconds(2)), is(true));
+        assertThat(seconds(2).lessThan(seconds(1)), is(false));
+        assertThat(seconds(1).lessThan(seconds(1)), is(false));
+        assertThat(seconds(-1).lessThan(seconds(1)), is(true));
     }
 
     @Test
