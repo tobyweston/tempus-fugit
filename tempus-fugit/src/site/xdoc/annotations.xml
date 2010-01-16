@@ -42,6 +42,7 @@
                 <li><p><a href="#aIntermittent">Intermittent</a></p></li>
                 <li><p><a href="#aNot">Not</a></p></li>
                 <li><p><a href="#aRepeating">Repeating</a></p></li>
+                <li><p><a href="#aTask">Task</a></p></li>
                 <li><p><a href="#aThreadSafe">ThreadSafe</a></p></li>
             </ul>
 
@@ -54,7 +55,7 @@
                     <li><p>document a method as potentially being run from a concurrent context, <b>or</b></p></li>
                     <li>
                         <p>combined with a <code>ConcurrentRule</code> or <code>ConcurrentTestRunner</code>, mark a junit
-                        test method to run several instances concurrently or run in parallel with other tests respectively. 
+                        test method to run several instances concurrently or run in parallel with other tests respectively.
                         </p>
                     </li>
                 </ul>
@@ -85,7 +86,7 @@
                 <source>
 public class Foo {
     @GuardedBy(lock = THIS) private final Bar bar = ...
-                    
+
     public synchronized void raise() {
         bar.raise();
     }
@@ -174,7 +175,7 @@ public class Foo {
     }
 
     private Object getLock() {
-        // ...                
+        // ...
     }
 } </source>
 
@@ -235,7 +236,7 @@ public class Yagni {
     // ...
 } </source>
                 <p>
-                    You can supply as many arguments as you like as long as they make sense to you. 
+                    You can supply as many arguments as you like as long as they make sense to you.
                 </p>
             </subsection>
 
@@ -246,6 +247,26 @@ public class Yagni {
                     with the <code>Concurrent</code> annotation to run test methods multiple times across multiple threads.
                 </p>
            </subsection>
+
+            <subsection name="@Task">
+                <blockquote>
+                    "Most concurrent applications are organised around the execution of <i>tasks</i>: abstract, discrete
+                    units of work. Dividing the work of an application into tasks simplifies organisation, facilitates error
+                    recovering by providing natural transaction boundaries, and promotes concurrency by providing a natural
+                    structure for paralleslising work". Goetz et al, Concurrency in Practice.
+                </blockquote>
+
+                <p>
+                    The <code>Task</code> annotation is intended to document that a class is a concurrent task. A vanilla
+                    <code>Runnable</code> or <code>Callable</code> implementation for example may be used to implement
+                    some general purpose piece of functionality. Often, these will represent small tasks to be executed in
+                    serial, by annotating it as a <i>task</i>, you convey that the intended usage is from a
+                    concurrent context. For example, the <code>Runnable</code> will be run in parallel with other tasks.
+                </p>
+                <p>
+                    With this annotation, when we talk about <i>tasks</i> we really mean <i>concurrent task</i>.
+                </p>
+            </subsection>
 
             <subsection name="@ThreadSafe">
                 <p>
