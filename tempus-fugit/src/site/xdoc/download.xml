@@ -25,6 +25,21 @@
     </properties>
 
     <body>
+        <section name="Versions">
+            <subsection name="Stable">
+            <p>
+                The current stable version is <b>1.0</b> and is available via Maven, Ivy or direct <a href="http://download.java.net/maven/2/com/google/code/tempus-fugit/tempus-fugit/">download</a>.
+            </p>
+            </subsection>
+            <subsection name="SNAPSHOT">
+            <p>
+                Snapshot versions are <b>subject to change</b> without notice. The version of this documentation refers
+                to is indicated in the top right and may differ to previous stable releases. Although we'll try not to
+                alter the API significantly, any changes to the API are documented in the <a href="changes-report.html">change report</a>.
+                You can always <a href="http://code.google.com/p/tempus-fugit/source/checkout">checkout directly form Subversion</a> if your millage varies.
+            </p>
+        </subsection>
+        </section>
         <section name="Download Instructions">
             <p>
                 The project is published via the <a href="https://maven-repository.dev.java.net/">java.net</a>
@@ -32,13 +47,8 @@
             </p>
             <p>
                 You can download the source and binary jar directly from
-                <a href="http://download.java.net/maven/2/com/google/code/tempus-fugit/">
+                <a href="http://download.java.net/maven/2/com/google/code/tempus-fugit/tempus-fugit/">
                 http://download.java.net/maven/2/com/google/code/tempus-fugit/</a> or use Maven or Ivy.
-            </p>
-            <p>
-               <font color="red"><b>Note</b> that if the current version is a SNAPSHOT version (see top right), the Maven repository 
-               may not contain the bleeding edge jar and so may not include all the classes described in this document. You may want to 
-               <a href="http://code.google.com/p/tempus-fugit/source/checkout">checkout directly form Subversion</a> and build using Maven.</font>
             </p>
 
             <subsection name="Maven 2">
@@ -61,7 +71,7 @@
 &lt;dependency&gt;
   &lt;groupId&gt;com.google.code.tempus-fugit&lt;/groupId&gt;
   &lt;artifactId&gt;tempus-fugit&lt;/artifactId&gt;
-  &lt;version&gt;${project.version}&lt;/version&gt;
+  &lt;version&gt;1.0&lt;/version&gt;
 &lt;/dependency&gt; </source>
             <subsection name="Ivy">
             <p>
@@ -73,7 +83,7 @@
             <p>
                 You can then add the following to your project's <code>ivy.xml</code>.
             </p>
-            <source>&lt;dependency org="com.google.code.tempus-fugit" name="tempus-fugit" rev="1.0-SNAPSHOT" conf="netstream-runtime"/&gt; </source>
+            <source>&lt;dependency org="com.google.code.tempus-fugit" name="tempus-fugit" rev="1.0" conf="netstream-runtime"/&gt; </source>
             </subsection>
 
             <subsection name="Source Code and Issue Tracking">
