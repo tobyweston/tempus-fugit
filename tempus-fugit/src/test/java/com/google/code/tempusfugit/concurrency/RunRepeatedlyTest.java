@@ -20,7 +20,6 @@ import com.google.code.tempusfugit.concurrency.annotations.Repeating;
 import junit.framework.AssertionFailedError;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
@@ -32,7 +31,7 @@ import static junit.framework.Assert.fail;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
 
-@RunWith(JMock.class)
+@RunWith(ConcurrentTestRunner.class)
 public class RunRepeatedlyTest {
 
     private final Mockery context = new JUnit4Mockery() {{
@@ -53,6 +52,7 @@ public class RunRepeatedlyTest {
             exactly(100).of(statement).evaluate();
         }});
         runner.evaluate();
+        context.assertIsSatisfied();
     }
 
     @Test
@@ -62,6 +62,7 @@ public class RunRepeatedlyTest {
             one(statement).evaluate();
         }});
         runner.evaluate();
+        context.assertIsSatisfied();
     }
 
     @Test
@@ -76,6 +77,7 @@ public class RunRepeatedlyTest {
         } catch (AssertionFailedError e) {
             assertThat(e.getMessage(), containsString("(failed after 0 successful attempts)"));
         }
+        context.assertIsSatisfied();
     }
     
 }

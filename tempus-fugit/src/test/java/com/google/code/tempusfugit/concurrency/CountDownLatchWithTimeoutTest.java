@@ -22,6 +22,7 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
@@ -30,6 +31,7 @@ import static com.google.code.tempusfugit.concurrency.CountDownLatchWithTimeout.
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+@RunWith(ConcurrentTestRunner.class)
 public class CountDownLatchWithTimeoutTest {
 
     private final Mockery context = new JUnit4Mockery() {{

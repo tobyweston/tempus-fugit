@@ -16,13 +16,16 @@
 
 package com.google.code.tempusfugit.temporal;
 
+import com.google.code.tempusfugit.concurrency.ConcurrentTestRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static com.google.code.tempusfugit.temporal.Duration.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
+@RunWith(ConcurrentTestRunner.class)
 public final class DurationTest {
 
     private static final long HOURS_IN_A_DAY = 24;

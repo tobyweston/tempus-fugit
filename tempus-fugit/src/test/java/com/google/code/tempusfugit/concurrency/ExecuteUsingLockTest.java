@@ -18,7 +18,6 @@ package com.google.code.tempusfugit.concurrency;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
@@ -29,7 +28,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static com.google.code.tempusfugit.concurrency.ExecuteUsingLock.execute;
 
-@RunWith(JMock.class)
+@RunWith(ConcurrentTestRunner.class)
 public class ExecuteUsingLockTest {
 
     private final Mockery context = new JUnit4Mockery() {{
@@ -43,24 +42,28 @@ public class ExecuteUsingLockTest {
     public void readLock() {
         setExpectationsOn(readLock);
         execute(something()).using(readLock);
+        context.assertIsSatisfied();
     }
 
     @Test
     public void writeLock() {
         setExpectationsOn(writeLock);
         execute(something()).using(writeLock);
+        context.assertIsSatisfied();
     }
 
     @Test(expected = Exception.class)
     public void readLockThrowingException() throws Exception {
         setExpectationsOn(readLock);
         execute(somethingThatThrowsException()).using(readLock);
+        context.assertIsSatisfied();
     }
 
     @Test(expected = Exception.class)
     public void writeLockThrowingException() throws Exception {
         setExpectationsOn(writeLock);
         execute(somethingThatThrowsException()).using(writeLock);
+        context.assertIsSatisfied();
     }
 
     private Callable<Void, RuntimeException> something() {

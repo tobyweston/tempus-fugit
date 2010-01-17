@@ -18,7 +18,6 @@ package com.google.code.tempusfugit.concurrency;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
@@ -33,7 +32,7 @@ import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-@RunWith(JMock.class)
+@RunWith(ConcurrentTestRunner.class)
 public class ThreadUtilsTest {
 
     private final Mockery context = new JUnit4Mockery() {{
@@ -47,6 +46,7 @@ public class ThreadUtilsTest {
             one(interruptible).call(); will(returnValue(true));
         }});
         assertThat(ThreadUtils.<Boolean>resetInterruptFlagWhen(interruptible), is(true));
+        context.assertIsSatisfied();
     }
 
     @Test
@@ -57,6 +57,7 @@ public class ThreadUtilsTest {
         assertThat(Thread.currentThread().isInterrupted(), is(false));
         ThreadUtils.resetInterruptFlagWhen(interruptible);
         assertThat(Thread.interrupted(), is(true));
+        context.assertIsSatisfied();
     }
 
     @Test
@@ -67,6 +68,7 @@ public class ThreadUtilsTest {
         thread.interrupt();
         waitForShutdown(thread);
         assertThat(thread.getName() + " wasn't interrupted", thread.hasBeenInterrupted(), is(true));
+        context.assertIsSatisfied();
     }
 
     private void waitForStartup(Thread thread) throws TimeoutException, InterruptedException {

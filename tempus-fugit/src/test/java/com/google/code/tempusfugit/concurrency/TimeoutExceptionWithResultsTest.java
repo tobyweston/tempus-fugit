@@ -17,6 +17,7 @@
 package com.google.code.tempusfugit.concurrency;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 
+@RunWith(ConcurrentTestRunner.class)
 public class TimeoutExceptionWithResultsTest {
 
     private static final String MESSAGE = "message";

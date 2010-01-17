@@ -27,7 +27,6 @@ import org.jmock.Mockery;
 import org.jmock.Sequence;
 import org.jmock.api.Action;
 import org.jmock.api.Invocation;
-import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
@@ -47,7 +46,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-@RunWith(JMock.class)
+@RunWith(ConcurrentTestRunner.class)
 public class DefaultTimeoutableCompletionServiceTest {
 
     private final Mockery context = new JUnit4Mockery() {{
@@ -76,6 +75,7 @@ public class DefaultTimeoutableCompletionServiceTest {
             allowing(completionService).take();
         }});
         new DefaultTimeoutableCompletionService(completionService).submit(asList(task1, task2, task3));
+        context.assertIsSatisfied();
     }
 
     @Test (expected = TimeoutException.class)
@@ -93,6 +93,7 @@ public class DefaultTimeoutableCompletionServiceTest {
         }});
 
         new DefaultTimeoutableCompletionService(completionService, TIMEOUT, time).submit(asList(task1, task2));
+        context.assertIsSatisfied();
     }
 
     @Test
@@ -115,6 +116,7 @@ public class DefaultTimeoutableCompletionServiceTest {
         } catch (final TimeoutExceptionWithResults e) {
             assertThat((String) e.getResults().get(0), is(TASK1_RESULT));
         }
+        context.assertIsSatisfied();
     }
 
     @Test
@@ -126,6 +128,7 @@ public class DefaultTimeoutableCompletionServiceTest {
         }});
 
         new DefaultTimeoutableCompletionService(completionService, millis(100), time).submit(asList(task1));
+        context.assertIsSatisfied();
     }
 
     @Test
@@ -151,6 +154,7 @@ public class DefaultTimeoutableCompletionServiceTest {
                 }
             }, seconds(10));
         }
+        context.assertIsSatisfied();
     }
 
     private class StubFuture implements Future<String> {

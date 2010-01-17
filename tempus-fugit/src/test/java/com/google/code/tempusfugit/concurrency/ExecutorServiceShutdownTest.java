@@ -19,7 +19,6 @@ package com.google.code.tempusfugit.concurrency;
 import com.google.code.tempusfugit.temporal.Duration;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +33,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-@RunWith(JMock.class)
+@RunWith(ConcurrentTestRunner.class)
 public class ExecutorServiceShutdownTest {
 
     private final Mockery context = new JUnit4Mockery();
@@ -48,12 +47,14 @@ public class ExecutorServiceShutdownTest {
     @Test
     public void awaitingTerminationWithNullExecutorService() {
         assertThat(shutdown(null).waitingForCompletion(TIMEOUT), is(false));
+        context.assertIsSatisfied();
     }
 
     @Test
     public void awaitingTermination() throws InterruptedException {
         awaitingTermination(PASSES);
         awaitingTermination(FAILS);
+        context.assertIsSatisfied();
     }
 
     @Test
@@ -63,12 +64,14 @@ public class ExecutorServiceShutdownTest {
             one(executor).awaitTermination(with(any(long.class)), with(any(TimeUnit.class))); will(throwException(new InterruptedException()));
         }});
         shutdown(executor).waitingForCompletion(TIMEOUT);
-        assertThat(Thread.interrupted(), is(true)); 
+        assertThat(Thread.interrupted(), is(true));
+        context.assertIsSatisfied();
     }
 
     @Test
     public void waitingForShutdownWithNullExecutorService() throws TimeoutException, InterruptedException {
         assertThat(shutdown(null).waitingForShutdown(TIMEOUT), is(false));
+        context.assertIsSatisfied();
     }
 
     @Test
@@ -78,6 +81,7 @@ public class ExecutorServiceShutdownTest {
             one(executor).isShutdown(); will(returnValue(true));
         }});
         assertThat(shutdown(executor).waitingForShutdown(TIMEOUT), is(true));
+        context.assertIsSatisfied();
     }
 
     @Test(expected = TimeoutException.class)
@@ -87,6 +91,7 @@ public class ExecutorServiceShutdownTest {
             atLeast(1).of(executor).isShutdown(); will(returnValue(false));
         }});
         shutdown(executor).waitingForShutdown(TIMEOUT);
+        context.assertIsSatisfied();
     }
 
     private void awaitingTermination(final boolean result) throws InterruptedException {

@@ -16,12 +16,15 @@
 
 package com.google.code.tempusfugit.temporal;
 
+import com.google.code.tempusfugit.concurrency.ConcurrentTestRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+@RunWith(ConcurrentTestRunner.class)
 public class DeterministicDateFactoryTest {
 
     private final DeterministicDateFactory date = new DeterministicDateFactory();

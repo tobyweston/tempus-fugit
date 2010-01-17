@@ -21,12 +21,14 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static com.google.code.tempusfugit.temporal.Conditions.assertThat;
 import static com.google.code.tempusfugit.temporal.Conditions.isWaiting;
 import static java.lang.Thread.State.*;
 import static org.hamcrest.core.Is.is;
 
+@RunWith(ConcurrentTestRunner.class)
 public class ThreadWaitingConditionTest {
     
     private final Mockery context = new JUnit4Mockery() {{

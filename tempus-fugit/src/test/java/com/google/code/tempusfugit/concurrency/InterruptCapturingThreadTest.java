@@ -19,7 +19,6 @@ package com.google.code.tempusfugit.concurrency;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
-import org.jmock.integration.junit4.JMock;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +36,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-@RunWith(JMock.class)
+@RunWith(ConcurrentTestRunner.class)
 public class InterruptCapturingThreadTest {
 
     private final Mockery context = new Mockery() {{
@@ -50,6 +49,7 @@ public class InterruptCapturingThreadTest {
     @Test (timeout = 500)
     public void interruptingThreadsStackTraceIsRecorded() throws TimeoutException, InterruptedException {
         verify(startSleepingThreadAndInterrupt().getInterrupters());
+        context.assertIsSatisfied();
     }
 
     @Test
@@ -63,6 +63,7 @@ public class InterruptCapturingThreadTest {
             allowing(stream).print(with(any(String.class)));
         }});
         startSleepingThreadAndInterrupt().printStackTraceOfInterruptingThreads(stream);
+        context.assertIsSatisfied();
     }
 
     private InterruptCapturingThread startSleepingThreadAndInterrupt() throws TimeoutException, InterruptedException {

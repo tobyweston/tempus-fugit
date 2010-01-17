@@ -16,9 +16,9 @@
 
 package com.google.code.tempusfugit.temporal;
 
+import com.google.code.tempusfugit.concurrency.ConcurrentTestRunner;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,8 +29,7 @@ import static com.google.code.tempusfugit.temporal.Conditions.assertThat;
 import static com.google.code.tempusfugit.temporal.Conditions.shutdown;
 import static org.hamcrest.core.Is.is;
 
-@RunWith(JMock.class)
-public class ExecutorShutdownConditionTest {
+@RunWith(ConcurrentTestRunner.class)public class ExecutorShutdownConditionTest {
 
     private final Mockery context = new JUnit4Mockery();
 
@@ -40,12 +39,14 @@ public class ExecutorShutdownConditionTest {
     public void shutdownFails() {
         willShutdown(false);
         assertThat(shutdown(service), is(false));
+        context.assertIsSatisfied();
     }
 
     @Test
     public void shutdownOk() {
         willShutdown(true);
         assertThat(shutdown(service), is(true));
+        context.assertIsSatisfied();
     }
 
     private void willShutdown(final boolean shutdown) {

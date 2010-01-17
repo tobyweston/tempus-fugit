@@ -20,6 +20,7 @@ import com.google.code.tempusfugit.temporal.Condition;
 import com.google.code.tempusfugit.temporal.DeterministicDateFactory;
 import com.google.code.tempusfugit.temporal.Duration;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.concurrent.TimeoutException;
 
@@ -36,6 +37,7 @@ import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+@RunWith(ConcurrentTestRunner.class)
 public class InterrupterTest {
 
     private boolean interrupted;
