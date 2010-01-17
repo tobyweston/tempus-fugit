@@ -16,10 +16,10 @@
 
 package com.google.code.tempusfugit.temporal;
 
-import com.google.code.tempusfugit.concurrency.ConcurrentTestRunner;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
+import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +34,7 @@ import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitUntil;
 import static java.lang.Thread.currentThread;
 
-@RunWith(ConcurrentTestRunner.class)
+@RunWith(JMock.class)
 public class WaitForTest {
 
     private final DeterministicDateFactory date = new DeterministicDateFactory();
@@ -51,7 +51,6 @@ public class WaitForTest {
             one(condition).isSatisfied(); will(returnValue(true));
         }});
         waitOrTimeout(condition, TIMEOUT, StopWatch.start(date));
-        context.assertIsSatisfied();
     }
 
     @Test
@@ -61,19 +60,16 @@ public class WaitForTest {
             one(condition).isSatisfied(); inSequence(sequence); will(returnValue(true));
         }});
         waitOrTimeout(condition, TIMEOUT, StopWatch.start(date));
-        context.assertIsSatisfied();
     }
 
     @Test(expected = TimeoutException.class)
     public void timesout() throws TimeoutException, InterruptedException {
         waitOrTimeout(new ForceTimeout(), TIMEOUT, StopWatch.start(date));
-        context.assertIsSatisfied();
     }
 
     @Test (expected = InterruptedException.class, timeout = 500)
     public void waitForCanBeInterrupted() throws TimeoutException, InterruptedException {
         waitOrTimeout(InterruptWaitFor(), seconds(10));
-        context.assertIsSatisfied();
     }
 
     @Test (timeout = 500)
@@ -83,7 +79,6 @@ public class WaitForTest {
         waitForStartup(thread);
         thread.interrupt();
         waitForShutdown(thread);
-        context.assertIsSatisfied();
     }
 
     private Thread threadWaitsForever() {

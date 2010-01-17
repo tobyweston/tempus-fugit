@@ -16,9 +16,7 @@
 
 package com.google.code.tempusfugit.temporal;
 
-import com.google.code.tempusfugit.concurrency.ConcurrentTestRunner;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -28,7 +26,6 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-@RunWith(ConcurrentTestRunner.class)
 public class StopWatchTest {
     private Date date = new Date();
     private StubDateProvider dateFactory = new StubDateProvider(date);

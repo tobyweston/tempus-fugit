@@ -19,6 +19,7 @@ package com.google.code.tempusfugit.concurrency;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.api.Action;
+import org.jmock.integration.junit4.JMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,7 +29,7 @@ import static com.google.code.tempusfugit.concurrency.CallableAdapter.runnable;
 import static org.jmock.Expectations.returnValue;
 import static org.jmock.Expectations.throwException;
 
-@RunWith(ConcurrentTestRunner.class)
+@RunWith(JMock.class)
 public class CallableAdapterTest {
 
     private final Mockery context = new Mockery();
@@ -39,14 +40,12 @@ public class CallableAdapterTest {
     public void delegates() throws Exception {
         callableWill(returnValue(RESULT));
         runnable(callable).run();
-        context.assertIsSatisfied();
     }
 
     @Test(expected = RuntimeException.class)
     public void exceptionBubblesUp() throws Exception {
         callableWill(throwException(new Exception()));
         runnable(callable).run();
-        context.assertIsSatisfied();
     }
 
     private void callableWill(final Action action) throws Exception {
