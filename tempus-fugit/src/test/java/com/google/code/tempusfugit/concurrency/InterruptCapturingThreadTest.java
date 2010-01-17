@@ -28,7 +28,7 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import static com.google.code.tempusfugit.concurrency.ThreadUtils.threadIsWaiting;
+import static com.google.code.tempusfugit.temporal.Conditions.isWaiting;
 import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
@@ -68,9 +68,9 @@ public class InterruptCapturingThreadTest {
     private InterruptCapturingThread startSleepingThreadAndInterrupt() throws TimeoutException, InterruptedException {
         InterruptCapturingThread thread = sleepingThread();
         thread.start();
-        waitOrTimeout(threadIsWaiting(thread), millis(500));
+        waitOrTimeout(isWaiting(thread), millis(500));
         thread.interrupt();
-        waitOrTimeout(not(threadIsWaiting(thread)), millis(500));
+        waitOrTimeout(not(isWaiting(thread)), millis(500));
         return thread;
     }
 

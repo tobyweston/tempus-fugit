@@ -16,7 +16,7 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import com.google.code.tempusfugit.temporal.Condition;
+import com.google.code.tempusfugit.temporal.Conditions;
 import com.google.code.tempusfugit.temporal.Duration;
 
 import java.util.concurrent.ExecutorService;
@@ -49,11 +49,7 @@ public final class ExecutorServiceShutdown {
         if (executor == null)
             return false;
         executor.shutdownNow();
-        waitOrTimeout(new Condition() {
-            public boolean isSatisfied() {
-                return executor.isShutdown();
-            }
-        }, timeout);
+        waitOrTimeout(Conditions.shutdown(executor), timeout);
         return true;
     }
 
