@@ -26,6 +26,8 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.TimeoutException;
 
+import static com.google.code.tempusfugit.temporal.Conditions.isAlive;
+import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
@@ -67,7 +69,7 @@ public class WaitForTest {
 
     @Test (expected = InterruptedException.class, timeout = 500)
     public void waitForCanBeInterrupted() throws TimeoutException, InterruptedException {
-        waitOrTimeout(IntrruptWaitFor(), seconds(10));
+        waitOrTimeout(InterruptWaitFor(), seconds(10));
     }
 
     @Test (timeout = 500)
@@ -92,22 +94,14 @@ public class WaitForTest {
     }
 
     private void waitForStartup(final Thread thread) throws TimeoutException, InterruptedException {
-        waitOrTimeout(new Condition() {
-            public boolean isSatisfied() {
-                return thread.isAlive();
-            }
-        }, seconds(1));
+        waitOrTimeout(isAlive(thread), seconds(1));
     }
 
     private void waitForShutdown(final Thread thread) throws TimeoutException, InterruptedException {
-        waitOrTimeout(new Condition() {
-            public boolean isSatisfied() {
-                return !thread.isAlive();
-            }
-        }, seconds(1));
+        waitOrTimeout(not(isAlive(thread)), seconds(1));
     }
 
-    private Condition IntrruptWaitFor() {
+    private Condition InterruptWaitFor() {
         return new Condition() {
             public boolean isSatisfied() {
                 currentThread().interrupt();

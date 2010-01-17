@@ -16,7 +16,6 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import com.google.code.tempusfugit.temporal.Condition;
 import com.google.code.tempusfugit.temporal.Duration;
 
 public final class ThreadUtils {
@@ -41,14 +40,6 @@ public final class ThreadUtils {
             Thread.currentThread().interrupt();
         }
         return null;
-    }
-
-    public static Condition threadIsWaiting(final Thread thread) {
-        return new Condition() {
-            public boolean isSatisfied() {
-                return thread.getState() == Thread.State.TIMED_WAITING || thread.getState() == Thread.State.WAITING;
-            }
-        };
     }
 
 }

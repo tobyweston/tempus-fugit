@@ -221,18 +221,62 @@ Deadlock detected
          </subsection>
 
          <subsection name="Miscellaneous">
-            <p>Some additional thread utilities include the following</p>
+            <p>
+                The <code><a href="xref/com/google/code/tempusfugit/temporal/Conditions.html">Conditions</a></code> class
+                offers some thread related <code><a href="xref/com/google/code/tempusfugit/temporal/Condition.html">Condition</a></code>s including the following.
+            </p>
             <ul>
-                <li><p><code>ThreadUtils.threadIsWaiting</code></p>
-            <p>The static method <code>ThreadUtils.threadIsWaiting(Thread)</code> offers a <code><a href="xref/com/google/code/tempusfugit/temporal/Condition.html">Condition</a></code>
-             that allows you to test if a thread is waiting. Combining the condition with some classes from the <a href="time.html#Conditions_and_Waiting">temporal</a> package allows you to wait for a
-             thread to <b>not</b> be in the waiting state, for example. Using tempus-fugit, you would express is something like the following.
-         </p>
-             <source>waitOrTimeout(not(threadIsWaiting(thread)), seconds(10)); </source>
-            </li>
+                <li><p><code>Conditions.isWaiting(Thread thread)</code></p>
+                    <p>
+                        The static method <code>Conditions.isWaiting(Thread)</code> offers a Condition that allows you to test
+                        if a thread is in a waiting state. Combining the condition with some classes from the
+                        <a href="time.html#Conditions_and_Waiting">temporal</a> package allows you to wait for a
+                        thread to be in the waiting state. For example,
+                    </p>
+                    <source>waitOrTimeout(isWaiting(thread), seconds(10)); </source>
+                    </li>
+
+                <li><p><code>Conditions.is(Thread thread, Thread.State state)</code></p>
+                    <p>
+                        The static method <code>Conditions.is(Thread, ThreadState)</code> offers a more general purpose
+                        <code>Condition</code> to check that a thread is in a given state. For example,
+                    </p>
+                    <source>waitOrTimeout(is(thread, TERMINATED), seconds(10)); </source>
+                </li>
+
+                <li><p><code>Conditions.isAlive(Thread thread)</code></p>
+                    <p>
+                        The static method <code>Conditions.isAlive(Thread</code> will check that a thread is alive. A
+                        thread is alive if it has been started and has not yet died. For example,
+                    </p>
+                    <source>System.out.println(isAlive(Thread.currentThread())); </source>
+                </li>
+
+                <li><p><code>Conditions.shutdown(ExecutorService service)</code></p>
+                    <p>
+                        This method will check that a <code>java.util.concurrent.ExecutorService</code> has been
+                        shutdown according to the result of the it's <code>isShutdown</code> method. This might be
+                        useful if you'd like to wait for shutdown. The tempus-fugit
+                        <code><a href="xref/com/google/code/tempusfugit/concurrency/ExecutorServiceShutdown.html">ExecutorServiceShutdown</a></code>
+                        class does just this.
+                    </p>
+                    <source>waitOrTimeout(Conditions.shutdown(executor), timeout);</source>
+                </li>
+
+                <li><p><code>Conditions.not(Condition condition)</code></p>
+                    <p>
+                        The <code>NotCondition</code> will negate the logical result of some other given condition. For
+                        example, we can change the example above to wait until a thread is <i>not</i> in a waiting state
+                        by using the following.
+                    </p>
+                    <source>waitOrTimeout(not(isWaiting(thread)), seconds(10)); </source>
+                </li>
+
                 <li>
-             <p>As a convenience class, the <code><a href="xref/com/google/code/tempusfugit/concurrency/DefaultThreadFactory.html">DefaultThreadFactory</a></code> offers an implementation of <code>java.util.concurrent.ThreadFactory</code>
-             that creates a thread using the single argument constructor of <code>Thread</code>.</p>
+                    <p>
+                        As a convenience class, the <code><a href="xref/com/google/code/tempusfugit/concurrency/DefaultThreadFactory.html">DefaultThreadFactory</a></code> offers an implementation of <code>java.util.concurrent.ThreadFactory</code>
+                        that creates a thread using the single argument constructor of <code>Thread</code>.
+                    </p>
                  </li>          
             </ul>
 

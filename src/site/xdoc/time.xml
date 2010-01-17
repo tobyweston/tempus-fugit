@@ -95,6 +95,22 @@ private void waitForShutdown() throws TimeoutException {
                 collects useful <code>Condition</code> objects such as <code>not</code>. There is also a useful <code>Condition</code>
                 to indicate if a thread is in a waiting state in <code>ThreadUtils</code>.
             </p>
+            <p>
+                Some common thread related conditions have been collected in the <code><a href="xref/com/google/code/tempusfugit/temporal/Conditions.html">Conditions</a></code>
+                class. These include a <i>not</i> condition to invert the result of some other condition and various
+                thread state related conditions such as checking if a a thread alive. See the <a href="concurrency.html#Miscellaneous">miscellaneous thread utils</a>
+                section for details.
+            </p>
+            <p>
+                For testing purposes, you might want to assert against the outcome of a <code>Condition</code>. The
+                <code>Conditions</code> class has an <code>assertThat</code> method which takes a <code>Matcher&lt;Boolean&gt;</code>
+                for use with junit. For example, you could assert against a condition using vanilla junit like this.
+            </p>
+                <source>Assert.assertThat(not(TRUE).isSatisfied(), is(false)); </source>
+            <p>
+                or using the <code>Conditions</code> class, you can tidy the assert up to look like this. 
+            </p>
+                <source>Conditions.assertThat(not(TRUE), is(false)); </source>
             </subsection>
 
             <subsection name="WaitFor">

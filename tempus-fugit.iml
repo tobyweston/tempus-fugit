@@ -150,7 +150,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" exported="" name="Maven: junit:junit:4.7" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:4.7" level="project" />
     <orderEntry type="library" name="Maven: org.jmock:jmock:2.5.1" level="project" />
     <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
     <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-library:1.1" level="project" />

@@ -18,11 +18,11 @@ package com.google.code.tempusfugit.temporal;
 
 import org.junit.Test;
 
+import static com.google.code.tempusfugit.temporal.Conditions.assertThat;
 import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
-public class ConditionsTest {
+public class NotConditionTest {
 
     private Condition TRUE = new Condition() {
         public boolean isSatisfied() {
@@ -38,7 +38,7 @@ public class ConditionsTest {
 
     @Test
     public void notCondition() {
-        assertThat(not(TRUE).isSatisfied(), is(false));
-        assertThat(not(FALSE).isSatisfied(), is(true));
+        assertThat(not(TRUE), is(false)); ;
+        assertThat(not(FALSE), is(true));
     }
 }

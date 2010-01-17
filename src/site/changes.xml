@@ -21,12 +21,9 @@
         <author>Toby Weston</author>
     </properties>
     <body>
-        <release version="1.0" date="TBA" description="Current version">
-            <action dev="toby.weston" type="add" issue="1" system="google">
-                Added hours to Duration.
-            </action>
-            <action dev="toby.weston" type="fix" issue="2" system="google">
-                Added support for JUnit 4.7 in the IntermittentTestRunner and ConcurrentTestRunner.
+        <release version="1.0" date="17 January 2010" description="Initial release">
+            <action dev="toby.weston" type="add">
+                Initial release.
             </action>
         </release>
     </body>

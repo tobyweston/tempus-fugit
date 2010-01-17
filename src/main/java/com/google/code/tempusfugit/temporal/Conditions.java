@@ -16,11 +16,44 @@
 
 package com.google.code.tempusfugit.temporal;
 
+import org.hamcrest.Matcher;
+import org.junit.Assert;
+
+import java.util.concurrent.ExecutorService;
+
+import static java.lang.Thread.State.TIMED_WAITING;
+import static java.lang.Thread.State.WAITING;
+
 public final class Conditions {
 
     public static Condition not(Condition condition) {
         return new NotCondition(condition);
     }
+
+    public static Condition shutdown(ExecutorService service) {
+        return new ExecutorShutdownCondition(service);
+    }
+
+    public static Condition isAlive(Thread thread) {
+        return new ThreadAliveCondition(thread);
+    }
+
+    public static Condition isWaiting(Thread thread) {
+        return new ThreadWaitingCondition(thread);
+    }
+
+    public static Condition is(Thread thread, Thread.State state) {
+        return new ThreadStateCondition(thread, state);
+    }
+
+    public static void assertThat(Condition condition, Matcher<Boolean> booleanMatcher) {
+        Assert.assertThat(condition.isSatisfied(), booleanMatcher);
+    }
+
+    public static void assertThat(String message, Condition condition, Matcher<Boolean> booleanMatcher) {
+        Assert.assertThat(message, condition.isSatisfied(), booleanMatcher);
+    }
+
 
     private static class NotCondition implements Condition {
 
@@ -35,4 +68,55 @@ public final class Conditions {
         }
     }
 
+    private static class ExecutorShutdownCondition implements Condition {
+
+        private final ExecutorService executor;
+
+        public ExecutorShutdownCondition(ExecutorService executor) {
+            this.executor = executor;
+        }
+
+        public boolean isSatisfied() {
+            return executor.isShutdown();
+        }
+    }
+
+    private static class ThreadAliveCondition implements Condition {
+        private final Thread thread;
+
+        public ThreadAliveCondition(Thread thread) {
+            this.thread = thread;
+        }
+
+        public boolean isSatisfied() {
+            return thread.isAlive();
+        }
+    }
+
+    private static class ThreadWaitingCondition implements Condition {
+        private final Thread thread;
+
+        public ThreadWaitingCondition(Thread thread) {
+            this.thread = thread;
+        }
+
+        public boolean isSatisfied() {
+            return (thread.getState() == TIMED_WAITING) || (thread.getState() == WAITING);
+        }
+    }
+
+    private static class ThreadStateCondition implements Condition {
+        private final Thread thread;
+        private final Thread.State state;
+
+        public ThreadStateCondition(Thread thread, Thread.State state) {
+            this.thread = thread;
+            this.state = state;
+        }
+
+        public boolean isSatisfied() {
+            return thread.getState() == state;
+        }
+
+    }
 }

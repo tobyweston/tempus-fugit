@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.TimeoutException;
 
-import static com.google.code.tempusfugit.concurrency.ThreadUtils.threadIsWaiting;
+import static com.google.code.tempusfugit.temporal.Conditions.isWaiting;
 import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
@@ -40,7 +40,6 @@ public class ThreadUtilsTest {
         setImposteriser(ClassImposteriser.INSTANCE);
     }};
     private final Interruptible interruptible = context.mock(Interruptible.class);
-    private final Thread thread = context.mock(Thread.class);
 
     @Test
     public void resetInterruptFlagReturnsValue() throws InterruptedException {
@@ -70,32 +69,8 @@ public class ThreadUtilsTest {
         assertThat(thread.getName() + " wasn't interrupted", thread.hasBeenInterrupted(), is(true));
     }
 
-    @Test
-    public void threadIsInTimedWaitingState() {
-        context.checking(new Expectations() {{
-            allowing(thread).getState(); will(returnValue(Thread.State.TIMED_WAITING));
-        }});
-        assertThat(ThreadUtils.threadIsWaiting(thread).isSatisfied(), is(true));
-    }
-
-    @Test
-    public void threadIsInWaitingState() {
-        context.checking(new Expectations() {{
-            allowing(thread).getState(); will(returnValue(Thread.State.WAITING));
-        }});
-        assertThat(ThreadUtils.threadIsWaiting(thread).isSatisfied(), is(true));
-    }
-    
-    @Test
-    public void threadIsNotInWaitingState() {
-        context.checking(new Expectations() {{
-            allowing(thread).getState(); will(returnValue(Thread.State.BLOCKED));
-        }});
-        assertThat(ThreadUtils.threadIsWaiting(thread).isSatisfied(), is(false));
-    }
-
     private void waitForStartup(Thread thread) throws TimeoutException, InterruptedException {
-        waitOrTimeout(threadIsWaiting(thread), seconds(10));
+        waitOrTimeout(isWaiting(thread), seconds(10));
     }
 
     private InterruptedIndicatingThread threadSleepsForever() {
@@ -107,7 +82,7 @@ public class ThreadUtilsTest {
     }
 
     private void waitForShutdown(final Thread thread) throws TimeoutException, InterruptedException {
-        waitOrTimeout(not(threadIsWaiting(thread)), seconds(10));
+        waitOrTimeout(not(isWaiting(thread)), seconds(10));
     }
 
 }
