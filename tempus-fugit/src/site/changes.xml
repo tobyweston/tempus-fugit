@@ -21,7 +21,11 @@
         <author>Toby Weston</author>
     </properties>
     <body>
-        <release version="1.1-SNAPSHOT" date="TBA" description="Current snapshot version" />
+        <release version="1.1-SNAPSHOT" date="TBA" description="Current snapshot version">
+            <action dev="toby.weston" date="21 January 2010" type="fix" issue="4" system="google">
+                InterruptCapturingThread non-final. It's designed to be sub-classed.
+            </action>
+        </release>
         <release version="1.0" date="17 January 2010" description="Initial release">
             <action dev="toby.weston" type="add">
                 Initial release.

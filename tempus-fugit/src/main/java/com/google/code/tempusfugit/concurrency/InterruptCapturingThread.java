@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public final class InterruptCapturingThread extends Thread {
+public class InterruptCapturingThread extends Thread {
 
     private final CopyOnWriteArrayList<StackTraceElement[]> interrupterStackTraces = new CopyOnWriteArrayList<StackTraceElement[]>();
 
