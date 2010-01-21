@@ -63,6 +63,15 @@
                 <role>Java Developer</role>
             </roles>
         </developer>
+        <developer>
+            <id>mrraymondbarlow</id>
+            <name>"Papa" Ray Barlow</name>
+            <email>rbarlow at raymanoz dot com</email>
+            <organization />
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
     </developers>
 
     <!-- Workaround for SUREFIRE-300 -->

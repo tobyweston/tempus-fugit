@@ -36,7 +36,7 @@
                 Snapshot versions are <b>subject to change</b> without notice. The version of this documentation refers
                 to is indicated in the top right and may differ to previous stable releases. Although we'll try not to
                 alter the API significantly, any changes to the API are documented in the <a href="changes-report.html">change report</a>.
-                You can always <a href="http://code.google.com/p/tempus-fugit/source/checkout">checkout directly form Subversion</a> if your millage varies.
+                You can always <a href="http://code.google.com/p/tempus-fugit/source/checkout">checkout directly from Subversion</a> if your millage varies.
             </p>
         </subsection>
         </section>
