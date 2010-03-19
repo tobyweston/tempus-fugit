@@ -17,7 +17,16 @@
   -->
 <project default="copy-documentation" basedir=".">
 
-    <property name="documentation.folder" value="../documentation"/>
+    <!--
+    Full check out structure should look like
+
+    /
+    ├───site
+    ├───skin
+    └─── tempus-fugit
+
+    -->
+    <property name="documentation.folder" value="../site/documentation"/>
     <property name="site.folder" value="target/site"/>
 
     <target name="copy-documentation" description="copy artifacts from mvn site to documentation folder ready for svn to commit">
