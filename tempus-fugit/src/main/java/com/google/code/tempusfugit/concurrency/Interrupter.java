@@ -20,6 +20,7 @@ import com.google.code.tempusfugit.temporal.*;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import static com.google.code.tempusfugit.temporal.Timeout.*;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitUntil;
 import static java.lang.Thread.currentThread;
 
@@ -47,7 +48,7 @@ public final class Interrupter {
     }
 
     public Interrupter after(final Duration duration) {
-        final Timeout timeout = timeout(duration);
+        final Timeout timeout = timeout(duration, startStopWatch());
         interrupterThread = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -67,10 +68,6 @@ public final class Interrupter {
     public void cancel() {
         if (interrupterThread.isAlive())
             interrupterThread.interrupt();
-    }
-
-    private Timeout timeout(Duration duration) {
-        return new Timeout(duration, startStopWatch());
     }
 
     private StopWatch startStopWatch() {

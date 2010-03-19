@@ -28,7 +28,7 @@ public class TimeoutTest {
 
     @Test
     public void timeoutExpires(){
-        Timeout timeout = new Timeout(millis(5), StopWatch.start(date));
+        Timeout timeout = Timeout.timeout(millis(5), StopWatch.start(date));
 
         date.setTime(millis(0));
         assertThat(timeout.hasExpired(), is(false));
@@ -42,12 +42,12 @@ public class TimeoutTest {
 
     @Test (expected = IllegalArgumentException.class)
     public void zeroTimeout(){
-        new Timeout(millis(0), StopWatch.start(date));
+        Timeout.timeout(millis(0), StopWatch.start(date));
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void negativeTimeout(){
-        new Timeout(millis(-1), StopWatch.start(date));
+        Timeout.timeout(millis(-1), StopWatch.start(date));
     }
 
 }

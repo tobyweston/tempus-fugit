@@ -31,6 +31,7 @@ import static com.google.code.tempusfugit.temporal.Conditions.isAlive;
 import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
+import static com.google.code.tempusfugit.temporal.Timeout.*;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitUntil;
 import static java.lang.Thread.currentThread;
@@ -44,14 +45,14 @@ public class WaitForTest {
 
     private final Sequence sequence = context.sequence("sequence");
     private final Condition condition = context.mock(Condition.class);
-    private static final Duration TIMEOUT = millis(10);
+    private static final Duration DURATION = millis(10);
 
     @Test
     public void whenConditionPassesWaitContinues() throws TimeoutException, InterruptedException {
         context.checking(new Expectations(){{
             one(condition).isSatisfied(); will(returnValue(true));
         }});
-        waitOrTimeout(condition, new Timeout(TIMEOUT, StopWatch.start(date)));
+        waitOrTimeout(condition, timeout(DURATION, StopWatch.start(date)));
     }
 
     @Test
@@ -60,17 +61,17 @@ public class WaitForTest {
             one(condition).isSatisfied(); inSequence(sequence); will(returnValue(false));
             one(condition).isSatisfied(); inSequence(sequence); will(returnValue(true));
         }});
-        waitOrTimeout(condition, new Timeout(TIMEOUT, StopWatch.start(date)));
+        waitOrTimeout(condition, timeout(DURATION, StopWatch.start(date)));
     }
 
     @Test(expected = TimeoutException.class)
     public void timesout() throws TimeoutException, InterruptedException {
-        waitOrTimeout(new ForceTimeout(), new Timeout(TIMEOUT, StopWatch.start(date)));
+        waitOrTimeout(new ForceTimeout(), timeout(DURATION, StopWatch.start(date)));
     }
 
     @Test (expected = InterruptedException.class, timeout = 500)
     public void waitForCanBeInterrupted() throws TimeoutException, InterruptedException {
-        waitOrTimeout(InterruptWaitFor(), new Timeout(seconds(10)));
+        waitOrTimeout(InterruptWaitFor(), timeout(seconds(10)));
     }
 
     @Test (timeout = 500)
@@ -82,17 +83,11 @@ public class WaitForTest {
         waitForShutdown(thread);
     }
 
-    @Test
-    @Ignore
-    public void sleepPeriodShouldBeConfigurable() {
-
-    }
-
     private Thread threadWaitsForever() {
         return new Thread(new Runnable() {
             public void run() {
                 try {
-                    waitUntil(new Timeout(seconds(1), StopWatch.start(date)));
+                    waitUntil(timeout(seconds(1), StopWatch.start(date)));
                 } catch (InterruptedException e) {
                     currentThread().interrupt();
                 }
@@ -101,11 +96,11 @@ public class WaitForTest {
     }
 
     private void waitForStartup(final Thread thread) throws TimeoutException, InterruptedException {
-        waitOrTimeout(isAlive(thread), new Timeout(seconds(1)));
+        waitOrTimeout(isAlive(thread), timeout(seconds(1)));
     }
 
     private void waitForShutdown(final Thread thread) throws TimeoutException, InterruptedException {
-        waitOrTimeout(not(isAlive(thread)), new Timeout(seconds(1)));
+        waitOrTimeout(not(isAlive(thread)), timeout(seconds(1)));
     }
 
     private Condition InterruptWaitFor() {
@@ -119,7 +114,7 @@ public class WaitForTest {
 
     private class ForceTimeout implements Condition {
         public boolean isSatisfied() {
-            date.setTime(TIMEOUT.plus(millis(1)));
+            date.setTime(DURATION.plus(millis(1)));
             return false;
         }
     }

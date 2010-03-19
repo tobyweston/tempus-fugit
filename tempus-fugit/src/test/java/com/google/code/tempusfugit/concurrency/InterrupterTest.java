@@ -19,6 +19,7 @@ package com.google.code.tempusfugit.concurrency;
 import com.google.code.tempusfugit.temporal.Condition;
 import com.google.code.tempusfugit.temporal.DeterministicDateFactory;
 import com.google.code.tempusfugit.temporal.Duration;
+import com.google.code.tempusfugit.temporal.Timeout;
 import org.junit.Test;
 
 import java.util.concurrent.TimeoutException;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeoutException;
 import static com.google.code.tempusfugit.concurrency.Interrupter.interrupt;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
+import static com.google.code.tempusfugit.temporal.Timeout.*;
 import static com.google.code.tempusfugit.temporal.WaitFor.SLEEP_PERIOD;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static java.lang.Thread.currentThread;
@@ -106,7 +108,7 @@ public class InterrupterTest {
                 public boolean isSatisfied() {
                     return interrupted;
                 }
-            }, duration);
+            }, timeout(duration));
         } catch (InterruptedException e) {
             fail();
         }

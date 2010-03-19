@@ -19,6 +19,7 @@ package com.google.code.tempusfugit.temporal;
 import java.util.concurrent.TimeoutException;
 
 import static com.google.code.tempusfugit.temporal.Duration.millis;
+import static com.google.code.tempusfugit.temporal.Timeout.*;
 
 public final class WaitFor {
 
@@ -36,12 +37,12 @@ public final class WaitFor {
 
     @Deprecated
     public static void waitOrTimeout(Condition condition, final Duration duration) throws TimeoutException, InterruptedException {
-        waitOrTimeout(condition, new Timeout(duration));
+        waitOrTimeout(condition, timeout(duration));
     }
 
     @Deprecated
     public static void waitOrTimeout(Condition condition, final Duration duration, final StopWatch stopWatch) throws TimeoutException, InterruptedException {
-        waitOrTimeout(condition, new Timeout(duration, stopWatch));
+        waitOrTimeout(condition, timeout(duration, stopWatch));
     }
 
     public static void waitUntil(Timeout timeout) throws InterruptedException {

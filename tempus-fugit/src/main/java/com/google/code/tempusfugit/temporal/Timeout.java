@@ -22,11 +22,20 @@ public final class Timeout {
     private StopWatch stopWatch;
 
     /** @since 1.1 */
-    public Timeout(Duration duration) {
-        this(duration, startDefaultStopWatch());
+    public static Timeout timeout(Duration duration) {
+        return new Timeout(duration);
     }
 
-    public Timeout(final Duration duration, final StopWatch stopWatch) {
+    /** @since 1.1 */
+    public static Timeout timeout(final Duration duration, final StopWatch stopWatch) {
+        return new Timeout(duration, stopWatch);
+    }
+
+    private Timeout(Duration duration) {
+        this(duration, startStopWatch());
+    }
+
+    private Timeout(final Duration duration, final StopWatch stopWatch) {
         if (duration.inMillis() <= 0)
             throw new IllegalArgumentException();
         this.duration = duration;
@@ -37,8 +46,7 @@ public final class Timeout {
         return stopWatch.markAndGetTotalElapsedTime().greaterThan(duration);
     }
 
-    private static StopWatch startDefaultStopWatch() {
+    private static StopWatch startStopWatch() {
         return StopWatch.start(new DefaultDateFactory());
     }
-
 }
