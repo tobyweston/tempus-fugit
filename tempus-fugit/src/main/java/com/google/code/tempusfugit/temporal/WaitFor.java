@@ -27,15 +27,21 @@ public final class WaitFor {
     private WaitFor() {
     }
 
-    public static void waitOrTimeout(Condition condition, final Duration duration) throws TimeoutException, InterruptedException {
-        waitOrTimeout(condition, duration, startDefaultStopWatch());
-    }
-
-    public static void waitOrTimeout(Condition condition, final Duration duration, final StopWatch stopWatch) throws TimeoutException, InterruptedException {
-        final Timeout timeout = new Timeout(duration, stopWatch);
+    /** @since 1.1 */
+    public static void waitOrTimeout(Condition condition, Timeout timeout) throws InterruptedException, TimeoutException {
         if (success(condition, timeout))
             return;
         throw new TimeoutException();
+    }
+
+    @Deprecated
+    public static void waitOrTimeout(Condition condition, final Duration duration) throws TimeoutException, InterruptedException {
+        waitOrTimeout(condition, new Timeout(duration));
+    }
+
+    @Deprecated
+    public static void waitOrTimeout(Condition condition, final Duration duration, final StopWatch stopWatch) throws TimeoutException, InterruptedException {
+        waitOrTimeout(condition, new Timeout(duration, stopWatch));
     }
 
     public static void waitUntil(Timeout timeout) throws InterruptedException {
@@ -51,10 +57,6 @@ public final class WaitFor {
             Thread.sleep(SLEEP_PERIOD.inMillis());
         }
         return false;
-    }
-
-    private static StopWatch startDefaultStopWatch() {
-        return StopWatch.start(new DefaultDateFactory());
     }
 
 }

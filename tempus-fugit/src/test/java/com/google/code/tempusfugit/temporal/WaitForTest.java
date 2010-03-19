@@ -21,6 +21,7 @@ import org.jmock.Mockery;
 import org.jmock.Sequence;
 import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,7 +51,7 @@ public class WaitForTest {
         context.checking(new Expectations(){{
             one(condition).isSatisfied(); will(returnValue(true));
         }});
-        waitOrTimeout(condition, TIMEOUT, StopWatch.start(date));
+        waitOrTimeout(condition, new Timeout(TIMEOUT, StopWatch.start(date)));
     }
 
     @Test
@@ -59,17 +60,17 @@ public class WaitForTest {
             one(condition).isSatisfied(); inSequence(sequence); will(returnValue(false));
             one(condition).isSatisfied(); inSequence(sequence); will(returnValue(true));
         }});
-        waitOrTimeout(condition, TIMEOUT, StopWatch.start(date));
+        waitOrTimeout(condition, new Timeout(TIMEOUT, StopWatch.start(date)));
     }
 
     @Test(expected = TimeoutException.class)
     public void timesout() throws TimeoutException, InterruptedException {
-        waitOrTimeout(new ForceTimeout(), TIMEOUT, StopWatch.start(date));
+        waitOrTimeout(new ForceTimeout(), new Timeout(TIMEOUT, StopWatch.start(date)));
     }
 
     @Test (expected = InterruptedException.class, timeout = 500)
     public void waitForCanBeInterrupted() throws TimeoutException, InterruptedException {
-        waitOrTimeout(InterruptWaitFor(), seconds(10));
+        waitOrTimeout(InterruptWaitFor(), new Timeout(seconds(10)));
     }
 
     @Test (timeout = 500)
@@ -79,6 +80,12 @@ public class WaitForTest {
         waitForStartup(thread);
         thread.interrupt();
         waitForShutdown(thread);
+    }
+
+    @Test
+    @Ignore
+    public void sleepPeriodShouldBeConfigurable() {
+
     }
 
     private Thread threadWaitsForever() {
@@ -94,11 +101,11 @@ public class WaitForTest {
     }
 
     private void waitForStartup(final Thread thread) throws TimeoutException, InterruptedException {
-        waitOrTimeout(isAlive(thread), seconds(1));
+        waitOrTimeout(isAlive(thread), new Timeout(seconds(1)));
     }
 
     private void waitForShutdown(final Thread thread) throws TimeoutException, InterruptedException {
-        waitOrTimeout(not(isAlive(thread)), seconds(1));
+        waitOrTimeout(not(isAlive(thread)), new Timeout(seconds(1)));
     }
 
     private Condition InterruptWaitFor() {

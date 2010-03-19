@@ -21,6 +21,11 @@ public final class Timeout {
     private Duration duration;
     private StopWatch stopWatch;
 
+    /** @since 1.1 */
+    public Timeout(Duration duration) {
+        this(duration, startDefaultStopWatch());
+    }
+
     public Timeout(final Duration duration, final StopWatch stopWatch) {
         if (duration.inMillis() <= 0)
             throw new IllegalArgumentException();
@@ -30,6 +35,10 @@ public final class Timeout {
 
     public boolean hasExpired() {
         return stopWatch.markAndGetTotalElapsedTime().greaterThan(duration);
+    }
+
+    private static StopWatch startDefaultStopWatch() {
+        return StopWatch.start(new DefaultDateFactory());
     }
 
 }
