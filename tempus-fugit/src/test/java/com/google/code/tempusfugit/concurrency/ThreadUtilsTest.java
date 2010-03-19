@@ -16,6 +16,7 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import com.google.code.tempusfugit.temporal.Timeout;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeoutException;
 import static com.google.code.tempusfugit.temporal.Conditions.isWaiting;
 import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
+import static com.google.code.tempusfugit.temporal.Timeout.*;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -70,7 +72,7 @@ public class ThreadUtilsTest {
     }
 
     private void waitForStartup(Thread thread) throws TimeoutException, InterruptedException {
-        waitOrTimeout(isWaiting(thread), seconds(10));
+        waitOrTimeout(isWaiting(thread), timeout(seconds(10)));
     }
 
     private InterruptedIndicatingThread threadSleepsForever() {
@@ -82,7 +84,7 @@ public class ThreadUtilsTest {
     }
 
     private void waitForShutdown(final Thread thread) throws TimeoutException, InterruptedException {
-        waitOrTimeout(not(isWaiting(thread)), seconds(10));
+        waitOrTimeout(not(isWaiting(thread)), timeout(seconds(10)));
     }
 
 }

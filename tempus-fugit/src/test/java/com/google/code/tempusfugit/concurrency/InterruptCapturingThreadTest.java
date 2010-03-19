@@ -16,6 +16,7 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import com.google.code.tempusfugit.temporal.Timeout;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 import static com.google.code.tempusfugit.temporal.Conditions.isWaiting;
 import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
+import static com.google.code.tempusfugit.temporal.Timeout.*;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.core.Is.is;
@@ -68,9 +70,9 @@ public class InterruptCapturingThreadTest {
     private InterruptCapturingThread startSleepingThreadAndInterrupt() throws TimeoutException, InterruptedException {
         InterruptCapturingThread thread = sleepingThread();
         thread.start();
-        waitOrTimeout(isWaiting(thread), millis(500));
+        waitOrTimeout(isWaiting(thread), timeout(millis(500)));
         thread.interrupt();
-        waitOrTimeout(not(isWaiting(thread)), millis(500));
+        waitOrTimeout(not(isWaiting(thread)), timeout(millis(500)));
         return thread;
     }
 
@@ -89,7 +91,7 @@ public class InterruptCapturingThreadTest {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
-                    // this is supossed to happen
+                    // this is supposed to happen
                 }
             }
         }, "thread-to-interrupt");

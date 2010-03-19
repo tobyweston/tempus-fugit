@@ -45,6 +45,8 @@ public class WaitForTest {
 
     private final Sequence sequence = context.sequence("sequence");
     private final Condition condition = context.mock(Condition.class);
+    private final Sleeper sleeper = context.mock(Sleeper.class);
+
     private static final Duration DURATION = millis(10);
 
     @Test
@@ -81,6 +83,16 @@ public class WaitForTest {
         waitForStartup(thread);
         thread.interrupt();
         waitForShutdown(thread);
+    }
+
+    @Test
+    public void sleepPeriodShouldBeConfigurable() throws TimeoutException, InterruptedException {
+        context.checking(new Expectations(){{
+            one(condition).isSatisfied(); inSequence(sequence); will(returnValue(false));
+            one(condition).isSatisfied(); inSequence(sequence); will(returnValue(true));
+            atLeast(1).of(sleeper).sleep();
+        }});
+        waitOrTimeout(condition, timeout(millis(100)), sleeper);
     }
 
     private Thread threadWaitsForever() {

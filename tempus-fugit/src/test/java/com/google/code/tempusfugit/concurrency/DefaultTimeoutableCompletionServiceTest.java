@@ -17,10 +17,7 @@
 package com.google.code.tempusfugit.concurrency;
 
 
-import com.google.code.tempusfugit.temporal.Condition;
-import com.google.code.tempusfugit.temporal.DateFactory;
-import com.google.code.tempusfugit.temporal.DefaultDateFactory;
-import com.google.code.tempusfugit.temporal.Duration;
+import com.google.code.tempusfugit.temporal.*;
 import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -40,6 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
+import static com.google.code.tempusfugit.temporal.Timeout.*;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static java.util.Arrays.asList;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
@@ -149,7 +147,7 @@ public class DefaultTimeoutableCompletionServiceTest {
                 public boolean isSatisfied() {
                     return interrupted.get();
                 }
-            }, seconds(10));
+            }, timeout(seconds(10)));
         }
     }
 

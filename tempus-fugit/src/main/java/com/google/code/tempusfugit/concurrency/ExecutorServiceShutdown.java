@@ -18,11 +18,15 @@ package com.google.code.tempusfugit.concurrency;
 
 import com.google.code.tempusfugit.temporal.Conditions;
 import com.google.code.tempusfugit.temporal.Duration;
+import com.google.code.tempusfugit.temporal.Timeout;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeoutException;
 
 import static com.google.code.tempusfugit.concurrency.ThreadUtils.resetInterruptFlagWhen;
+import static com.google.code.tempusfugit.temporal.Timeout.*;
+import static com.google.code.tempusfugit.temporal.Timeout.*;
+import static com.google.code.tempusfugit.temporal.Timeout.*;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -45,12 +49,18 @@ public final class ExecutorServiceShutdown {
         return resetInterruptFlagWhen(awaitingTerminationIsInterrupted(duration));
     }
 
-    public Boolean waitingForShutdown(Duration timeout) throws TimeoutException, InterruptedException {
+    /** @since 1.1 */
+    public Boolean waitingForShutdown(Timeout timeout) throws TimeoutException, InterruptedException {
         if (executor == null)
             return false;
         executor.shutdownNow();
         waitOrTimeout(Conditions.shutdown(executor), timeout);
         return true;
+    }
+
+    @Deprecated
+    public Boolean waitingForShutdown(Duration timeout) throws TimeoutException, InterruptedException {
+        return waitingForShutdown(timeout(timeout));
     }
 
     private Interruptible<Boolean> awaitingTerminationIsInterrupted(final Duration timeout) {
