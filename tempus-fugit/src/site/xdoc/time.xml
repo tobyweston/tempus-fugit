@@ -122,17 +122,40 @@ private void waitForShutdown() throws TimeoutException {
                     <li><p><code>waitOrTimeout</code></p></li>
                     <li><p><code>waitUntil</code></p></li>
                 </ul>
-                <p>
+                <p>                                 
                     The <code>waitOrTimeout</code> will wait until the condition is satisfied or timeout after a specified
-                    <code>Duration</code>. The <code>waitUntil</code> waits until a given timeout without checking against any
-                    condition. Both methods can be interrupted and so throw an <code>InterruptedException</code>.
+                    <code>Timeout</code>. The <code>waitUntil</code> waits until a given timeout without checking against any
+                    condition. Both methods can be interrupted and so throw an <code>InterruptedException</code>. The sleep
+                    period between condition checks is defaulted but since version 1.1 can be overridden (by passing in
+                    a implementation of <code><a href="xref/com/google/code/tempusfugit/temporal/Sleeper.html">Sleeper</a></code>
+                    such as <code><a href="xref/com/google/code/tempusfugit/temporal/ThreadSleeper.html">ThreadSleeper</a></code>).
                 </p>
+                <p>
+                   For example, waiting for a thread to move into a waiting state can be implemented like this;
+               </p>
+<source>
+private void waitForStartup(final Thread thread) throws TimeoutException, InterruptedException {
+    waitOrTimeout(new Condition() {
+        public boolean isSatisfied() {
+            return (thread.getState() == TIMED_WAITING) || (thread.getState() == WAITING);
+        }
+    }, timeout(seconds(10)));
+} </source>
+              <p>
+                  Where <code>WaitFor.waitOrTime</code> has been statically imported and <code>Timeout.timeout</code> is a
+                  static constructor for a <code>Timeout</code> object.
+              </p>
+              <p>
+                  See the <a href="concurrency.html#Miscellaneous">concurrency</a> section for a set of pre-defined <code>Condition</code>s.
+              </p>
             </subsection>
 
             <subsection name="Timeouts">
             <p>
-                The <code>Timeout</code> class takes a <code>Duration</code> representing a period after which a timeout
-                has occurred. The timeout status of the object is checked using the <code>hasExpired</code> method.
+                The <code><a href="xref/com/google/code/tempusfugit/temporal/Timeout.html">Timeout</a></code> class takes 
+                a <code>Duration</code> representing a period after which a timeout has occurred. The timeout status of
+                the object is checked using the <code>hasExpired</code> method. <b>Note</b> that the timeout uses a
+                <code>StopWatch</code> internally and that the stop watch is started on construction.
             </p>
             <p>
                 <code>Timeout</code> class is combined with a <code>Condition</code> to implement the <code>waitUntil</code>
@@ -145,15 +168,17 @@ private void waitForShutdown() throws TimeoutException {
             <subsection name="Stop Watches">
             <p>
                 The <code><a href="xref/com/google/code/tempusfugit/temporal/StopWatch.html">StopWatch</a></code> class allows you to record the length of time taken between starting and stopping
-                the watch. It's used internally with the <code>WaitFor.waitUntil(Timeout timeout, ...)</code> class.
-            </p>
+                the watch. It's used internally with the <code>WaitFor.waitUntil(Timeout timeout, ...)</code> class. <b>Note</b>
+                that the stop watch will start on construction.
+            </p>           
             </subsection>
+
             <subsection name="Controlling Time with a Date Factory">
             <p>
                 The <code><a href="xref/com/google/code/tempusfugit/temporal/DateFactory">DateFactory</a></code> interface along with its default implementation
                 <code><a href="xref/com/google/code/tempusfugit/temporal/DefaultDateFactory">DefaultDateFactory</a></code>
                 are aimed at making testing classes that require a date easier. Rather than pass around <code>java.util.Date</code>
-                classes around which will return the current date when constructed, you can pass around a factory which allows
+                classes which will return the current date when constructed, you can pass around a factory which allows
                 you to control the date it represents on construction.
             </p>
             <p>
