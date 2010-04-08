@@ -59,8 +59,7 @@
 <source>
 &lt;repository&gt;
   &lt;id&gt;java.net&lt;/id&gt;
-  &lt;url&gt;http://download.java.net/maven/1&lt;/url&gt;
-  &lt;layout&gt;legacy&lt;/layout&gt;
+  &lt;url&gt;http://download.java.net/maven/2&lt;/url&gt;
 &lt;/repository&gt;
 </source>
             </subsection>
@@ -78,12 +77,12 @@
                 For Ivy, add the following definition to your <code>ivysettings.xml</code> to download from the repository.
             </p>
             <source>
-&lt;ibiblio name="java.net" root="http://download.java.net/maven/1/" namespace="java.net" pattern="[organization]/jars/[module]-[revision].[ext]" /&gt;
+&lt;ibiblio name="java.net" root="http://download.java.net/maven/2/" namespace="java.net" pattern="[organization]/jars/[module]-[revision].[ext]" /&gt;
 </source>
             <p>
                 You can then add the following to your project's <code>ivy.xml</code>.
             </p>
-            <source>&lt;dependency org="com.google.code.tempus-fugit" name="tempus-fugit" rev="1.0" conf="netstream-runtime"/&gt; </source>
+            <source>&lt;dependency org="com.google.code.tempus-fugit" name="tempus-fugit" rev="1.0" /&gt; </source>
             </subsection>
 
             <subsection name="Source Code and Issue Tracking">
