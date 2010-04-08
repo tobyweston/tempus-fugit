@@ -27,7 +27,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(ConcurrentTestRunner.class)
 @Ignore("Bug #10")
-public class RunConcurrentAfterClassTest {
+public class ConcurrentTestRunnerAfterClassTest {
 
     private static Thread testThread;
 
