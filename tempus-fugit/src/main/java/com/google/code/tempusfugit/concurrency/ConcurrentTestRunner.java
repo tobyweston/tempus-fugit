@@ -18,43 +18,24 @@ package com.google.code.tempusfugit.concurrency;
 
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
-import org.junit.runners.model.RunnerScheduler;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.google.code.tempusfugit.concurrency.ExecutorServiceShutdown.shutdown;
-import static com.google.code.tempusfugit.temporal.Duration.seconds;
 import static java.util.concurrent.Executors.newCachedThreadPool;
 
 public class ConcurrentTestRunner extends BlockJUnit4ClassRunner {
 
     public ConcurrentTestRunner(Class<?> type) throws InitializationError {
         super(type);
-        setScheduler(new ConcurrentScheduler());
+        setScheduler(new ConcurrentScheduler(newCachedThreadPool(new ConcurrentTestRunnerThreadFactory())));
     }
 
-    private static class ConcurrentScheduler implements RunnerScheduler {
+    private static class ConcurrentTestRunnerThreadFactory implements ThreadFactory {
+        private AtomicLong count = new AtomicLong();
 
-        private ExecutorService executor;
-
-        public ConcurrentScheduler() {
-            executor = newCachedThreadPool(new ThreadFactory() {
-                private AtomicLong count = new AtomicLong();
-                public Thread newThread(Runnable runnable) {
-                    return new Thread(runnable, "ConcurrentTestRunner-Thread-" + count.getAndIncrement());
-                }
-            });
-        }
-
-        public void schedule(Runnable childStatement) {
-            executor.submit(childStatement);
-        }
-
-        public void finished() {
-            shutdown(executor).waitingForCompletion(seconds(10));
+        public Thread newThread(Runnable runnable) {
+            return new Thread(runnable, "ConcurrentTestRunner-Thread-" + count.getAndIncrement());
         }
     }
-
 }

@@ -68,7 +68,7 @@ public class ConcurrentTestRunnerTest {
         assertThat(threads.size(), is(5));
     }
 
-    @Test(expected = AssertionFailedError.class)
+    @Test (expected = AssertionFailedError.class)
     public void concurrentFailuresFailInTheMainTestThread() throws InterruptedException {
         fail();
     }
