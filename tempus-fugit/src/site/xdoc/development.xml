@@ -41,6 +41,16 @@
             </p>
         </subsection>
 
+        <subsection name="Maven">
+            <p>
+                Some favorites:
+            </p>
+            <source>mvn surefire-report:report-only</source>
+            <p>
+                To generate the awful Surefire report after running <code>mvn test</code>.
+            </p>
+        </subsection>
+
         </section>
 
     </body>
