@@ -21,6 +21,7 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -58,12 +59,27 @@ public class ExecutorServiceShutdownTest {
 
     @Test
     public void awaitingTerminationIsInterrupted() throws InterruptedException {
+        awaitTerminationWillBeInterrupted();
+        shutdown(executor).waitingForCompletion(TIMEOUT);
+        assertThat(Thread.interrupted(), is(true));
+    }
+
+    @Test
+    @Ignore
+    public void awaitingTerminationIsInterruptedAvoidsNullReturnValue() throws InterruptedException {
+        try {
+            awaitTerminationWillBeInterrupted();
+            assertThat(shutdown(executor).waitingForCompletion(TIMEOUT), is(false));
+        } finally {
+            Thread.interrupted();
+        }
+    }
+
+    private void awaitTerminationWillBeInterrupted() throws InterruptedException {
         context.checking(new Expectations() {{
             allowing(executor).shutdown();
             one(executor).awaitTermination(with(any(long.class)), with(any(TimeUnit.class))); will(throwException(new InterruptedException()));
         }});
-        shutdown(executor).waitingForCompletion(TIMEOUT);
-        assertThat(Thread.interrupted(), is(true)); 
     }
 
     @Test

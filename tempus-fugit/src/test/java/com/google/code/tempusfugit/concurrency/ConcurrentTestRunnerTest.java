@@ -36,30 +36,30 @@ public class ConcurrentTestRunnerTest {
 
     @Test
     public void shouldRunInParallel1() {
-        add();
+        logCurrentThread();
     }
 
     @Test
     public void shouldRunInParallel2() {
-        add();
+        logCurrentThread();
     }
 
     @Test
     public void shouldRunInParallel3() {
-        add();
+        logCurrentThread();
     }
 
     @Test
     public void shouldRunInParallel4() {
-        add();
+        logCurrentThread();
     }
 
     @Test
     public void shouldRunInParallel5() {
-        add();
+        logCurrentThread();
     }
 
-    private void add() {
+    private void logCurrentThread() {
         threads.add(Thread.currentThread().getName());
     }
 

@@ -54,6 +54,15 @@ public final class Conditions {
         Assert.assertThat(message, condition.isSatisfied(), booleanMatcher);
     }
 
+    /** Useful when waiting for an assertion in tests, for example;
+     * <p></p>
+     * <code>WaitFor.waitOrTimeout(assertion(limit, is(5)), timeout(millis(500)))</code>
+     *
+     * @since 1.1 */
+    public static <T> Condition assertion(T actual, Matcher<T> matcher) {
+        return new MatcherCondition<T>(matcher, actual);
+    }
+
 
     private static class NotCondition implements Condition {
 
@@ -118,5 +127,19 @@ public final class Conditions {
             return thread.getState() == state;
         }
 
+    }
+
+    private static class MatcherCondition<T> implements Condition {
+        private final Matcher<T> matcher;
+        private final T actual;
+
+        public MatcherCondition(Matcher<T> matcher, T actual) {
+            this.matcher = matcher;
+            this.actual = actual;
+        }
+
+        public boolean isSatisfied() {
+            return matcher.matches(actual);
+        }
     }
 }
