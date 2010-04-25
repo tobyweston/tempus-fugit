@@ -76,7 +76,6 @@
   </component>
   <component name="JavacSettings">
     <option name="GENERATE_NO_WARNINGS" value="true" />
-    <option name="ADDITIONAL_OPTIONS_STRING" value="-target 1.5" />
   </component>
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" />
@@ -242,7 +241,6 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../../../tools/apache-maven-2.2.0/conf/conf.iml" filepath="$PROJECT_DIR$/../../../tools/apache-maven-2.2.0/conf/conf.iml" />
       <module fileurl="file://$PROJECT_DIR$/../documentation/documentation.iml" filepath="$PROJECT_DIR$/../documentation/documentation.iml" />
       <module fileurl="file://$PROJECT_DIR$/../skin/skin.iml" filepath="$PROJECT_DIR$/../skin/skin.iml" />
       <module fileurl="file://$PROJECT_DIR$/tempus-fugit.iml" filepath="$PROJECT_DIR$/tempus-fugit.iml" />

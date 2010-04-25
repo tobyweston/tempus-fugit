@@ -10,12 +10,26 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
 package com.google.code.tempusfugit;
 
-public interface Factory<T> {
-    T create() throws FactoryException;
+/** @since 1.1 */
+public class FactoryException extends RuntimeException {
+    public FactoryException() {
+    }
+
+    public FactoryException(String message) {
+        super(message);
+    }
+
+    public FactoryException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public FactoryException(Throwable cause) {
+        super(cause);
+    }
 }
