@@ -28,73 +28,36 @@ import java.util.concurrent.Callable;
 
 import static com.google.code.tempusfugit.ExceptionWrapper.wrapAnyException;
 import static com.google.code.tempusfugit.ExceptionWrapper.wrapAsRuntimeException;
+import static com.google.code.tempusfugit.WithException.with;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
 import static org.jmock.Expectations.returnValue;
 import static org.jmock.Expectations.throwException;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 @RunWith(JMock.class)
-public class SimpleExceptionWrapperTest {
+public class ExceptionWrapperTest {
 
     private final Mockery context = new JUnit4Mockery();
     private final Callable<String> callable = context.mock(Callable.class);
 
     @Test
-    public void shouldDelegateCall() throws Exception {
-        callWill(returnValue("value"));
-        assertThat(wrapAnyException(callable, new SomeOtherCheckedException()), is("value"));
-    }
-
-    @Test (expected = SomeOtherCheckedException.class)
-    public void shouldThrowNewException() throws Exception, SomeOtherCheckedException {
-        callWill(throwException(new SomeCheckedException()));
-        wrapAnyException(callable, new SomeOtherCheckedException());
-    }
-
-    
-    @Test (expected = SomeOtherCheckedException.class)
-    public void syntaxExampleForNewException() throws SomeOtherCheckedException {
-        wrapAnyException(new Callable<Object>() {
-            @Override
-            public Object call() throws SomeCheckedException {
-                throw new SomeCheckedException();
-            }
-        }, new SomeOtherCheckedException());
-    }
-
-    @Test
-    public void shouldThrowExceptionWithCause() throws Exception {
-        SomeCheckedException cause = new SomeCheckedException("message");
-        callWill(throwException(cause));
-        try {
-            wrapAnyException(callable, new SomeOtherCheckedException());
-            fail();
-        } catch (SomeOtherCheckedException e) {
-            assertThat((SomeCheckedException) e.getCause(), is(cause));
-            assertThat(e.getCause().getMessage(), is("message"));
-            assertThat(e.getMessage(), is(nullValue()));
-        }
-    }
-  
-    @Test
     public void shouldDelegateCallReflectiveException() throws Exception {
         callWill(returnValue("value"));
-        assertThat(wrapAnyException(callable, SomeOtherCheckedException.class), is("value"));
+        assertThat(wrapAnyException(callable, with(SomeOtherCheckedException.class)), is("value"));
     }
 
     @Test (expected = SomeOtherCheckedException.class)
     public void shouldThrowNewExceptionBasedOnReflection() throws Exception {
         callWill(throwException(new SomeCheckedException()));
-        wrapAnyException(callable, SomeOtherCheckedException.class);
+        wrapAnyException(callable, with(SomeOtherCheckedException.class));
     }
                                                            
     @Test (expected = RuntimeException.class)
     public void shouldThrowNewExceptionBasedOnPrivateAccessException() throws Exception {
         callWill(throwException(new SomeCheckedException()));
-        wrapAnyException(callable, SomeCheckedExceptionWithPrivateAccess.class);
+        wrapAnyException(callable, with(SomeCheckedExceptionWithPrivateAccess.class));
     }
 
     @Test
@@ -102,7 +65,7 @@ public class SimpleExceptionWrapperTest {
         SomeCheckedException cause = new SomeCheckedException("message");
         callWill(throwException(cause));
         try {
-            wrapAnyException(callable, SomeOtherCheckedException.class);
+            wrapAnyException(callable, with(SomeOtherCheckedException.class));
             fail();
         } catch (SomeOtherCheckedException e) {
             assertThat((SomeCheckedException) e.getCause(), is(cause));
@@ -159,13 +122,6 @@ public class SimpleExceptionWrapperTest {
             super();
         }
 
-//        public SomeOtherCheckedException(String message) {
-//            super(message);
-//        }
-//
-//        public SomeOtherCheckedException(String message, Throwable cause) {
-//            super(message, cause);
-//        }
 
         public SomeOtherCheckedException(Throwable cause) {
             super(cause);

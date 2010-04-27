@@ -24,15 +24,6 @@ import static com.google.code.tempusfugit.ExceptionWrapper.ExceptionFactory.newE
 /** @since 1.1 */
 public class ExceptionWrapper {
 
-    public static <V, E extends Exception> V wrapAnyException(Callable<V> callable, E wrapped) throws E {
-        try {
-            return callable.call();
-        } catch (Exception e) {
-            wrapped.initCause(e);
-            throw wrapped;
-        }
-    }
-
     public static <V> V wrapAsRuntimeException(Callable<V> callable) throws RuntimeException {
         try {
             return callable.call();
@@ -41,7 +32,7 @@ public class ExceptionWrapper {
         }
     }
 
-    public static <V, E extends Exception> V wrapAnyException(Callable<V> callable, final Class<E> wrapped) throws E {
+    public static <V, E extends Exception> V wrapAnyException(Callable<V> callable, final WithException<E> wrapped) throws E {
         try {
             return callable.call();
         } catch (Throwable e) {
@@ -53,8 +44,8 @@ public class ExceptionWrapper {
         private final Class wrapped;
         private final Throwable throwable;
 
-        static <E extends Exception> ExceptionFactory<E> newException(Class<E> wrapped, Throwable throwable) {
-            return new ExceptionFactory<E>(wrapped, throwable);
+        static <E extends Exception> ExceptionFactory<E> newException(WithException<E> wrapped, Throwable throwable) {
+            return new ExceptionFactory<E>(wrapped.getType(), throwable);
         }
 
         private ExceptionFactory(Class<E> wrapped, Throwable throwable) {
