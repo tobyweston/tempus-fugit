@@ -42,8 +42,8 @@
                 <li><p><a href="#Time">Time</a></p></li>
                 <ul>
                     <li><p><a href="#Stop_Watches">Stop Watches</a></p></li>
-                    <li><p><a href="#Controlling_Time_with_a_Date_Factory">Controlling Time with a Date Factory</a></p></li>
-                    <li><p><a href="#Deterministic_Date_Factory">Deterministic Date Factory</a></p></li>
+                    <li><p><a href="#Controlling_Time_with_Clock">Controlling Time with Clock</a></p></li>
+                    <li><p><a href="#Deterministic_Clock">Deterministic Clock</a></p></li>
                     <li><p><a href="#The_Factory_Interface">The Factory Interface</a></p></li>
                 </ul>
             </ul>
@@ -173,13 +173,13 @@ private void waitForStartup(final Thread thread) throws TimeoutException, Interr
             </p>           
             </subsection>
 
-            <subsection name="Controlling Time with a Date Factory">
+            <subsection name="Controlling Time with Clock">
             <p>
-                The <code><a href="xref/com/google/code/tempusfugit/temporal/DateFactory">DateFactory</a></code> interface along with its default implementation
-                <code><a href="xref/com/google/code/tempusfugit/temporal/DefaultDateFactory">DefaultDateFactory</a></code>
+                The <code><a href="xref/com/google/code/tempusfugit/temporal/Clock">Clock</a></code> interface along with its default implementation
+                <code><a href="xref/com/google/code/tempusfugit/temporal/DefaultClock">DefaultClock</a></code>
                 are aimed at making testing classes that require a date easier. Rather than pass around <code>java.util.Date</code>
                 classes which will return the current date when constructed, you can pass around a factory which allows
-                you to control the date it represents on construction.
+                you to control the date.
             </p>
             <p>
                 For example, the <code>StopWatch</code> class maintains an internal <code>Date</code> which it can use
@@ -231,15 +231,15 @@ public class BetterStopWatch {
 
     private Date startDate;
     private long elapsedTime;
-    private DateFactory factory;
+    private Clock clock;
 
-    public BetterStopWatch(DateFactory factory) {
-        this.factory = factory;
-        this.startDate = factory.create();
+    public BetterStopWatch(Clock clock) {
+        this.clock = clock;
+        this.startDate = clock.now();
     }
 
     public Duration getElapsedTime() {
-        return millis(factory.create().getTime() - startDate.getTime());
+        return millis(clock.now().getTime() - startDate.getTime());
     }
 }</source>
           <p>The test becomes clearer</p>
@@ -247,8 +247,8 @@ public class BetterStopWatch {
 @Test
 public void getElapsedTimeFromBetterStopWatch() {
     context.checking(new Expectations() {{
-        one(time).create(); will(returnValue(new Date(0)));
-        one(time).create(); will(returnValue(new Date(100)));
+        one(clock).now(); will(returnValue(new Date(0)));
+        one(clock).now(); will(returnValue(new Date(100)));
     }});
     BetterStopWatch watch = new BetterStopWatch(time);
     assertThat(watch.getElapsedTime(), is(millis(100)));
@@ -256,27 +256,27 @@ public void getElapsedTimeFromBetterStopWatch() {
 
             </subsection>
 
-            <subsection name="Deterministic Date Factory">
+            <subsection name="Deterministic Clock">
                 <p>
-                    You can use the <code><a href="xref/com/google/code/tempusfugit/temporal/DeterministicDateFactory.html">DeterministicDateFactory</a></code> in tests to explicitly move time forward within
+                    You can use the <code><a href="xref/com/google/code/tempusfugit/temporal/DeterministicClock.html">DeterministicClock</a></code> in tests to explicitly move time forward within
                     the context of a test. For example, we can rewrite the test above as follows.
                 </p>
                 <source>
 @Test
-public void getElapsedTimeUsingDeterministicDateFactory() {
-    DeterministicDateFactory time = new DeterministicDateFactory();
-    BetterStopWatch watch = new BetterStopWatch(time);
+public void getElapsedTimeUsingDeterministicClock() {
+    DeterministicClock clock = new DeterministicClock();
+    BetterStopWatch watch = new BetterStopWatch(clock);
     assertThat(watch.getElapsedTime(), is(millis(0)));
-    time.moveTimeForwardBy(millis(100));
+    clock.incrementBy(millis(100));
     assertThat(watch.getElapsedTime(), is(millis(100)));
 } </source>
             </subsection>
 
             <subsection name="The Factory Interface">
             <p>
-                <code>DateFactory</code> implements the generic <code><a href="xref/com/google/code/tempusfugit/Factory.html">Factoy&lt;T&gt;</a></code> interface. You can implement
-                this interface yourself for general purpose factory classes or simply declare your factories in generic terms (ie
-                <code>Factory&lt;Date&gt; factory = ...</code>).
+                The generic <code><a href="xref/com/google/code/tempusfugit/Factory.html">Factoy&lt;T&gt;</a></code> interface is
+                a general purpose factory classes or simply declare your factories in generic terms (ie
+                <code>Factory&lt;Date&gt; factory = ...</code>) and pass these around.
             </p>
             </subsection>
         </section>

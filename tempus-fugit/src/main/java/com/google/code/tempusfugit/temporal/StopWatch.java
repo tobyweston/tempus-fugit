@@ -22,18 +22,18 @@ import static com.google.code.tempusfugit.temporal.Duration.millis;
 
 public final class StopWatch {
 
-    private DateFactory dateFactory;
+    private Clock clock;
 
     private Date startDate;
     private Date lastMarkDate;
 
-    public static StopWatch start(DateFactory dateFactory) {
-        return new StopWatch(dateFactory);
+    public static StopWatch start(Clock clock) {
+        return new StopWatch(clock);
     }
 
-    private StopWatch(DateFactory dateFactory) {
-        this.dateFactory = dateFactory;
-        this.startDate = dateFactory.create();
+    private StopWatch(Clock clock) {
+        this.clock = clock;
+        this.startDate = clock.create();
     }
 
     public Date getStartDate() {
@@ -41,7 +41,7 @@ public final class StopWatch {
     }
 
     public Duration markAndGetTotalElapsedTime() {
-        lastMarkDate = dateFactory.create();
+        lastMarkDate = clock.create();
         return getTotalElapsedTime();
     }
 

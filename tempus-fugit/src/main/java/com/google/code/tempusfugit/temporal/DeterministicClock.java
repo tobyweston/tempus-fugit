@@ -18,7 +18,7 @@ package com.google.code.tempusfugit.temporal;
 
 import java.util.Date;
 
-public final class DeterministicDateFactory implements DateFactory {
+public final class DeterministicClock implements Clock {
 
     private final Date now = new Date(0);
 

@@ -35,7 +35,7 @@ import static org.junit.Assert.assertThat;
 public class BetterStopWatchTest {
 
     private final Mockery context = new JUnit4Mockery();
-    private DateFactory time = context.mock(DateFactory.class);
+    private Clock time = context.mock(Clock.class);
 
     @Test
     public void getElapsedTimeFromBetterStopWatch() {
@@ -48,8 +48,8 @@ public class BetterStopWatchTest {
     }
 
     @Test
-    public void getElapsedTimeUsingDeterministicDateFactory() {
-        DeterministicDateFactory time = new DeterministicDateFactory();
+    public void getElapsedTimeUsingDeterministicClock() {
+        DeterministicClock time = new DeterministicClock();
         BetterStopWatch watch = new BetterStopWatch(time);
         assertThat(watch.getElapsedTime(), is(millis(0)));
         time.incrementBy(millis(100));
@@ -59,9 +59,9 @@ public class BetterStopWatchTest {
     public static class BetterStopWatch {
 
     private Date startDate;
-    private DateFactory factory;
+    private Clock factory;
 
-    public BetterStopWatch(DateFactory factory) {
+    public BetterStopWatch(Clock factory) {
         this.factory = factory;
         this.startDate = factory.create();
     }

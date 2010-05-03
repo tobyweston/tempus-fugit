@@ -16,8 +16,8 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import com.google.code.tempusfugit.temporal.DateFactory;
-import com.google.code.tempusfugit.temporal.DefaultDateFactory;
+import com.google.code.tempusfugit.temporal.Clock;
+import com.google.code.tempusfugit.temporal.DefaultClock;
 import com.google.code.tempusfugit.temporal.Duration;
 
 import java.util.ArrayList;
@@ -36,13 +36,13 @@ public class DefaultTimeoutableCompletionService implements TimeoutableCompletio
 
     private final java.util.concurrent.CompletionService completionService;
     private final Duration timeout;
-    private final DateFactory time;
+    private final Clock time;
 
     public DefaultTimeoutableCompletionService(CompletionService completionService) {
-        this(completionService, DEFAULT_TIMEOUT, new DefaultDateFactory());
+        this(completionService, DEFAULT_TIMEOUT, new DefaultClock());
     }
 
-    public DefaultTimeoutableCompletionService(CompletionService completionService, Duration timeout, DateFactory time) {
+    public DefaultTimeoutableCompletionService(CompletionService completionService, Duration timeout, Clock time) {
         this.timeout = timeout;
         this.time = time;
         this.completionService = completionService;

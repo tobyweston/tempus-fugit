@@ -17,7 +17,10 @@
 package com.google.code.tempusfugit.concurrency;
 
 
-import com.google.code.tempusfugit.temporal.*;
+import com.google.code.tempusfugit.temporal.Clock;
+import com.google.code.tempusfugit.temporal.Condition;
+import com.google.code.tempusfugit.temporal.DefaultClock;
+import com.google.code.tempusfugit.temporal.Duration;
 import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -37,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
-import static com.google.code.tempusfugit.temporal.Timeout.*;
+import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static java.util.Arrays.asList;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
@@ -63,7 +66,7 @@ public class DefaultTimeoutableCompletionServiceTest {
 
     private ExecutorCompletionService completionService = context.mock(ExecutorCompletionService.class);
 
-    private final DateFactory time = context.mock(DateFactory.class);
+    private final Clock time = context.mock(Clock.class);
 
     @Test
     public void taskSubmitionIsDelegated() throws Exception {
@@ -140,7 +143,7 @@ public class DefaultTimeoutableCompletionServiceTest {
         };
 
         try {
-            new DefaultTimeoutableCompletionService(new ExecutorCompletionService(newSingleThreadExecutor()), millis(1), new DefaultDateFactory()).submit(asList(callable));
+            new DefaultTimeoutableCompletionService(new ExecutorCompletionService(newSingleThreadExecutor()), millis(1), new DefaultClock()).submit(asList(callable));
             fail("didn't timeout");
         } catch (TimeoutException e) {
             waitOrTimeout(new Condition(){

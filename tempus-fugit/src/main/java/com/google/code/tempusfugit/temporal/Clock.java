@@ -20,6 +20,7 @@ import com.google.code.tempusfugit.Factory;
 
 import java.util.Date;
 
-public interface DateFactory extends Factory<Date> {
+/** @since 1.1 (formally Clock class) */
+public interface Clock extends Factory<Date> {
     
 }

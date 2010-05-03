@@ -20,7 +20,7 @@ import com.google.code.tempusfugit.temporal.*;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.google.code.tempusfugit.temporal.Timeout.*;
+import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitUntil;
 import static java.lang.Thread.currentThread;
 
@@ -30,7 +30,7 @@ public final class Interrupter {
 
     private final Thread threadToInterrupt;
     private Thread interrupterThread;
-    private DateFactory time = new DefaultDateFactory();
+    private Clock time = new DefaultClock();
 
     private Interrupter(Thread threadToInterrupt) {
         this.threadToInterrupt = threadToInterrupt;
@@ -40,7 +40,7 @@ public final class Interrupter {
         return new Interrupter(thread);
     }
 
-    Interrupter using(DateFactory time) {
+    Interrupter using(Clock time) {
         if (interrupterThread != null)
             throw new IllegalStateException("Controlling time after events have been put in motion will have no affect");
         this.time = time;

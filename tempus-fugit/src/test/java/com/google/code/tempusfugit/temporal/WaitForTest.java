@@ -21,7 +21,6 @@ import org.jmock.Mockery;
 import org.jmock.Sequence;
 import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -31,7 +30,7 @@ import static com.google.code.tempusfugit.temporal.Conditions.isAlive;
 import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
-import static com.google.code.tempusfugit.temporal.Timeout.*;
+import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitUntil;
 import static java.lang.Thread.currentThread;
@@ -39,7 +38,7 @@ import static java.lang.Thread.currentThread;
 @RunWith(JMock.class)
 public class WaitForTest {
 
-    private final DeterministicDateFactory date = new DeterministicDateFactory();
+    private final DeterministicClock date = new DeterministicClock();
 
     private final Mockery context = new JUnit4Mockery();
 

@@ -18,7 +18,7 @@ package com.google.code.tempusfugit.temporal;
 
 import java.util.Date;
 
-public class DefaultDateFactory implements DateFactory {
+public class DefaultClock implements Clock {
     public Date create() {
         return new Date();
     }

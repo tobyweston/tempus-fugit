@@ -22,9 +22,9 @@ import static com.google.code.tempusfugit.temporal.Duration.seconds;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class DeterministicDateFactoryTest {
+public class DeterministicClockTest {
 
-    private final DeterministicDateFactory date = new DeterministicDateFactory();
+    private final DeterministicClock date = new DeterministicClock();
 
     @Test
     public void dateStartsAtZero() {

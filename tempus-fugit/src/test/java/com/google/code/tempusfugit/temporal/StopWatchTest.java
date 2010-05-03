@@ -28,17 +28,17 @@ import static org.junit.Assert.assertThat;
 
 public class StopWatchTest {
     private Date date = new Date();
-    private StubDateProvider dateFactory = new StubDateProvider(date);
+    private StubClock clock = new StubClock(date);
 
     @Test
     public void returnsCorrectStartDate() {
-        StopWatch stopWatch = StopWatch.start(dateFactory);
+        StopWatch stopWatch = StopWatch.start(clock);
         assertThat(stopWatch.getStartDate(), is(equalTo(date)));
     }
 
     @Test
-    public void markingStopWatchReturnsTotalEllapsedTime() {
-        StopWatch stopWatch = StopWatch.start(dateFactory);
+    public void markingStopWatchReturnsTotalElapsedTime() {
+        StopWatch stopWatch = StopWatch.start(clock);
         advanceTime(millis(5));
         assertThat(stopWatch.markAndGetTotalElapsedTime(), is(equalTo(millis(5))));
         advanceTime(millis(5));
@@ -46,8 +46,8 @@ public class StopWatchTest {
     }
 
     @Test
-    public void markingMultipleTimesReturnsTotalEllapsedTime() {
-        StopWatch stopWatch = StopWatch.start(dateFactory);
+    public void markingMultipleTimesReturnsTotalElapsedTime() {
+        StopWatch stopWatch = StopWatch.start(clock);
         advanceTime(millis(5));
         stopWatch.markAndGetTotalElapsedTime();
         advanceTime(millis(5));
@@ -56,7 +56,7 @@ public class StopWatchTest {
 
     private void advanceTime(Duration duration) {
         date = addMillisecondsTo(date, new Long(duration.inMillis()).intValue());
-        dateFactory.setDate(date);
+        clock.setDate(date);
     }
 
     private static Date addMillisecondsTo(Date date, int amount) {
@@ -66,10 +66,10 @@ public class StopWatchTest {
         return calendar.getTime();
     }
 
-    private class StubDateProvider implements DateFactory {
+    private class StubClock implements Clock {
         private Date date;
 
-        private StubDateProvider(Date date) {
+        private StubClock(Date date) {
             this.date = date;
         }
 

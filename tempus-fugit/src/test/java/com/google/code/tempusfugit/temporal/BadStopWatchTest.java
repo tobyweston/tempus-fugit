@@ -32,7 +32,7 @@ import static org.junit.Assert.assertThat;
 public class BadStopWatchTest {
 
     private final Mockery context = new JUnit4Mockery();
-    private DateFactory time = context.mock(DateFactory.class);
+    private Clock time = context.mock(Clock.class);
 
     @Test
     public void getElapsedTime() {

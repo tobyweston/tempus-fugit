@@ -47,6 +47,6 @@ public final class Timeout {
     }
 
     private static StopWatch startStopWatch() {
-        return StopWatch.start(new DefaultDateFactory());
+        return StopWatch.start(new DefaultClock());
     }
 }

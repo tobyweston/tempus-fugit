@@ -25,6 +25,39 @@
             <action dev="toby.weston" date="21 January 2010" type="fix" issue="4" system="google">
                 InterruptCapturingThread non-final. It's designed to be sub-classed.
             </action>
+            <action dev="toby.weston" type="update">
+                Renamed DateFactory to Clock, thanks to Alex for the suggestion.
+            </action>
+            <action dev="toby.weston" type="add">
+                Added CompositeFactory. Pass in a list of factories and they will be called in sequence, trying the next
+                on failure until all have been attempted.
+            </action>
+            <action dev="toby.weston" type="update">
+                Updated Factory interface to throw FactoryException.
+            </action>
+            <action dev="toby.weston" type="add">
+                Added ExceptionWrapper class to wrap any exception as another. Useful when calling out to components
+                when you usually catch and rethrow as application exception.
+            </action>
+            <action dev="toby.weston" type="add">
+                Added a MatcherCondition to the Conditions class. Useful for utilising matchers as Conditions.
+            </action>
+            <action dev="toby.weston" type="update">
+                Updated the Timeout class to use a private constructor but a public static creation method timeout().
+            </action>
+            <action dev="toby.weston" type="update">
+                Updated WaitFor to pass in a Timeout object rather than a Duration. Syntax will look look waitOrTimeout(serverStartup(), timeout(seconds(20)));
+            </action>
+            <action dev="toby.weston" type="update">
+                Updated WaitFor to use a configurable sleep period.
+            </action>
+            <action dev="toby.weston" date="9 April 2010" type="fix" issue="7" system="google">
+                Fixed "Unexpected behaviour using ConcurrentTestRunner, RepeatingRule and a sleep in test" bug.
+            </action>
+            <action dev="toby.weston" type="bug" issue="11" system="google">
+                Created a branch for 1.6 support. See http://code.google.com/p/tempus-fugit/source/browse/#svn/branches/java6
+            </action>
+
         </release>
         <release version="1.0" date="17 January 2010" description="Initial release">
             <action dev="toby.weston" type="add">
