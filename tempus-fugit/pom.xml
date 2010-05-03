@@ -63,15 +63,6 @@
                 <role>Java Developer</role>
             </roles>
         </developer>
-        <developer>
-            <id>mrraymondbarlow</id>
-            <name>"Papa" Ray Barlow</name>
-            <email>rbarlow at raymanoz dot com</email>
-            <organization />
-            <roles>
-                <role>Java Developer</role>
-            </roles>
-        </developer>
     </developers>
 
     <!-- Workaround for SUREFIRE-300 -->
@@ -85,7 +76,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.7</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jmock</groupId>
