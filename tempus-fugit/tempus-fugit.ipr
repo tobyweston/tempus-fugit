@@ -242,7 +242,7 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../documentation/documentation.iml" filepath="$PROJECT_DIR$/../documentation/documentation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../site/site.iml" filepath="$PROJECT_DIR$/../site/site.iml" />
       <module fileurl="file://$PROJECT_DIR$/../skin/skin.iml" filepath="$PROJECT_DIR$/../skin/skin.iml" />
       <module fileurl="file://$PROJECT_DIR$/tempus-fugit.iml" filepath="$PROJECT_DIR$/tempus-fugit.iml" />
     </modules>
@@ -260,6 +260,45 @@
   <component name="SvnBranchConfigurationManager">
     <option name="myConfigurationMap">
       <map>
+        <entry key="$PROJECT_DIR$/../skin">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="branchMap">
+                <map>
+                  <entry key="https://tempus-fugit.googlecode.com/svn/branches">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://tempus-fugit.googlecode.com/svn/site">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://tempus-fugit.googlecode.com/svn/tags">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://tempus-fugit.googlecode.com/svn/wiki">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                </map>
+              </option>
+              <option name="branchUrls">
+                <list>
+                  <option value="https://tempus-fugit.googlecode.com/svn/branches" />
+                  <option value="https://tempus-fugit.googlecode.com/svn/site" />
+                  <option value="https://tempus-fugit.googlecode.com/svn/tags" />
+                  <option value="https://tempus-fugit.googlecode.com/svn/wiki" />
+                </list>
+              </option>
+              <option name="trunkUrl" value="https://tempus-fugit.googlecode.com/svn/trunk" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$">
           <value>
             <SvnBranchConfiguration>
