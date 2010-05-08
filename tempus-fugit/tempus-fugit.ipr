@@ -37,6 +37,11 @@
     <option name="DEPRECATION" value="false" />
   </component>
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
+  <component name="FacetAutodetectingManager">
+    <autodetection-disabled>
+      <facet-type id="BeanValidation" />
+    </autodetection-disabled>
+  </component>
   <component name="IdProvider" IDEtalkID="12E9D1A06815C42E387E8B79C764802F" />
   <component name="InspectionProjectProfileManager">
     <profiles>
@@ -243,6 +248,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../site/site.iml" filepath="$PROJECT_DIR$/../site/site.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../site/site.iml" filepath="$PROJECT_DIR$/../site/site.iml" />
       <module fileurl="file://$PROJECT_DIR$/../skin/skin.iml" filepath="$PROJECT_DIR$/../skin/skin.iml" />
       <module fileurl="file://$PROJECT_DIR$/tempus-fugit.iml" filepath="$PROJECT_DIR$/tempus-fugit.iml" />
     </modules>
@@ -331,7 +337,7 @@
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="VcsDirectoryMappings">
-    <mapping directory="$PROJECT_DIR$/../documentation" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../site" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/../skin" vcs="svn" />
     <mapping directory="$PROJECT_DIR$" vcs="svn" />
   </component>
