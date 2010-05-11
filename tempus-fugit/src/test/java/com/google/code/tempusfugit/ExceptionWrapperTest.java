@@ -69,7 +69,7 @@ public class ExceptionWrapperTest {
             fail();
         } catch (SomeOtherCheckedException e) {
             assertThat((SomeCheckedException) e.getCause(), is(cause));
-            assertThat(e.getMessage(), containsString("SimpleExceptionWrapperTest$SomeCheckedException: message"));
+            assertThat(e.getMessage(), containsString("ExceptionWrapperTest$SomeCheckedException: message"));
             assertThat(e.getCause().getMessage(), is("message"));
         }
     }
@@ -96,7 +96,7 @@ public class ExceptionWrapperTest {
             fail();
         } catch (RuntimeException e) {
             assertThat((SomeCheckedException) e.getCause(), is(cause));
-            assertThat(e.getMessage(), containsString("SimpleExceptionWrapperTest$SomeCheckedException: message"));
+            assertThat(e.getMessage(), containsString("ExceptionWrapperTest$SomeCheckedException: message"));
             assertThat(e.getCause().getMessage(), is("message"));
         }
     }
