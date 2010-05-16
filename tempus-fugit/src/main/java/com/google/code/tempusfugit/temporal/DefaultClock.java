@@ -19,6 +19,14 @@ package com.google.code.tempusfugit.temporal;
 import java.util.Date;
 
 public class DefaultClock implements Clock {
+
+    private DefaultClock() {
+    }
+
+    public static DefaultClock now() {
+        return new DefaultClock();
+    }
+
     public Date create() {
         return new Date();
     }

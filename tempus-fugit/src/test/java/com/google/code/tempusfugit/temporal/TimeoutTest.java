@@ -24,7 +24,7 @@ import static org.junit.Assert.assertThat;
 
 public class TimeoutTest {
 
-    private final DeterministicClock date = new DeterministicClock();
+    private final MovableClock date = new MovableClock();
 
     @Test
     public void timeoutExpires(){

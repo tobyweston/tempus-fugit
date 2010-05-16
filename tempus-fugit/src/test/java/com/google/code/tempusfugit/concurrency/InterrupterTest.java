@@ -17,8 +17,8 @@
 package com.google.code.tempusfugit.concurrency;
 
 import com.google.code.tempusfugit.temporal.Condition;
-import com.google.code.tempusfugit.temporal.DeterministicClock;
 import com.google.code.tempusfugit.temporal.Duration;
+import com.google.code.tempusfugit.temporal.MovableClock;
 import org.junit.Test;
 
 import java.util.concurrent.TimeoutException;
@@ -42,7 +42,7 @@ public class InterrupterTest {
     private boolean interrupted;
     private Thread clientThread;
 
-    private DeterministicClock time = new DeterministicClock();
+    private MovableClock time = new MovableClock();
 
     private final Thread thread = new Thread() {
         @Override

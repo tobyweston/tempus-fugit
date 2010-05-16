@@ -248,12 +248,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../site/site.iml" filepath="$PROJECT_DIR$/../site/site.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../site/site.iml" filepath="$PROJECT_DIR$/../site/site.iml" />
       <module fileurl="file://$PROJECT_DIR$/../skin/skin.iml" filepath="$PROJECT_DIR$/../skin/skin.iml" />
       <module fileurl="file://$PROJECT_DIR$/tempus-fugit.iml" filepath="$PROJECT_DIR$/tempus-fugit.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.5" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="ResourceManagerContainer">
@@ -266,6 +265,13 @@
   <component name="SvnBranchConfigurationManager">
     <option name="myConfigurationMap">
       <map>
+        <entry key="$PROJECT_DIR$/../site">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="https://tempus-fugit.googlecode.com/svn/site" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../skin">
           <value>
             <SvnBranchConfiguration>

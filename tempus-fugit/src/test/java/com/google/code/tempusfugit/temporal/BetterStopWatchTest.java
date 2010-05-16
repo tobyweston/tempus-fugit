@@ -49,7 +49,7 @@ public class BetterStopWatchTest {
 
     @Test
     public void getElapsedTimeUsingDeterministicClock() {
-        DeterministicClock time = new DeterministicClock();
+        MovableClock time = new MovableClock();
         BetterStopWatch watch = new BetterStopWatch(time);
         assertThat(watch.getElapsedTime(), is(millis(0)));
         time.incrementBy(millis(100));

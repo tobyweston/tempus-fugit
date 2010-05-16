@@ -16,10 +16,14 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import com.google.code.tempusfugit.temporal.*;
+import com.google.code.tempusfugit.temporal.Clock;
+import com.google.code.tempusfugit.temporal.Duration;
+import com.google.code.tempusfugit.temporal.StopWatch;
+import com.google.code.tempusfugit.temporal.Timeout;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import static com.google.code.tempusfugit.temporal.DefaultClock.now;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitUntil;
 import static java.lang.Thread.currentThread;
@@ -30,7 +34,7 @@ public final class Interrupter {
 
     private final Thread threadToInterrupt;
     private Thread interrupterThread;
-    private Clock time = new DefaultClock();
+    private Clock time = now();
 
     private Interrupter(Thread threadToInterrupt) {
         this.threadToInterrupt = threadToInterrupt;

@@ -16,6 +16,8 @@
 
 package com.google.code.tempusfugit.temporal;
 
+import static com.google.code.tempusfugit.temporal.DefaultClock.now;
+
 public final class Timeout {
 
     private Duration duration;
@@ -47,6 +49,6 @@ public final class Timeout {
     }
 
     private static StopWatch startStopWatch() {
-        return StopWatch.start(new DefaultClock());
+        return StopWatch.start(now());
     }
 }

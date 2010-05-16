@@ -38,7 +38,7 @@ import static java.lang.Thread.currentThread;
 @RunWith(JMock.class)
 public class WaitForTest {
 
-    private final DeterministicClock date = new DeterministicClock();
+    private final MovableClock date = new MovableClock();
 
     private final Mockery context = new JUnit4Mockery();
 

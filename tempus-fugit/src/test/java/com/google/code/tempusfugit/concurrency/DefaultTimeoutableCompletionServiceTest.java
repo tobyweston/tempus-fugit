@@ -19,7 +19,6 @@ package com.google.code.tempusfugit.concurrency;
 
 import com.google.code.tempusfugit.temporal.Clock;
 import com.google.code.tempusfugit.temporal.Condition;
-import com.google.code.tempusfugit.temporal.DefaultClock;
 import com.google.code.tempusfugit.temporal.Duration;
 import org.hamcrest.Description;
 import org.jmock.Expectations;
@@ -38,6 +37,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.google.code.tempusfugit.temporal.DefaultClock.now;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;
@@ -143,7 +143,7 @@ public class DefaultTimeoutableCompletionServiceTest {
         };
 
         try {
-            new DefaultTimeoutableCompletionService(new ExecutorCompletionService(newSingleThreadExecutor()), millis(1), new DefaultClock()).submit(asList(callable));
+            new DefaultTimeoutableCompletionService(new ExecutorCompletionService(newSingleThreadExecutor()), millis(1), now()).submit(asList(callable));
             fail("didn't timeout");
         } catch (TimeoutException e) {
             waitOrTimeout(new Condition(){

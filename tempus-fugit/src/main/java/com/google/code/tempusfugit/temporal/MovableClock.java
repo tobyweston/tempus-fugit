@@ -18,9 +18,17 @@ package com.google.code.tempusfugit.temporal;
 
 import java.util.Date;
 
-public final class DeterministicClock implements Clock {
+public final class MovableClock implements Clock {
 
-    private final Date now = new Date(0);
+    private final Date now;
+
+    public MovableClock() {
+        now = new Date(0);
+    }
+
+    public MovableClock(Date date) {
+        now = new Date(date.getTime());
+    }
 
     public Date create() {
         return new Date(now.getTime());
