@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2009-2010, tempus-fugit committers
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+    <properties>
+        <title>Changes</title>
+        <author>Toby Weston</author>
+    </properties>
+
+    <body>
+        <section name="Releases">
+        </section>
+
+        <section name="1.1-SNAPSHOT">
+            <p><b>Current snapshot release</b>, release date TBD
+            </p>
+
+            <subsection name="New Features">
+                <ul>
+                    <li><h4>New CompositeFactory class</h4>
+                    <p>
+                        Added <code>CompositeFactory</code>. Pass in a list of factories and they will be called in sequence,
+                        trying the next on failure until all have been attempted. See the <a href="xref/com/google/code/tempusfugit/CompositeFactory.html">class</a>
+                        and <a href="xref-test/com/google/code/tempusfugit/CompositeFactoryTest.html">test</a> for an example.
+                    </p>
+                    </li>
+
+                    <li><h4>Wrap any exception as another</h4>
+                        <p>
+                            Added the <code>ExceptionWrapper</code> class to wrap any exception as another. Useful when
+                            calling out to components when you usually catch and rethrow as application exception.
+                        </p>
+                        <p>
+                            For example,
+                        </p>
+                        <source>ExceptionWrapper.wrapAnyException(new Callable&lt;Object&gt;() {
+    @Override       
+    public Object call() throws ServiceException {
+        // nasty code throwing a bunch of exceptions
+    }
+}, WithException.with(CalendarException.class));
+                        </source>
+                    </li>
+
+                    <li><h4>New MatcherCondition class</h4>
+                        <p>
+                            Added a <code>MatcherCondition</code> to the <code>Conditions</code> class. Useful for utilising
+                            Hamcrest Matchers as <code>Condition</code>s.
+                        </p>
+                        <p>
+                            For example,
+                        </p>
+                        <source>WaitFor.waitOrTimeout(<b>Conditions.assertion("hello", is(not(equalTo("goodbye"))))</b>, timeout(millis(100)));</source>
+                    </li>
+
+                 </ul>      
+            </subsection>
+
+            <subsection name="Updates">
+                <ul>
+                    <li><h4>Renamed DateFactory to Clock</h4>
+                    <p>
+                        Renamed <code>DateFactory</code> to <code>Clock</code>, thanks to Alex for the suggestion.
+                    </p>
+                    </li>
+
+                    <li><h4>Updated Factory interface</h4>
+                        <p>
+                            Updated the <code>Factory</code> interface to throw FactoryException.
+                        </p>
+                    </li>
+
+                    <li><h4>Updated Timeout class with static creation method</h4>
+                    <p>
+                        Updated the <code>Timeout</code> class to use a private constructor but a public static creation method <code>timeout()</code>.
+                    </p>
+                    <p>Use</p>
+                    <source>Timeout.timeout(Duration.seconds(10))</source>
+                    <p>instead of </p>
+                    <source>new Timeout(Duration.seconds(10))</source>
+                    </li>
+
+                    <li><h4>Updated WaitFor to take a Timeout not a Duration </h4>
+                    <p>
+                        Updated <code>WaitFor.waitOrTimeout</code> to take in a <code>Timeout</code> object rather than
+                        a <code>Duration</code>.
+                    </p>
+                    <p>
+                        For example,
+                    </p>
+                    <source>waitOrTimeout(serverStartup(), timeout(seconds(20)));</source>
+                    </li>
+
+                    <li><h4>WaitFor takes a configurable sleep period</h4>
+                    <p>
+                        Updated <code>WaitFor.waitOrTimeout</code> to use a configurable sleep period. It was previously
+                        hardcoded to 100 ms (which is still the default if you don't pass in a sleep period).
+                    </p>
+                    <p>
+                        To pass in a custom sleep period, implement the <code>Sleeper</code> interface or use the default
+                        <code>ThreadSleep</code> class which uses <code>Thread.sleep(...)</code> under the covers.
+                    </p>
+                    <p>For example,</p>
+                    <source>waitOrTimeout(condition, timeout, new ThreadSleep(millis(100));</source>
+                    </li>
+
+                </ul>
+            </subsection>
+
+            <subsection name="Bug Fixes">
+                <ul>
+                    <li><h4>Fixed "Unexpected behaviour using ConcurrentTestRunner, RepeatingRule and a sleep in test"</h4>
+                        <p>
+                            Fixed <a href="http://code.google.com/p/tempus-fugit/issues/detail?id=7">Bug #7</a> whereby 
+                            tests that took longer than 10 seconds wouldn't run up in seperate threads. See the fix 
+                            <a href="http://code.google.com/p/tempus-fugit/source/detail?r=136">change set</a>.
+                        </p>
+                    </li>
+
+                    <li><h4>InterruptCapturingThread made non-final</h4>
+                        <p>
+                            <code>InterruptCapturingThread</code> non-final. It's designed to be sub-classed. Fixes
+                            <a href="http://code.google.com/p/tempus-fugit/issues/detail?id=4">Bug #4</a>.
+                        </p>
+                    </li>
+
+                </ul>
+
+            </subsection>
+        </section>
+
+        <section name="1.0">
+            <p><b>Initial release</b>, 17th January 2010
+            </p>
+        </section>
+    </body>
+</document>

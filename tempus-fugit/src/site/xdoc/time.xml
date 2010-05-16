@@ -256,15 +256,15 @@ public void getElapsedTimeFromBetterStopWatch() {
 
             </subsection>
 
-            <subsection name="Deterministic Clock">
+            <subsection name="Movable Clock">
                 <p>
-                    You can use the <code><a href="xref/com/google/code/tempusfugit/temporal/DeterministicClock.html">DeterministicClock</a></code> in tests to explicitly move time forward within
+                    You can use the <code><a href="xref/com/google/code/tempusfugit/temporal/MovableClock.html">MovableClock</a></code> in tests to explicitly move time forward within
                     the context of a test. For example, we can rewrite the test above as follows.
                 </p>
                 <source>
 @Test
-public void getElapsedTimeUsingDeterministicClock() {
-    DeterministicClock clock = new DeterministicClock();
+public void getElapsedTimeUsingMovableClock() {
+    MovableClock clock = new MovableClock();
     BetterStopWatch watch = new BetterStopWatch(clock);
     assertThat(watch.getElapsedTime(), is(millis(0)));
     clock.incrementBy(millis(100));

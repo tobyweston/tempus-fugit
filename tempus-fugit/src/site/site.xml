@@ -43,6 +43,7 @@
             <item name="Introduction" href="index.html"/>
             <item name="Download" href="download.html"/>
             <item name="Developers" href="development.html"/>
+            <item name="Changes" href="changes.html"/>
 
             <item name="Usage" href="usage.html">
                 <item name="Concurrency" href="concurrency.html"/>
