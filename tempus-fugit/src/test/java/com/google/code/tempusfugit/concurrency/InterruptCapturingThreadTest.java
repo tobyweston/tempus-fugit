@@ -16,7 +16,6 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import com.google.code.tempusfugit.temporal.Timeout;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
@@ -32,7 +31,7 @@ import java.util.concurrent.TimeoutException;
 import static com.google.code.tempusfugit.temporal.Conditions.isWaiting;
 import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
-import static com.google.code.tempusfugit.temporal.Timeout.*;
+import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.core.Is.is;
@@ -49,7 +48,7 @@ public class InterruptCapturingThreadTest {
     private PrintStream stream = context.mock(PrintStream.class);
 
 
-    @Test (timeout = 500)
+    @Test (timeout = 1000)
     public void interruptingThreadsStackTraceIsRecorded() throws TimeoutException, InterruptedException {
         verify(startSleepingThreadAndInterrupt().getInterrupters());
     }
