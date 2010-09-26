@@ -18,7 +18,7 @@ package com.google.code.tempusfugit.temporal;
 
 import java.util.concurrent.TimeUnit;
 
-public class Duration {
+public class Duration implements Comparable<Duration> {
 
     private final Long value;
     private final TimeUnit unit;
@@ -111,5 +111,9 @@ public class Duration {
 
     public String toString() {
         return "Duration " + value + " " + unit;
+    }
+
+    public int compareTo(Duration other) {
+        return this.value.compareTo(other.value);
     }
 }

@@ -16,6 +16,7 @@
 
 package com.google.code.tempusfugit.temporal;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import static com.google.code.tempusfugit.temporal.Duration.*;
@@ -91,7 +92,7 @@ public final class DurationTest {
         assertThat(days(1).minus(days(1)), is(equalTo(days(0))));
         assertThat(seconds(1).minus(millis(1)), is(equalTo(millis(999))));
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void tooManySeconds() {
         seconds(Long.MAX_VALUE);
@@ -148,7 +149,7 @@ public final class DurationTest {
     public void equalityNull() {
         assertThat(seconds(1).equals(null), is(false));
     }
-    
+
     @Test
     public void equalityDifferentClass() {
         assertThat(seconds(10).equals(""), is(false));
@@ -162,4 +163,26 @@ public final class DurationTest {
         assertThat(hours(24).toString(), is(equalTo("Duration 86400 SECONDS")));
         assertThat(days(1).toString(), is(equalTo("Duration 86400 SECONDS")));
     }
+
+    @Test
+    public void shouldCompareToGreater() {
+        assertThat(seconds(10).compareTo(seconds(9)), is(1));
+    }
+
+    @Test
+    public void shouldCompareToLessThan() {
+        assertThat(seconds(9).compareTo(seconds(10)), is(-1));
+    }
+
+    @Test
+    public void shouldCompareToLessEquals() {
+        assertThat(seconds(10).compareTo(seconds(10)), is(0));
+    }
+    
+    @Test
+    public void shouldDemonstrateCompareToWithAMatcherAndWithout() {
+        assertThat(seconds(10), is(Matchers.greaterThan(seconds(9))));
+        assertThat(seconds(10).greaterThan(seconds(9)), is(true));
+    }
+    
 }
