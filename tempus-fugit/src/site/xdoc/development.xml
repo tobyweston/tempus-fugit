@@ -39,6 +39,9 @@
                 The subversion repository used by Wagon is authenticated, create a <code>~/.java.net</code> to allow
                 an automatic process. See the <code>.java.net</code> file in tempus-fugit's source for an example.
             </p>
+            <p>
+                You can use this to publish a SNAPSHOT release.
+            </p>
         </subsection>
 
         <subsection name="Maven">
