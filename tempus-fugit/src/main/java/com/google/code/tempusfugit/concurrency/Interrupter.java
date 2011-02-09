@@ -23,7 +23,7 @@ import com.google.code.tempusfugit.temporal.Timeout;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.google.code.tempusfugit.temporal.DefaultClock.now;
+import static com.google.code.tempusfugit.temporal.RealClock.now;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitUntil;
 import static java.lang.Thread.currentThread;

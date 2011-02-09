@@ -16,7 +16,7 @@
 
 package com.google.code.tempusfugit.temporal;
 
-import static com.google.code.tempusfugit.temporal.DefaultClock.now;
+import static com.google.code.tempusfugit.temporal.RealClock.now;
 
 public final class Timeout {
 

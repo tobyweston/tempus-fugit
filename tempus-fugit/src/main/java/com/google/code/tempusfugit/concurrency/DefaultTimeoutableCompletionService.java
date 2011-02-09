@@ -25,8 +25,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.*;
 
 import static com.google.code.tempusfugit.concurrency.Interrupter.interrupt;
-import static com.google.code.tempusfugit.temporal.DefaultClock.now;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
+import static com.google.code.tempusfugit.temporal.RealClock.now;
 import static java.lang.Thread.currentThread;
 
 public class DefaultTimeoutableCompletionService implements TimeoutableCompletionService {
