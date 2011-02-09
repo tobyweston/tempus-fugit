@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, tempus-fugit committers
+ * Copyright (c) 2009-2011, tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,6 @@
  */
 
 package com.google.code.tempusfugit.concurrency.annotations;
-
-import java.lang.reflect.Field;
-
-import junit.framework.TestCase;
-
-import com.google.code.tempusfugit.concurrency.annotations.Immutable;
 
 /**
  * Basic example of an AspectJ aspect that will declare a compilation error for @Immutable classes that provide
