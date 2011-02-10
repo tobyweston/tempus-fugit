@@ -111,6 +111,12 @@ private void waitForShutdown() throws TimeoutException {
                 or using the <code>Conditions</code> class, you can tidy the assert up to look like this. 
             </p>
                 <source>Conditions.assertThat(not(TRUE), is(false)); </source>
+            <p>
+                If you have <code>Matcher</code>s available in your production code, you can use this with flexible
+                waits, for example,
+            </p>
+                <source>WaitFor.waitOrTimeout(<b>Conditions.assertion("hello", is(not(equalTo("goodbye"))))</b>, timeout(millis(100)));</source>
+
             </subsection>
 
             <subsection name="WaitFor">

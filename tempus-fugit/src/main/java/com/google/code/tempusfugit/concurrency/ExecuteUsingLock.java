@@ -16,7 +16,7 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.Lock;
 
 public class ExecuteUsingLock<T, E extends Exception> {
 
@@ -30,21 +30,12 @@ public class ExecuteUsingLock<T, E extends Exception> {
         return new ExecuteUsingLock<T, E>(callable);
     }
 
-    public T using(ReentrantReadWriteLock.WriteLock write) throws E {
+    public T using(Lock lock) throws E {
         try {
-            write.lock();
+            lock.lock();
             return callable.call();
         } finally {
-            write.unlock();
-        }
-    }
-
-    public T using(ReentrantReadWriteLock.ReadLock read) throws E {
-        try {
-            read.lock();
-            return callable.call();
-        } finally {
-            read.unlock();
+            lock.unlock();
         }
     }
 

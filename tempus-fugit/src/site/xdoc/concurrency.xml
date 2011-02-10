@@ -42,6 +42,7 @@
                 <li><p><a href="#Concurrency_Utilities">Concurrency Utilities</a></p></li>
                 <ul>
                     <li><p><a href="#Countdown_Latch_with_Timeout">Countdown Latch with Timeout</a></p></li>
+                    <li><p><a href="#Execute_Using_Locks">Execute Using Locks</a></p></li>
                     <li><p><a href="#Timeoutable_Completion_Service">Timeoutable Completion Service</a></p></li>
                 </ul>
                 <li><p><a href="#JUnit_Integration">JUnit Integration</a></p></li>
@@ -78,7 +79,7 @@ try {
 <source>sleep(millis(100));</source>
             <p>This ensures that the interrupt flag is reset and is more explicit about the <a href="time.html#Duration">duration</a> of the sleep.</p>
             <p>If you want to ensure the interrupt flag is reset for other code, you can use the <code>ThreadUtils.resetInterruptFlagWhen</code>
-            method directly. The <code><a href="xref/com/google/code/tempusfugit/concurrency/Interruptible.html">Interruptible</a></code> interface is used to highlight that the closure-like call
+            method directly. The <code><a href="xref/com/google/code/tempusfugit/concurrency/Interruptible.html">Interruptible</a></code> interface is used to highlight that the lamda-like call
                 you want to execute does in fact throw the <code>InterruptedException</code>. For example;
             </p>
             <source>
@@ -88,7 +89,7 @@ resetInterruptFlagWhen(new Interruptible&lt;Void&gt;() {
         return null;
     }
 }); </source>
-            <p>Extracting the closure-like <code>Interruptible</code> to a method makes the code more expressive;</p>
+            <p>Extracting the lamda-like <code>Interruptible</code> to a method makes the code more expressive;</p>
             <source>resetInterruptFlagWhen(sleepingIsInterrupted()); </source>
             <p>This is actually how the <code>ThreadUtils.sleep</code> method is implemented within tempus-fugit.</p>
         </subsection>
@@ -308,6 +309,41 @@ public void waitForStartup() throws InterruptedException, TimeoutException {
         </p>
         </subsection>
 
+        <subsection name="Execute Using Locks">
+        <p>
+            Using implementations of the <a href="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/locks/Lock.html">
+            <code>java.util.concurrent.locks.Lock</code></a> requires that the lock is acquired and importantly released
+            after use. This leads to the common code below.
+        </p>
+        <source>
+Lock lock = new ReentrantLock();
+lock.lock;
+try {
+   // something useful
+} finally {
+    lock.unlock();
+} </source>
+        </subsection>
+        <p>
+            The <code><a href="xref/com/google/code/tempusfugit/concurrency/ExecuteUsingLock.html">ExecuteUsingLock</a></code>
+            class provides a way to abstract the lock acquisition and release and ensure consistency across your code. It
+            takes a <code>Callable</code> representing the statements to execute whilst the lock is acquired and the actual
+            lock to use when executing and ensures the lock is always released.
+        </p>
+<source>
+public void forExample {
+    execute(something()).using(lock);
+}
+
+private Callable&lt;Void, RuntimeException&gt; something() {
+    return new Callable&lt;Void, RuntimeException&gt;() {
+        public Void call() throws RuntimeException {
+            return null;
+        }
+    };
+}
+</source>
+
        <subsection name="Timeoutable Completion Service">
        <p>
            The <code><a href="xref/com/google/code/tempusfugit/concurrency/TimeoutableCompletionService.html">TimeoutableCompletionService</a></code>
@@ -496,6 +532,13 @@ public class ConcurrentTestRunnerTest {
 I'm running on thread ConcurrentTestRunner-Thread-0
 I'm running on thread ConcurrentTestRunner-Thread-2
 I'm running on thread ConcurrentTestRunner-Thread-1 </source>
+        <p>
+            Another run might yield a different interpolation.
+        </p>
+            <source>
+I'm running on thread ConcurrentTestRunner-Thread-1
+I'm running on thread ConcurrentTestRunner-Thread-0
+I'm running on thread ConcurrentTestRunner-Thread-2 </source>
 
         </subsection>
 
@@ -712,7 +755,7 @@ java.lang.Thread.getStackTrace(Thread.java:1409)
                     throw exceptions or return values.
                 </p>
                 <p>
-                    Both <code>Runnable</code> and <code>Callable</code> are handy interfaces to express closure-like functionality
+                    Both <code>Runnable</code> and <code>Callable</code> are handy interfaces to express lamda-like functionality
                     in Java. Discounting their close relationship to concurrency mechanisms in Java, they both really
                     just represent something that can be called. Choosing between the two, the <code>Callable</code> is
                     more powerful.

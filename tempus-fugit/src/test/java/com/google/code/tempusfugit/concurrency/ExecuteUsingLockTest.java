@@ -20,47 +20,30 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static com.google.code.tempusfugit.concurrency.ExecuteUsingLock.execute;
 
 @RunWith(JMock.class)
 public class ExecuteUsingLockTest {
 
-    private final Mockery context = new JUnit4Mockery() {{
-        setImposteriser(ClassImposteriser.INSTANCE);
-    }};
+    private final Mockery context = new JUnit4Mockery();
 
-    private ReentrantReadWriteLock.ReadLock readLock = context.mock(ReentrantReadWriteLock.ReadLock.class);
-    private ReentrantReadWriteLock.WriteLock writeLock = context.mock(ReentrantReadWriteLock.WriteLock.class);
+    private Lock lock = context.mock(Lock.class);
 
     @Test
-    public void readLock() {
-        setExpectationsOn(readLock);
-        execute(something()).using(readLock);
-    }
-
-    @Test
-    public void writeLock() {
-        setExpectationsOn(writeLock);
-        execute(something()).using(writeLock);
+    public void locksAndUnlocks() {
+        setExpectationsOn(lock);
+        execute(something()).using(lock);
     }
 
     @Test(expected = Exception.class)
-    public void readLockThrowingException() throws Exception {
-        setExpectationsOn(readLock);
-        execute(somethingThatThrowsException()).using(readLock);
-    }
-
-    @Test(expected = Exception.class)
-    public void writeLockThrowingException() throws Exception {
-        setExpectationsOn(writeLock);
-        execute(somethingThatThrowsException()).using(writeLock);
+    public void locksAndUnlocksWhenExceptionThrown() throws Exception {
+        setExpectationsOn(lock);
+        execute(somethingThatThrowsException()).using(lock);
     }
 
     private Callable<Void, RuntimeException> something() {
