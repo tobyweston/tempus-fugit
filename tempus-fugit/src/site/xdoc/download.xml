@@ -28,14 +28,14 @@
         <section name="Versions">
             <subsection name="Stable">
             <p>
-                The current stable version is <b>1.0</b> and is available via Maven, Ivy or direct <a href="http://download.java.net/maven/2/com/google/code/tempus-fugit/tempus-fugit/">download</a>.
+                The current stable version is <b>1.1</b> and is available via Maven, Ivy or direct <a href="http://download.java.net/maven/2/com/google/code/tempus-fugit/tempus-fugit/">download</a>.
             </p>
             </subsection>
             <subsection name="SNAPSHOT">
             <p>
                 Snapshot versions are <b>subject to change</b> without notice. The version of this documentation refers
                 to is indicated in the top right and may differ to previous stable releases. Although we'll try not to
-                alter the API significantly, any changes to the API are documented in the <a href="changes-report.html">change report</a>.
+                alter the API significantly, any changes to the API are documented in the <a href="changes.html">change report</a>.
                 You can always <a href="http://code.google.com/p/tempus-fugit/source/checkout">checkout directly from Subversion</a> if your millage varies.
             </p>
         </subsection>
@@ -70,7 +70,7 @@
 &lt;dependency&gt;
   &lt;groupId&gt;com.google.code.tempus-fugit&lt;/groupId&gt;
   &lt;artifactId&gt;tempus-fugit&lt;/artifactId&gt;
-  &lt;version&gt;1.0&lt;/version&gt;
+  &lt;version&gt;1.1&lt;/version&gt;
 &lt;/dependency&gt; </source>
             <subsection name="Ivy">
             <p>
@@ -82,7 +82,7 @@
             <p>
                 You can then add the following to your project's <code>ivy.xml</code>.
             </p>
-            <source>&lt;dependency org="com.google.code.tempus-fugit" name="tempus-fugit" rev="1.0" /&gt; </source>
+            <source>&lt;dependency org="com.google.code.tempus-fugit" name="tempus-fugit" rev="1.1" /&gt; </source>
             </subsection>
 
             <subsection name="Source Code and Issue Tracking">
