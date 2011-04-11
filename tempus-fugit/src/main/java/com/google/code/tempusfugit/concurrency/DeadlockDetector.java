@@ -54,7 +54,12 @@ public class DeadlockDetector {
     }
 
     private static List<ThreadInfo> findDeadlocks() {
-        long[] monitorDeadlockedThreads = mbean.findMonitorDeadlockedThreads();
+        long[] result;
+        if (mbean.isSynchronizerUsageSupported())
+            result = mbean.findDeadlockedThreads();
+        else
+            result = mbean.findMonitorDeadlockedThreads();
+        long[] monitorDeadlockedThreads = result;
         if (monitorDeadlockedThreads == null)
             return emptyList();
         return asList(mbean.getThreadInfo(monitorDeadlockedThreads));
