@@ -273,12 +273,37 @@ Deadlock detected
                     <source>waitOrTimeout(not(isWaiting(thread)), timeout(seconds(10))); </source>
                 </li>
 
+
+                <li>
+                    <p>
+                        Not exclusively for concurrent use, the <a href="xref/com/google/code/tempusfugit/ExceptionWrapper.html">ExceptionWrapper</a>
+                        class allows you to run arbitrary code in a <code>Callable</code> block catching any <code>Throwable</code> as
+                        an exception of your choice, embedded the originating exception as the new exception's <code>cause</code>. For example,
+                    </p>
+                    <source>
+ExceptionWrapper.wrapAnyException(new Callable&lt;Object&gt;() {
+    @Override
+    public Object call() throws ServiceException {
+        // nasty code throwing a bunch of exceptions
+    }
+}, WithException.with(CalendarException.class));
+                    </source>
+
+                    <p>
+                        You can also catch any <code>Exception</code> and rethrow as a <code>RuntimeException</code> with the
+                        originating exception as the <code>cause</code>. The example below shows the anonymous <code>Callable</code>
+                        being created in the method <code>something</code>.
+                    </p>
+                    <source> ExceptionWrapper.wrapAsRuntimeException(something()); </source>
+                </li>
+
                 <li>
                     <p>
                         As a convenience class, the <code><a href="xref/com/google/code/tempusfugit/concurrency/DefaultThreadFactory.html">DefaultThreadFactory</a></code> offers an implementation of <code>java.util.concurrent.ThreadFactory</code>
                         that creates a thread using the single argument constructor of <code>Thread</code>.
                     </p>
-                 </li>          
+                 </li>
+
             </ul>
 
          </subsection>

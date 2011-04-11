@@ -32,6 +32,7 @@
             <ul>
                 <li><p>About <a href="concurrency.html">concurrency</a></p></li>
                 <li><p>About <a href="time.html">time-dependent</a> code</p></li>
+                <li><p>About <a href="annotations.html">annotations</a></p></li>
             </ul>
         </section>
 
