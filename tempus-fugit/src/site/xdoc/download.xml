@@ -47,8 +47,8 @@
             </p>
             <p>
                 You can download the source and binary jar directly from
-                <a href="https://oss.sonatype.org/content/groups/public/com/google/code/tempus-fugit">
-                    https://oss.sonatype.org/content/groups/public/com/google/code/tempus-fugit</a> or use Maven or Ivy.
+                <a href="http://repo2.maven.org/maven2/com/google/code/tempus-fugit/tempus-fugit/">
+                    http://repo2.maven.org/maven2/com/google/code/tempus-fugit/</a> or use Maven or Ivy.
             </p>
 
             <subsection name="Maven 2">
