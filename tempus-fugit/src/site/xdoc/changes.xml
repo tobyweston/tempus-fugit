@@ -75,6 +75,11 @@
 
             <subsection name="Updates">
                 <ul>
+                    <li><h4>Java 1.6 Support</h4>
+                    <p>
+                        Support for Java 1.6.
+                    </p>
+                    </li>
                     <li><h4>Renamed DateFactory to Clock</h4>
                     <p>
                         Renamed <code>DateFactory</code> to <code>Clock</code>, thanks to Alex for the suggestion.
@@ -147,6 +152,13 @@
                         </p>
                     </li>
 
+                    <li><h4>Updated DeadlockDetector to support Lock based deadlocks</h4>
+                        <p>
+                            <code>DeadlockDetector</code> now supports <code>Lock</code> based deadlocks not just
+                            java intrinsic (monitor) based deadlocks. Fixes
+                            <a href="http://code.google.com/p/tempus-fugit/issues/detail?id=3">Bug #3</a>.
+                        </p>
+                    </li>
                 </ul>
 
             </subsection>
