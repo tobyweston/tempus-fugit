@@ -28,6 +28,42 @@
         <section name="Releases">
         </section>
 
+        <section name="1.2-SNAPSHOT">
+            <p>Snapshot release</p>
+
+            <subsection name="New Features">
+            </subsection>
+
+            <subsection name="Updates">
+                <ul>
+                    <li><h4>Removed Deprecated methods</h4>
+                    <p>
+                        Removed deprecated methods using <code>Duration</code> when there is a new (since 1.1) equivalent
+                        using a <code>Timeout</code>. You can use the timeout version of the methods instead.
+                    </p>
+                    <p>
+                        Removed methods include
+                    </p>
+                        <ul>
+                            <li>
+                                <p><code>ExecutorShutdownService.waitingForShutdown(Duration timeout)</code></p>
+                            </li>
+                            <li>
+                                <p><code>WaitFor.waitOrTimeout(Condition condition, final Duration duration)</code></p>
+                            </li>
+                            <li>
+                                <p><code>WaitFor.waitOrTimeout(Condition condition, final Duration duration, final StopWatch stopWatch)</code></p>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </subsection>
+
+            <subsection name="Bug Fixes">
+            </subsection>
+
+        </section>
+
         <section name="1.1">
             <p><b>Current release</b>, release date April 2011
             </p>
