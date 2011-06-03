@@ -28,7 +28,7 @@
             <subsection name="Release">
                 <p>
                     Since java.net stopped working to publish (after their "upgrade"), we've moved to publishing
-                    via OSS Sonatype.
+                    via OSS Sonatype at <a href="https://oss.sonatype.org/index.html">https://oss.sonatype.org/index.html</a>.
                 </p>
                 <ul>
                     <li>
