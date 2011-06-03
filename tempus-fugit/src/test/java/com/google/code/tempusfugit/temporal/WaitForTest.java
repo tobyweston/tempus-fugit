@@ -16,6 +16,7 @@
 
 package com.google.code.tempusfugit.temporal;
 
+import com.google.code.tempusfugit.concurrency.Callable;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
@@ -45,15 +46,14 @@ public class WaitForTest {
     private final Sequence sequence = context.sequence("sequence");
     private final Condition condition = context.mock(Condition.class);
     private final Sleeper sleeper = context.mock(Sleeper.class);
-
-    private static final Duration DURATION = millis(10);
+    private final Callable<Void, RuntimeException> onTimeout = context.mock(Callable.class, "timeout behaviour");
 
     @Test
     public void whenConditionPassesWaitContinues() throws TimeoutException, InterruptedException {
         context.checking(new Expectations(){{
             one(condition).isSatisfied(); will(returnValue(true));
         }});
-        waitOrTimeout(condition, timeout(DURATION, StopWatch.start(date)));
+        waitOrTimeout(condition, timeout(millis(10), StopWatch.start(date)));
     }
 
     @Test
@@ -62,12 +62,29 @@ public class WaitForTest {
             one(condition).isSatisfied(); inSequence(sequence); will(returnValue(false));
             one(condition).isSatisfied(); inSequence(sequence); will(returnValue(true));
         }});
-        waitOrTimeout(condition, timeout(DURATION, StopWatch.start(date)));
+        waitOrTimeout(condition, timeout(millis(10), StopWatch.start(date)));
     }
 
     @Test(expected = TimeoutException.class)
-    public void timesout() throws TimeoutException, InterruptedException {
-        waitOrTimeout(new ForceTimeout(), timeout(DURATION, StopWatch.start(date)));
+    public void timesOut() throws TimeoutException, InterruptedException {
+        waitOrTimeout(new ForceTimeout(millis(10)), timeout(millis(10), new StopWatch(date)));
+    }
+
+    @Test
+    public void executesTimeOutBehaviour() throws InterruptedException {
+        context.checking(new Expectations(){{
+            one(onTimeout).call();
+        }});
+        waitOrTimeout(new ForceTimeout(millis(10)), onTimeout, timeout(millis(10), new StopWatch(date)));
+    }
+
+    @Test (expected = RuntimeException.class)
+    public void timeoutBehaviourThrowsException() throws InterruptedException {
+        context.checking(new Expectations() {{
+            one(onTimeout).call();
+            will(throwException(new RuntimeException()));
+        }});
+        waitOrTimeout(new ForceTimeout(millis(10)), onTimeout, timeout(millis(10), new StopWatch(date)));
     }
 
     @Test (expected = InterruptedException.class, timeout = 500)
@@ -124,8 +141,14 @@ public class WaitForTest {
     }
 
     private class ForceTimeout implements Condition {
+        private final Duration timeout;
+
+        public ForceTimeout(Duration timeout) {
+            this.timeout = timeout;
+        }
+
         public boolean isSatisfied() {
-            date.setTime(DURATION.plus(millis(1)));
+            date.setTime(timeout.plus(millis(1)));
             return false;
         }
     }

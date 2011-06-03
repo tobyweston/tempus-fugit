@@ -148,9 +148,23 @@ private void waitForStartup(final Thread thread) throws TimeoutException, Interr
     }, timeout(seconds(10)));
 } </source>
               <p>
-                  Where <code>WaitFor.waitOrTime</code> has been statically imported and <code>Timeout.timeout</code> is a
+                  Where <code>WaitFor.waitOrTimeout</code> has been statically imported and <code>Timeout.timeout</code> is a
                   static constructor for a <code>Timeout</code> object.
               </p>
+              <p>
+                  A call to <code>waitOrTimeout</code> will also throw a <code>TimeoutException</code> if it times out.
+                  However, you can call an overloaded version which doesn't throw the exception but instead executes
+                  some behaviour you pass in via a <code>Callable</code> instance. For example,
+              </p>
+<source>
+private void waitForStartup(final Thread thread) throws InterruptedException {
+    waitOrTimeout(threadStarted(thread), new Callable() {
+        public Void call() throws RuntimeException {
+            notifyObservers(new FailedToStart(thread));
+            return null;
+        }
+    }, timeout(seconds(10)));
+} </source>
               <p>
                   See the <a href="concurrency.html#Miscellaneous">concurrency</a> section for a set of pre-defined <code>Condition</code>s.
               </p>

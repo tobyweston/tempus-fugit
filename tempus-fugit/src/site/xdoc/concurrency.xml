@@ -663,7 +663,7 @@ public class RunConcurrentlyTest {
         <p>
             In the example below, a test verifies that the action of clicking a button will toggle some switch to a
             different position. However, this test may or may not pass if the <code>clickButton()</code> kicks off an
-            asynchronous process to update the toggle position. It may return immediatly having not yet changed the position.
+            asynchronous process to update the toggle position. It may return immediately having not yet changed the position.
         </p>
 <source>
 @Test
@@ -700,7 +700,7 @@ public void toggleButton() throws TimeoutException {
     clickButton();
     waitOrTimeout(toggleIs(OFF), seconds(5));
 }
-
+...
 private Condition toggleIs(final Position position) {
     return new Condition() {
         public boolean isSatisfied() {
@@ -710,6 +710,37 @@ private Condition toggleIs(final Position position) {
 }
 </source>
         <p>
+            A wait which times out will through a <code>TimeoutException</code> although, since 1.2, you can also
+            supply the <code>waitOrTimeout</code> call with behaviour to execute on timeout (as a <code>Callable</code>).
+            For example;
+        </p>
+<source>
+waitOrTimeout(serverIsShutdown(), new Callable&lt;Void, RuntimeException&gt;() {
+    @Override
+    public Void call() throws RuntimeException {
+        notifyObservers(new FailedToShutdownEvent());
+        return null;
+    }
+}, timeout(millis(500)));
+</source>
+        <p>
+            will not throw a <code>TimeoutException</code> but instead notify some observer of the failure. Refactored
+            a little, it would look like this
+        </p>
+<source>
+waitOrTimeout(serverIsShutdown(), notifyFailureOnTimeout(), timeout(millis(500)));
+...
+private Callable&lt;Void, RuntimeException&gt; notifyFailureOnTimeout() {
+    return new Callable&lt;Void, RuntimeException&gt;() {
+        @Override
+        public Void call() throws RuntimeException {
+            notifyObservers(new FailedToShutdownEvent());
+            return null;
+        }
+    }
+}
+</source>
+            <p>
             These mechanism are more fully described in the <a href="time.html">time-dependence</a> section.
         </p>
         </subsection>

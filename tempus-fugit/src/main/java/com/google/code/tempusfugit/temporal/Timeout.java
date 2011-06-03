@@ -29,7 +29,7 @@ public final class Timeout {
     }
 
     /** @since 1.1 */
-    public static Timeout timeout(final Duration duration, final StopWatch stopWatch) {
+    public static Timeout timeout(Duration duration, StopWatch stopWatch) {
         return new Timeout(duration, stopWatch);
     }
 
@@ -37,7 +37,7 @@ public final class Timeout {
         this(duration, startStopWatch());
     }
 
-    private Timeout(final Duration duration, final StopWatch stopWatch) {
+    private Timeout(Duration duration, StopWatch stopWatch) {
         if (duration.inMillis() <= 0)
             throw new IllegalArgumentException();
         this.duration = duration;

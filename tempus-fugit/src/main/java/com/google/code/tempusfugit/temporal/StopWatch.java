@@ -31,7 +31,8 @@ public final class StopWatch {
         return new StopWatch(clock);
     }
 
-    private StopWatch(Clock clock) {
+    /** @since 1.2 */
+    public StopWatch(Clock clock) {
         this.clock = clock;
         this.startDate = clock.create();
     }

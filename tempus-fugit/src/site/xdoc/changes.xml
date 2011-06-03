@@ -31,7 +31,41 @@
         <section name="1.2-SNAPSHOT">
             <p>Snapshot release</p>
 
+            <subsection name="Updates">
+                <ul>
+                    <li>
+                        <h4>Public constructor for StopWatch</h4>
+                        <p>
+                            Formally, to construct a new StopWatch, you'd call <code>StopWatch.start()</code> to make it
+                            clear that on construction the stop watch is also started. For clients that don't need to be
+                            so explicit, you can now construct (and start) a <code>StopWatch</code> through it's public
+                            constructor.
+                        </p>
+                    </li>
+                </ul>
+            </subsection>
+
             <subsection name="New Features">
+                <ul>
+                    <li>
+                        <h4>Added timeout behaviour to <code>WaitFor.waitOrTimeout</code></h4>
+                        <p>
+                            Calling <code>waitOrTimeout</code> will through a <code>TimeoutException</code> on timeout.
+                            You can now call an overloaded method and pass in a <code>Callable</code> that will be
+                            executed on timeout and this version no longer throws a <code>TimeoutException</code>. For
+                            example,
+                        </p>
+                        <source>
+waitOrTimeout(serverIsShutdown(), new Callable&lt;Void, RuntimeException&gt;() {
+    @Override
+    public Void call() throws RuntimeException {
+        notifyObservers(new FailedToShutdownEvent());
+        return null;
+    }
+}, timeout(millis(500)));
+                        </source>
+                    </li>
+                </ul>
             </subsection>
 
             <subsection name="Updates">
@@ -49,10 +83,10 @@
                                 <p><code>ExecutorShutdownService.waitingForShutdown(Duration timeout)</code></p>
                             </li>
                             <li>
-                                <p><code>WaitFor.waitOrTimeout(Condition condition, final Duration duration)</code></p>
+                                <p><code>WaitFor.waitOrTimeout(Condition condition, Duration duration)</code></p>
                             </li>
                             <li>
-                                <p><code>WaitFor.waitOrTimeout(Condition condition, final Duration duration, final StopWatch stopWatch)</code></p>
+                                <p><code>WaitFor.waitOrTimeout(Condition condition, Duration duration, StopWatch stopWatch)</code></p>
                             </li>
                         </ul>
                     </li>

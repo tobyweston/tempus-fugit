@@ -16,6 +16,8 @@
 
 package com.google.code.tempusfugit.temporal;
 
+import com.google.code.tempusfugit.concurrency.Callable;
+
 import java.util.concurrent.TimeoutException;
 
 import static com.google.code.tempusfugit.temporal.Duration.millis;
@@ -37,6 +39,15 @@ public final class WaitFor {
         if (success(condition, timeout, sleeper))
             return;
         throw new TimeoutException();
+    }
+
+    /** @since 1.2 */
+    public static <T, E extends Exception> void waitOrTimeout(Condition condition, Callable<T, E> onTimeout, Timeout timeout) throws InterruptedException, E {
+        try {
+            waitOrTimeout(condition, timeout);
+        } catch (TimeoutException e) {
+            onTimeout.call();
+        }
     }
 
     public static void waitUntil(Timeout timeout) throws InterruptedException {
