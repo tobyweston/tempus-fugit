@@ -48,6 +48,88 @@
                 </ul>
             </subsection>
 
+            <subsection name="Publishing to Sonatype">
+                <p>
+                    As an abbreviated reminder, follow these steps.
+                </p>
+                <h4>SNAPSHOT Release (<a href="https://oss.sonatype.org/content/repositories/snapshots/">https://oss.sonatype.org/content/repositories/snapshots/</a>)</h4>
+                <ol>
+                    <li>
+                        <p>
+                            Having added the Sonatype parent to your POM.
+                        </p>
+                        <source>
+&lt;parent&gt;
+    &lt;groupId&gt;org.sonatype.oss&lt;/groupId&gt;
+    &lt;artifactId&gt;oss-parent&lt;/artifactId&gt;
+&lt;/parent&gt;
+                        </source>
+                    </li>
+                    <li>
+                        <p>
+                            Having previously generated your PGP key, you may need to install it on the box you intend
+                            to deploy from. You will have to export it from the original keyring (where you first created
+                            the key pair) and install it along with the public key into the keyring on the machine you
+                            want to publish from.
+                        </p>
+                        <p>
+                            If you followed the steps in <a href="https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven">Setting up PGP</a>
+                            above, you will have published your public key to, lets say, hkp://pool.sks-keyservers.net.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            You should just be able to publish via Maven
+                        </p>
+<source>
+mvn clean deploy
+</source>
+                        <p>
+                            and as tempus-fugit has been setup with the Maven PGP plugin, it'll automatically sign the
+                            artifacts before publishing. You'll just need to enter your pass phrase as part of the build.
+                        </p>
+                    </li>
+                </ol>
+
+                <h4>Release</h4>
+                <ol>
+                    <li>
+                        <p>
+                            Having prepared a release (tagging in Subversion etc) with the
+                            <a href="http://maven.apache.org/plugins/maven-release-plugin/examples/prepare-release.html">
+                                mvn release
+                            </a>
+                            plugin.
+                        </p>
+                        <source>
+mvn release:clean
+mvn release:prepare </source>
+                    </li>
+                    <li>
+                        <p>
+                            you firstly, have to <i>stage</i> the artifacts with Sonatype.
+                        </p>
+                        <source>mvn release:perform</source>
+                    </li>
+                    <li>
+                        <p>
+                            This will upload to Sonatype's staging area where you can promote it through to a release
+                            via their GUI at <a href="https://oss.sonatype.org">https://oss.sonatype.org</a>.
+                        </p>
+                        <p>
+                            Pick up the instructions for the GUI from the <a href="https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide#SonatypeOSSMavenRepositoryUsageGuide-8.ReleaseIt">User Guide</a>.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Enjoy.
+                        </p>
+                    </li>
+                </ol>
+
+
+            </subsection>
+
             <subsection name="PGP Keys">
                     <p>
                         Download my public key using the following
@@ -62,7 +144,7 @@
                 </p>
                 <source>mvn surefire-report:report-only</source>
                 <p>
-                    To generate the awful Surefire report after running<code>mvn test</code>.
+                    To generate the awful Surefire report after running <code>mvn test</code>.
                 </p>
             </subsection>
 
