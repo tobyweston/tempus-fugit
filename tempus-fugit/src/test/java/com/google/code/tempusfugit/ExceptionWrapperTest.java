@@ -26,8 +26,8 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.Callable;
 
-import static com.google.code.tempusfugit.ExceptionWrapper.wrapAnyException;
-import static com.google.code.tempusfugit.ExceptionWrapper.wrapAsRuntimeException;
+import static com.google.code.tempusfugit.ExceptionWrapper.*;
+import static com.google.code.tempusfugit.WithException.as;
 import static com.google.code.tempusfugit.WithException.with;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.core.Is.is;
@@ -101,6 +101,33 @@ public class ExceptionWrapperTest {
         }
     }
 
+    @Test
+    public void shouldWrapCheckedExceptionAsRuntimeException() {
+        SomeCheckedException cause = new SomeCheckedException("I'm scared daddy");
+        try {
+            throwAsRuntimeException(cause);
+            fail();
+        } catch (RuntimeException e) {
+            assertThat((SomeCheckedException) e.getCause(), is(cause));
+            assertThat(e.getMessage(), containsString("ExceptionWrapperTest$SomeCheckedException: I'm scared daddy"));
+            assertThat(e.getCause().getMessage(), is("I'm scared daddy"));
+        }
+    }
+
+    @Test
+    public void shouldWrapCheckedExceptionAsSubclassOfRuntimeException() {
+        SomeCheckedException cause = new SomeCheckedException("I'm still scared daddy");
+        try {
+            ExceptionWrapper.throwException(cause, as(SomeOtherRuntimeException.class));
+            fail();
+        } catch (SomeOtherRuntimeException e) {
+            assertThat((SomeCheckedException) e.getCause(), is(cause));
+            assertThat(e.getMessage(), containsString("ExceptionWrapperTest$SomeCheckedException: I'm still scared daddy"));
+            assertThat(e.getCause().getMessage(), is("I'm still scared daddy"));
+        } catch (RuntimeException e) {
+            fail();
+        }
+    }
 
     private void callWill(final Action action) throws Exception {
         context.checking(new Expectations() {{
@@ -117,11 +144,10 @@ public class ExceptionWrapperTest {
         }
     }
 
-    public static class SomeOtherCheckedException extends Exception {
+    private static class SomeOtherCheckedException extends Exception {
         public SomeOtherCheckedException() {
             super();
         }
-
 
         public SomeOtherCheckedException(Throwable cause) {
             super(cause);
@@ -129,4 +155,15 @@ public class ExceptionWrapperTest {
     }
 
     private static class SomeCheckedExceptionWithPrivateAccess extends Exception { }
+
+    private static class SomeOtherRuntimeException extends RuntimeException {
+        public SomeOtherRuntimeException() {
+            super();
+        }
+
+        public SomeOtherRuntimeException(Throwable cause) {
+            super(cause);
+        }
+
+    }
 }

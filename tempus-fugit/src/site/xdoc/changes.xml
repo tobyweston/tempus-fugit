@@ -65,6 +65,29 @@ waitOrTimeout(serverIsShutdown(), new Callable&lt;Void, RuntimeException&gt;() {
 }, timeout(millis(500)));
                         </source>
                     </li>
+                    <li>
+                        <h4>
+                            Added simple static method to wrap checked to runtime exception and throw
+                        </h4>
+                        <p>
+                            So, for example, you can do something like this.
+                        </p>
+                        <source>
+ExceptionWrapper.throwAsRuntimeException(new IOException("checked exception"));
+                        </source>
+                        <p>
+                            Useful for migrating legacy code that rely on checked exceptions everywhere to a more liberated
+                            style of throwing runtime exceptions and dealing with them at the boundaries. For the eagle
+                            eyed however, you'll likely comment that throwing <code>RuntimeException</code> everywhere
+                            isn't as good as throwing specific <b>sub-classes</b> of <code>RuntimeException</code> to
+                            be able to deal with these more effectively. Therefore, there's an alternative implementation
+                            which will throw any checked exception into a specific sub-class of a runtime exception.
+                            For example,
+                        </p>
+                        <source>
+ExceptionWrapper.throwException(new IOException("cheese"), as(SomeSubclassOfRuntimeException.class));
+                        </source>
+                    </li>
                 </ul>
             </subsection>
 
