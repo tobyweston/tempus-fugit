@@ -20,7 +20,7 @@ import java.util.Date;
 
 public class RealClock implements Clock {
 
-    private RealClock() {
+    public RealClock() {
     }
 
     public static RealClock now() {
