@@ -51,7 +51,7 @@
       <profile version="1.0" is_locked="false">
         <option name="myName" value="Project Default" />
         <option name="myLocal" value="false" />
-        <inspection_tool class="GemInspection" level="WARNING" enabled="false" />
+        <inspection_tool class="GemInspection" enabled="false" level="WARNING" enabled_by_default="false" />
         <inspection_tool class="HtmlUnknownAttribute" enabled="false" level="WARNING" enabled_by_default="false">
           <option name="myValues">
             <value>
@@ -66,7 +66,7 @@
           </option>
           <option name="myCustomValuesEnabled" value="true" />
         </inspection_tool>
-        <inspection_tool class="RailsParamDefResolve" level="WARNING" enabled="false" />
+        <inspection_tool class="RailsParamDefResolve" enabled="false" level="WARNING" enabled_by_default="false" />
         <inspection_tool class="SeamBijectionTypeMismatchInspection" level="ERROR" enabled="false" />
         <inspection_tool class="SeamBijectionUndefinedContextVariableInspection" level="WARNING" enabled="false" />
       </profile>
@@ -287,30 +287,6 @@
         <entry key="$PROJECT_DIR$/../skin">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="https://tempus-fugit.googlecode.com/svn/branches">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="https://tempus-fugit.googlecode.com/svn/site">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="https://tempus-fugit.googlecode.com/svn/tags">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="https://tempus-fugit.googlecode.com/svn/wiki">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://tempus-fugit.googlecode.com/svn/branches" />
@@ -326,20 +302,6 @@
         <entry key="$PROJECT_DIR$">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="https://tempus-fugit.googlecode.com/svn/branches">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="https://tempus-fugit.googlecode.com/svn/tags">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://tempus-fugit.googlecode.com/svn/branches" />
