@@ -26,12 +26,14 @@ import org.junit.runner.RunWith;
 
 import java.io.PrintStream;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.code.tempusfugit.concurrency.ThreadUtils.resetInterruptFlagWhen;
 import static org.hamcrest.Matchers.containsString;
 
 @RunWith(JMock.class)
-public class DeadlockDetectorTest {
+public class DeadlockDetectorWithLocksTest {
 
     private final Mockery context = new Mockery() {{
         setImposteriser(ClassImposteriser.INSTANCE);
@@ -49,30 +51,30 @@ public class DeadlockDetectorTest {
         DeadlockDetector.printDeadlocks(stream);
     }
 
-    @Test (timeout = 1000)
-    public void detectsIntrinsicDeadlock() throws InterruptedException {
+    @Test(timeout = 1000)
+    public void detectsLockBasedDeadlock() throws InterruptedException {
         new Kidnapper().start();
         new Negotiator().start();
 
         setExpectationsOn(stream);
         DeadlockDetector.printDeadlocks(stream);
     }
-    
+
     private void setExpectationsOn(final PrintStream stream) {
         final Sequence sequence = context.sequence("output");
         context.checking(new Expectations() {{
             one(stream).println(with(containsString("Deadlock detected"))); inSequence(sequence);
             one(stream).println(with(containsString("Negotiator-Thread"))); inSequence(sequence);
-            one(stream).println(with(containsString("waiting to lock Monitor of " + Cat.class.getName()))); inSequence(sequence);
+            one(stream).println(with(containsString("waiting to lock Monitor of " + ReentrantLock.class.getName()))); inSequence(sequence);
             one(stream).println(with(containsString("which is held by \"Kidnapper-Thread"))); inSequence(sequence);
             one(stream).println(with(containsString("Kidnapper-Thread"))); inSequence(sequence);
-            one(stream).println(with(containsString("waiting to lock Monitor of " + Cash.class.getName()))); inSequence(sequence);
+            one(stream).println(with(containsString("waiting to lock Monitor of " + ReentrantLock.class.getName()))); inSequence(sequence);
             one(stream).println(with(containsString("which is held by \"Negotiator-Thread"))); inSequence(sequence);
             allowing(stream).println();
         }});
     }
 
-    class Kidnapper extends Thread {
+    private class Kidnapper extends Thread {
         Kidnapper() {
             setName("Kidnapper-" + getName());
         }
@@ -83,20 +85,18 @@ public class DeadlockDetectorTest {
         }
 
         private void notWillingToLetNibblesGoWithoutCash() {
-            synchronized (nibbles) {
+            try {
+                keep(nibbles);
                 countdownAndAwait(latch);
-                synchronized (cash) {
-                    take(cash);
-                }
+                take(cash);
+            } finally {
+                release(nibbles);
             }
-        }
-
-        private void take(Cash cash) {
         }
 
     }
 
-    class Negotiator extends Thread {
+    private class Negotiator extends Thread {
 
         Negotiator() {
             setName("Negotiator-" + getName());
@@ -108,15 +108,13 @@ public class DeadlockDetectorTest {
         }
 
         private void notWillingToLetCashGoWithoutNibbles() {
-            synchronized (cash) {
+            try {
+                keep(cash);
                 countdownAndAwait(latch);
-                synchronized (nibbles) {
-                    take(nibbles);
-                }
+                take(nibbles);
+            } finally {
+                release(cash);
             }
-        }
-
-        private void take(Cat nibbles) {
         }
 
     }
@@ -135,9 +133,22 @@ public class DeadlockDetectorTest {
         };
     }
 
+    private static class Cat extends ReentrantLock {
+    }
 
-    static class Cash { }
+    private static class Cash extends ReentrantLock {
+    }
 
-    static class Cat { }
+    private void keep(Lock lock) {
+        lock.lock();
+    }
+
+    private void take(Lock lock) {
+        lock.lock();
+    }
+
+    private void release(Lock lock) {
+        lock.unlock();
+    }
 
 }
