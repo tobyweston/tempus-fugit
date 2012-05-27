@@ -277,28 +277,6 @@
   <component name="SvnBranchConfigurationManager">
     <option name="myConfigurationMap">
       <map>
-        <entry key="$PROJECT_DIR$/../site">
-          <value>
-            <SvnBranchConfiguration>
-              <option name="trunkUrl" value="https://tempus-fugit.googlecode.com/svn/site" />
-            </SvnBranchConfiguration>
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/../skin">
-          <value>
-            <SvnBranchConfiguration>
-              <option name="branchUrls">
-                <list>
-                  <option value="https://tempus-fugit.googlecode.com/svn/branches" />
-                  <option value="https://tempus-fugit.googlecode.com/svn/site" />
-                  <option value="https://tempus-fugit.googlecode.com/svn/tags" />
-                  <option value="https://tempus-fugit.googlecode.com/svn/wiki" />
-                </list>
-              </option>
-              <option name="trunkUrl" value="https://tempus-fugit.googlecode.com/svn/trunk" />
-            </SvnBranchConfiguration>
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$">
           <value>
             <SvnBranchConfiguration>
@@ -317,9 +295,7 @@
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="VcsDirectoryMappings">
-    <mapping directory="$PROJECT_DIR$/../site" vcs="svn" />
-    <mapping directory="$PROJECT_DIR$/../skin" vcs="svn" />
-    <mapping directory="$PROJECT_DIR$" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="libraryTable">
