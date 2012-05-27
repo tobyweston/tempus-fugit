@@ -28,6 +28,7 @@ import org.jmock.api.Action;
 import org.jmock.api.Invocation;
 import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.concurrent.Synchroniser;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +54,7 @@ public class DefaultTimeoutableCompletionServiceTest {
 
     private final Mockery context = new JUnit4Mockery() {{
         setImposteriser(ClassImposteriser.INSTANCE);
+        setThreadingPolicy(new Synchroniser());
     }};
 
     private Callable<String> task1 = context.mock(Callable.class, "task1");

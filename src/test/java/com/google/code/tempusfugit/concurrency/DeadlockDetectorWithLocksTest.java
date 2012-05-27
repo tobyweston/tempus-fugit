@@ -20,6 +20,7 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
 import org.jmock.integration.junit4.JMock;
+import org.jmock.lib.concurrent.Synchroniser;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +38,7 @@ public class DeadlockDetectorWithLocksTest {
 
     private final Mockery context = new Mockery() {{
         setImposteriser(ClassImposteriser.INSTANCE);
+        setThreadingPolicy(new Synchroniser());
     }};
 
     private PrintStream stream = context.mock(PrintStream.class);

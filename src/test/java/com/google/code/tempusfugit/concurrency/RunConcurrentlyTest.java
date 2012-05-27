@@ -21,6 +21,7 @@ import junit.framework.AssertionFailedError;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.concurrent.Synchroniser;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.AfterClass;
 import org.junit.Rule;
@@ -77,6 +78,7 @@ public class RunConcurrentlyTest {
     public void expectedExceptionFailsInMainTestThreadWithoutJUnitFrameworkIntervention() throws Throwable {
         Mockery context = new JUnit4Mockery() {{
             setImposteriser(ClassImposteriser.INSTANCE);
+            setThreadingPolicy(new Synchroniser());
         }};
         FrameworkMethod method = createMethodWithExpectations(context);
         Statement statement = createStatementWithExpectations(context);
