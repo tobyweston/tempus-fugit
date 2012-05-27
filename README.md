@@ -5,4 +5,4 @@ Take a look at the project's site at [tempusfugitlibrary.org](http://tempusfugit
 
 ### Developers
 
-Take a look at the [developers readme](tempus-fugit/blob/master/(DEVELOPERS.md).
+Take a look at the [developers readme](tempus-fugit/blob/master/DEVELOPERS.md).
