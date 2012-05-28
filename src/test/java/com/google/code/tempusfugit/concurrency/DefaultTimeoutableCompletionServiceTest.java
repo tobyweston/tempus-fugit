@@ -81,7 +81,7 @@ public class DefaultTimeoutableCompletionServiceTest {
         new DefaultTimeoutableCompletionService(completionService).submit(asList(task1, task2, task3));
     }
 
-    @Test (expected = TimeoutException.class)
+    @Test (expected = TimeoutException.class, timeout = 1500)
     public void tasksSubmittedButNeverCompleteTimeout() throws Exception {
         final Sequence sequence = context.sequence("sequence");
         context.checking(new Expectations() {{
@@ -98,7 +98,7 @@ public class DefaultTimeoutableCompletionServiceTest {
         new DefaultTimeoutableCompletionService(completionService, TIMEOUT, time).submit(asList(task1, task2));
     }
 
-    @Test
+    @Test (timeout = 1500)
     public void timeoutReturnsPartialResults() throws Exception {
         final Sequence sequence = context.sequence("sequence");
         context.checking(new Expectations() {{
