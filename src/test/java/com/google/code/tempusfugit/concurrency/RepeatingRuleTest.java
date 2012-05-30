@@ -17,7 +17,7 @@
 package com.google.code.tempusfugit.concurrency;
 
 import com.google.code.tempusfugit.concurrency.annotations.Repeating;
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -36,8 +36,8 @@ public class RepeatingRuleTest {
         counter++;
     }
 
-    @After
-    public void annotatedTestRunsMultipleTimes() {
+    @AfterClass
+    public static void annotatedTestRunsMultipleTimes() {
         assertThat(counter, is(99));
     }
 
