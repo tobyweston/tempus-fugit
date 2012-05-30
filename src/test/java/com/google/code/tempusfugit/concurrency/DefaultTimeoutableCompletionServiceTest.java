@@ -17,13 +17,14 @@
 package com.google.code.tempusfugit.concurrency;
 
 
+import com.google.code.tempusfugit.FactoryException;
 import com.google.code.tempusfugit.temporal.Clock;
 import com.google.code.tempusfugit.temporal.Condition;
 import com.google.code.tempusfugit.temporal.Duration;
 import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import org.jmock.Sequence;
+import org.jmock.States;
 import org.jmock.api.Action;
 import org.jmock.api.Invocation;
 import org.jmock.integration.junit4.JMock;
@@ -57,25 +58,37 @@ public class DefaultTimeoutableCompletionServiceTest {
         setThreadingPolicy(new Synchroniser());
     }};
 
-    private Callable<String> task1 = context.mock(Callable.class, "task1");
-    private Callable<String> task2 = context.mock(Callable.class, "task2");
-    private Callable<String> task3 = context.mock(Callable.class, "task3");
+    private final Callable<String> task1 = context.mock(Callable.class, "task1");
+    private final Callable<String> task2 = context.mock(Callable.class, "task2");
+    private final Callable<String> task3 = context.mock(Callable.class, "task3");
+
     private static final String TASK1_RESULT = "batman";
 
     private static final Date START_DATE = new Date(0);
     private static final Duration TIMEOUT = millis(5);
     private static final Date EXPIRED_TIMEOUT = new Date(TIMEOUT.inMillis() + 1);
 
-    private ExecutorCompletionService completionService = context.mock(ExecutorCompletionService.class);
-
-    private final Clock time = context.mock(Clock.class);
+    private final ExecutorCompletionService completionService = context.mock(ExecutorCompletionService.class);
+    
+    private final Clock time = new Clock() {
+        private int count = 0;
+        @Override
+        public synchronized Date create() throws FactoryException {
+            count++;
+            if (count == 1)
+                return START_DATE;
+            if (count == 2)
+                return EXPIRED_TIMEOUT;
+            throw new IllegalStateException("this clock can only be called twice");
+        }
+    };
 
     @Test
     public void taskSubmitionIsDelegated() throws Exception {
-        context.checking(new Expectations(){{
-            one(completionService).submit(with(task1));
-            one(completionService).submit(with(task2));
-            one(completionService).submit(with(task3));
+        context.checking(new Expectations() {{
+            oneOf(completionService).submit(with(task1));
+            oneOf(completionService).submit(with(task2));
+            oneOf(completionService).submit(with(task3));
             allowing(completionService).take();
         }});
         new DefaultTimeoutableCompletionService(completionService).submit(asList(task1, task2, task3));
@@ -83,33 +96,26 @@ public class DefaultTimeoutableCompletionServiceTest {
 
     @Test (expected = TimeoutException.class, timeout = 1500)
     public void tasksSubmittedButNeverCompleteTimeout() throws Exception {
-        final Sequence sequence = context.sequence("sequence");
+        final States taken = context.states("taken").startsAs("none");
         context.checking(new Expectations() {{
-            one(completionService).submit(task1);
-            one(completionService).submit(task2);
+            oneOf(completionService).submit(task1);
+            oneOf(completionService).submit(task2);
 
-            one(completionService).take(); will(returnValue(new StubFuture(TASK1_RESULT)));
-            one(completionService).take(); will(waitForever());
-
-            one(time).create(); will(returnValue(START_DATE)); inSequence(sequence);
-            one(time).create(); will(returnValue(EXPIRED_TIMEOUT)); inSequence(sequence);
+            oneOf(completionService).take(); will(returnValue(new StubFuture(TASK1_RESULT))); then(taken.is("one"));
+            oneOf(completionService).take(); will(waitForever()); when(taken.is("one"));
         }});
 
         new DefaultTimeoutableCompletionService(completionService, TIMEOUT, time).submit(asList(task1, task2));
     }
 
-    @Test (timeout = 1500)
+    @Test(timeout = 1500)
     public void timeoutReturnsPartialResults() throws Exception {
-        final Sequence sequence = context.sequence("sequence");
         context.checking(new Expectations() {{
-            one(completionService).submit(task1);
-            one(completionService).submit(task2);
+            oneOf(completionService).submit(task1);
+            oneOf(completionService).submit(task2);
 
-            one(completionService).take(); will(returnValue(new StubFuture(TASK1_RESULT)));
-            one(completionService).take(); will(waitForever());
-
-            one(time).create(); will(returnValue(START_DATE)); inSequence(sequence);
-            one(time).create(); will(returnValue(EXPIRED_TIMEOUT)); inSequence(sequence);
+            oneOf(completionService).take(); will(returnValue(new StubFuture(TASK1_RESULT)));
+            oneOf(completionService).take(); will(waitForever());
         }});
 
         try {
@@ -123,9 +129,8 @@ public class DefaultTimeoutableCompletionServiceTest {
     @Test
     public void noInterruptOccursIfCompletionServiceFinishes() throws Exception {
         context.checking(new Expectations() {{
-            one(completionService).submit(task1);
-            one(completionService).take(); will(returnValue(new StubFuture(TASK1_RESULT)));
-            allowing(time).create(); will(returnValue(START_DATE));
+            oneOf(completionService).submit(task1);
+            oneOf(completionService).take(); will(returnValue(new StubFuture(TASK1_RESULT)));
         }});
 
         new DefaultTimeoutableCompletionService(completionService, millis(100), time).submit(asList(task1));
@@ -136,9 +141,8 @@ public class DefaultTimeoutableCompletionServiceTest {
         final AtomicBoolean interrupted = new AtomicBoolean(false);
         Callable<Void> callable = new Callable<Void>() {
             public Void call() throws Exception {
-                while (!Thread.currentThread().isInterrupted()) {
+                while (!Thread.currentThread().isInterrupted()) 
                     Thread.yield();
-                }
                 interrupted.set(true);
                 return null;
             }
@@ -148,7 +152,7 @@ public class DefaultTimeoutableCompletionServiceTest {
             new DefaultTimeoutableCompletionService(new ExecutorCompletionService(newSingleThreadExecutor()), millis(1), now()).submit(asList(callable));
             fail("didn't timeout");
         } catch (TimeoutException e) {
-            waitOrTimeout(new Condition(){
+            waitOrTimeout(new Condition() {
                 public boolean isSatisfied() {
                     return interrupted.get();
                 }
@@ -164,15 +168,15 @@ public class DefaultTimeoutableCompletionServiceTest {
         }
 
         public boolean cancel(boolean mayInterruptIfRunning) {
-            throw new RuntimeException("Implement me");
+            throw new UnsupportedOperationException();
         }
 
         public boolean isCancelled() {
-            throw new RuntimeException("Implement me");
+            throw new UnsupportedOperationException();
         }
 
         public boolean isDone() {
-            throw new RuntimeException("Implement me");
+            throw new UnsupportedOperationException();
         }
 
         public String get() throws InterruptedException, ExecutionException {
@@ -180,7 +184,7 @@ public class DefaultTimeoutableCompletionServiceTest {
         }
 
         public String get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-            throw new RuntimeException("Implement me");
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -196,4 +200,6 @@ public class DefaultTimeoutableCompletionServiceTest {
             }
         };
     }
+
 }
+
