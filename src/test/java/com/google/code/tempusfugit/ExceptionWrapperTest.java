@@ -16,12 +16,17 @@
 
 package com.google.code.tempusfugit;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.api.Action;
 import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.internal.matchers.TypeSafeMatcher;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import java.util.concurrent.Callable;
@@ -30,14 +35,16 @@ import static com.google.code.tempusfugit.ExceptionWrapper.*;
 import static com.google.code.tempusfugit.WithException.as;
 import static com.google.code.tempusfugit.WithException.with;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.hamcrest.core.Is.is;
 import static org.jmock.Expectations.returnValue;
 import static org.jmock.Expectations.throwException;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 @RunWith(JMock.class)
 public class ExceptionWrapperTest {
+
+    @Rule public ExpectedException exception = ExpectedException.none();
 
     private final Mockery context = new JUnit4Mockery();
     private final Callable<String> callable = context.mock(Callable.class);
@@ -64,14 +71,11 @@ public class ExceptionWrapperTest {
     public void shouldThrowExceptionWithCauseReflectiveException() throws Exception {
         SomeCheckedException cause = new SomeCheckedException("message");
         callWill(throwException(cause));
-        try {
-            wrapAnyException(callable, with(SomeOtherCheckedException.class));
-            fail();
-        } catch (SomeOtherCheckedException e) {
-            assertThat((SomeCheckedException) e.getCause(), is(cause));
-            assertThat(e.getMessage(), containsString("ExceptionWrapperTest$SomeCheckedException: message"));
-            assertThat(e.getCause().getMessage(), is("message"));
-        }
+        exception.expect(SomeOtherCheckedException.class);
+        exception.expect(hasMessage(containsString("ExceptionWrapperTest$SomeCheckedException: message")));
+        exception.expect(cause(is(sameInstance(cause))));
+        exception.expect(cause(hasMessage(containsString("message"))));
+        wrapAnyException(callable, with(SomeOtherCheckedException.class));
     }
 
     @Test
@@ -91,47 +95,36 @@ public class ExceptionWrapperTest {
     public void shouldThrowExceptionWithCauseWhenWrappedAsRuntimeException() throws Exception {
         SomeCheckedException cause = new SomeCheckedException("message");
         callWill(throwException(cause));
-        try {
-            wrapAsRuntimeException(callable);
-            fail();
-        } catch (RuntimeException e) {
-            assertThat((SomeCheckedException) e.getCause(), is(cause));
-            assertThat(e.getMessage(), containsString("ExceptionWrapperTest$SomeCheckedException: message"));
-            assertThat(e.getCause().getMessage(), is("message"));
-        }
+        exception.expect(RuntimeException.class);
+        exception.expect(hasMessage(containsString("ExceptionWrapperTest$SomeCheckedException: message")));
+        exception.expect(cause(is(cause)));
+        exception.expect(cause(hasMessage(containsString("message"))));
+        wrapAsRuntimeException(callable);
     }
 
     @Test
     public void shouldWrapCheckedExceptionAsRuntimeException() {
         SomeCheckedException cause = new SomeCheckedException("I'm scared daddy");
-        try {
-            throwAsRuntimeException(cause);
-            fail();
-        } catch (RuntimeException e) {
-            assertThat((SomeCheckedException) e.getCause(), is(cause));
-            assertThat(e.getMessage(), containsString("ExceptionWrapperTest$SomeCheckedException: I'm scared daddy"));
-            assertThat(e.getCause().getMessage(), is("I'm scared daddy"));
-        }
+        exception.expect(RuntimeException.class);
+        exception.expect(hasMessage(containsString("ExceptionWrapperTest$SomeCheckedException: I'm scared daddy")));
+        exception.expect(cause(is(cause)));
+        exception.expect(cause(hasMessage(containsString("I'm scared daddy"))));
+        throwAsRuntimeException(cause);
     }
 
     @Test
     public void shouldWrapCheckedExceptionAsSubclassOfRuntimeException() {
         SomeCheckedException cause = new SomeCheckedException("I'm still scared daddy");
-        try {
-            ExceptionWrapper.throwException(cause, as(SomeOtherRuntimeException.class));
-            fail();
-        } catch (SomeOtherRuntimeException e) {
-            assertThat((SomeCheckedException) e.getCause(), is(cause));
-            assertThat(e.getMessage(), containsString("ExceptionWrapperTest$SomeCheckedException: I'm still scared daddy"));
-            assertThat(e.getCause().getMessage(), is("I'm still scared daddy"));
-        } catch (RuntimeException e) {
-            fail();
-        }
+        exception.expect(SomeOtherRuntimeException.class);
+        exception.expect(hasMessage(containsString("ExceptionWrapperTest$SomeCheckedException: I'm still scared daddy")));
+        exception.expect(cause(is(cause)));
+        exception.expect(cause(hasMessage(containsString("I'm still scared daddy"))));
+        ExceptionWrapper.throwException(cause, as(SomeOtherRuntimeException.class));
     }
 
     private void callWill(final Action action) throws Exception {
         context.checking(new Expectations() {{
-            one(callable).call(); will(action);
+            oneOf(callable).call(); will(action);
         }});
     }
 
@@ -166,4 +159,33 @@ public class ExceptionWrapperTest {
         }
 
     }
+
+    private static Matcher<Throwable> cause(final Matcher<?> matcher) {
+        return new TypeSafeMatcher<Throwable>() {
+            @Override
+            public boolean matchesSafely(Throwable item) {
+                return matcher.matches(item.getCause());
+            }
+
+            public void describeTo(Description description) {
+                description.appendText("exception with cause ");
+                description.appendDescriptionOf(matcher);
+            }
+        };
+    }
+
+    private static Matcher<Throwable> hasMessage(final Matcher<String> matcher) {
+        return new TypeSafeMatcher<Throwable>() {
+            @Override
+            public boolean matchesSafely(Throwable item) {
+                return matcher.matches(item.getMessage());
+            }
+
+            public void describeTo(Description description) {
+                description.appendText("exception with message ");
+                description.appendDescriptionOf(matcher);
+            }
+        };
+    }
+
 }

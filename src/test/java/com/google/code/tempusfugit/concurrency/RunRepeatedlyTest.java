@@ -23,17 +23,19 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-import static junit.framework.Assert.fail;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
 
 @RunWith(JMock.class)
 public class RunRepeatedlyTest {
+
+    @Rule public ExpectedException exception = ExpectedException.none();
 
     private final Mockery context = new JUnit4Mockery() {{
         setImposteriser(ClassImposteriser.INSTANCE);
@@ -58,8 +60,8 @@ public class RunRepeatedlyTest {
     @Test
     public void nonAnnotatedMethod() throws Throwable {
         context.checking(new Expectations() {{
-            one(method).getAnnotation(with(Repeating.class)); will(returnValue(NO_ANNOTATION));
-            one(statement).evaluate();
+            oneOf(method).getAnnotation(with(Repeating.class)); will(returnValue(NO_ANNOTATION));
+            oneOf(statement).evaluate();
         }});
         runner.evaluate();
     }
@@ -68,14 +70,11 @@ public class RunRepeatedlyTest {
     public void exceptionOnEvaluation() throws Throwable {
         context.checking(new Expectations() {{
             allowing(method).getAnnotation(with(Repeating.class)); will(returnValue(VALID_ANNOTATION));
-            one(statement).evaluate(); will(throwException(new AssertionFailedError("chazzwazzer")));
+            oneOf(statement).evaluate(); will(throwException(new AssertionFailedError("chazzwazzer")));
         }});
-        try {
-            runner.evaluate();
-            fail();
-        } catch (AssertionFailedError e) {
-            assertThat(e.getMessage(), containsString("(failed after 0 successful attempts)"));
-        }
+        exception.expect(AssertionFailedError.class);
+        exception.expectMessage(containsString("(failed after 0 successful attempts)"));
+        runner.evaluate();
     }
     
 }
