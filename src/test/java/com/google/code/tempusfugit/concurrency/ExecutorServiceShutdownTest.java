@@ -79,7 +79,7 @@ public class ExecutorServiceShutdownTest {
     private void awaitTerminationWillBeInterrupted() throws InterruptedException {
         context.checking(new Expectations() {{
             allowing(executor).shutdown();
-            one(executor).awaitTermination(with(any(long.class)), with(any(TimeUnit.class))); will(throwException(new InterruptedException()));
+            oneOf(executor).awaitTermination(with(any(long.class)), with(any(TimeUnit.class))); will(throwException(new InterruptedException()));
         }});
     }
 
@@ -91,8 +91,8 @@ public class ExecutorServiceShutdownTest {
     @Test
     public void waitingForShutdown() throws TimeoutException, InterruptedException {
         context.checking(new Expectations() {{
-            one(executor).shutdownNow();
-            one(executor).isShutdown(); will(returnValue(true));
+            oneOf(executor).shutdownNow();
+            oneOf(executor).isShutdown(); will(returnValue(true));
         }});
         assertThat(shutdown(executor).waitingForShutdown(timeout(millis(5))), is(true));
     }
@@ -100,7 +100,7 @@ public class ExecutorServiceShutdownTest {
     @Test(expected = TimeoutException.class)
     public void waitingForShutdownTimesOut() throws TimeoutException, InterruptedException {
         context.checking(new Expectations() {{
-            one(executor).shutdownNow();
+            oneOf(executor).shutdownNow();
             atLeast(1).of(executor).isShutdown(); will(returnValue(false));
         }});
         shutdown(executor).waitingForShutdown(timeout(millis(5)));
@@ -108,8 +108,8 @@ public class ExecutorServiceShutdownTest {
 
     private void awaitingTermination(final boolean result) throws InterruptedException {
         context.checking(new Expectations() {{
-            one(executor).shutdown();
-            one(executor).awaitTermination(TIMEOUT.inMillis(), MILLISECONDS); will(returnValue(result));
+            oneOf(executor).shutdown();
+            oneOf(executor).awaitTermination(TIMEOUT.inMillis(), MILLISECONDS); will(returnValue(result));
         }});
         assertThat(shutdown(executor).waitingForCompletion(TIMEOUT), is(result));
     }

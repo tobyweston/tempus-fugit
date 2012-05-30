@@ -51,7 +51,7 @@ public class WaitForTest {
     @Test
     public void whenConditionPassesWaitContinues() throws TimeoutException, InterruptedException {
         context.checking(new Expectations(){{
-            one(condition).isSatisfied(); will(returnValue(true));
+            oneOf(condition).isSatisfied(); will(returnValue(true));
         }});
         waitOrTimeout(condition, timeout(millis(10), StopWatch.start(date)));
     }
@@ -59,8 +59,8 @@ public class WaitForTest {
     @Test
     public void whenConditionEventuallyPassesWaitContinues() throws TimeoutException, InterruptedException {
         context.checking(new Expectations(){{
-            one(condition).isSatisfied(); inSequence(sequence); will(returnValue(false));
-            one(condition).isSatisfied(); inSequence(sequence); will(returnValue(true));
+            oneOf(condition).isSatisfied(); inSequence(sequence); will(returnValue(false));
+            oneOf(condition).isSatisfied(); inSequence(sequence); will(returnValue(true));
         }});
         waitOrTimeout(condition, timeout(millis(10), StopWatch.start(date)));
     }
@@ -73,7 +73,7 @@ public class WaitForTest {
     @Test
     public void executesTimeOutBehaviour() throws InterruptedException {
         context.checking(new Expectations(){{
-            one(onTimeout).call();
+            oneOf(onTimeout).call();
         }});
         waitOrTimeout(new ForceTimeout(millis(10)), onTimeout, timeout(millis(10), new StopWatch(date)));
     }
@@ -81,7 +81,7 @@ public class WaitForTest {
     @Test (expected = RuntimeException.class)
     public void timeoutBehaviourThrowsException() throws InterruptedException {
         context.checking(new Expectations() {{
-            one(onTimeout).call();
+            oneOf(onTimeout).call();
             will(throwException(new RuntimeException()));
         }});
         waitOrTimeout(new ForceTimeout(millis(10)), onTimeout, timeout(millis(10), new StopWatch(date)));
@@ -104,8 +104,8 @@ public class WaitForTest {
     @Test
     public void sleepPeriodShouldBeConfigurable() throws TimeoutException, InterruptedException {
         context.checking(new Expectations(){{
-            one(condition).isSatisfied(); inSequence(sequence); will(returnValue(false));
-            one(condition).isSatisfied(); inSequence(sequence); will(returnValue(true));
+            oneOf(condition).isSatisfied(); inSequence(sequence); will(returnValue(false));
+            oneOf(condition).isSatisfied(); inSequence(sequence); will(returnValue(true));
             atLeast(1).of(sleeper).sleep();
         }});
         waitOrTimeout(condition, timeout(millis(100)), sleeper);

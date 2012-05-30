@@ -37,7 +37,7 @@ public class ConcurrentSchedulerTest {
     @Test
     public void childrenAreScheduled() {
         context.checking(new Expectations() {{
-            one(executor).submit(child);
+            oneOf(executor).submit(child);
         }});
         new ConcurrentScheduler(executor).schedule(child);
     }
@@ -45,8 +45,8 @@ public class ConcurrentSchedulerTest {
     @Test
     public void waitForCompletion() throws InterruptedException {
         context.checking(new Expectations() {{
-            one(executor).shutdown();
-            one(executor).awaitTermination(days(365).inMillis(), MILLISECONDS); will(returnValue(true));
+            oneOf(executor).shutdown();
+            oneOf(executor).awaitTermination(days(365).inMillis(), MILLISECONDS); will(returnValue(true));
         }});
         new ConcurrentScheduler(executor).finished();   
     }
@@ -54,8 +54,8 @@ public class ConcurrentSchedulerTest {
     @Test (expected = RuntimeException.class)
     public void waitForCompletionTimesOut() throws InterruptedException {
         context.checking(new Expectations() {{
-            one(executor).shutdown();
-            one(executor).awaitTermination(with(any(Long.class)), with(any(TimeUnit.class))); will(returnValue(false));
+            oneOf(executor).shutdown();
+            oneOf(executor).awaitTermination(with(any(Long.class)), with(any(TimeUnit.class))); will(returnValue(false));
         }});
         new ConcurrentScheduler(executor).finished();
     }
@@ -63,8 +63,8 @@ public class ConcurrentSchedulerTest {
     @Test (expected = RuntimeException.class)
     public void waitForCompletionIsInterrupted() throws InterruptedException {
         context.checking(new Expectations() {{
-            one(executor).shutdown();
-            one(executor).awaitTermination(with(any(Long.class)), with(any(TimeUnit.class))); will(throwException(new InterruptedException()));
+            oneOf(executor).shutdown();
+            oneOf(executor).awaitTermination(with(any(Long.class)), with(any(TimeUnit.class))); will(throwException(new InterruptedException()));
         }});
         new ConcurrentScheduler(executor).finished();
     }

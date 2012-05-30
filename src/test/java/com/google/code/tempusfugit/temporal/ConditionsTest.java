@@ -56,8 +56,8 @@ public class ConditionsTest {
         @Test
         public void matches() {
             context.checking(new Expectations() {{
-                one(condition).isSatisfied(); will(returnValue(true));
-                one(matcher).matches(true); will(returnValue(true));
+                oneOf(condition).isSatisfied(); will(returnValue(true));
+                oneOf(matcher).matches(true); will(returnValue(true));
             }});
             Conditions.assertThat(condition, matcher);
         }

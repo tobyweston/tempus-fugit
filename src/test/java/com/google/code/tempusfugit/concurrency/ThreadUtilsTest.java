@@ -45,7 +45,7 @@ public class ThreadUtilsTest {
     @Test
     public void resetInterruptFlagReturnsValue() throws InterruptedException {
         context.checking(new Expectations() {{
-            one(interruptible).call(); will(returnValue(true));
+            oneOf(interruptible).call(); will(returnValue(true));
         }});
         assertThat(ThreadUtils.<Boolean>resetInterruptFlagWhen(interruptible), is(true));
     }
@@ -53,7 +53,7 @@ public class ThreadUtilsTest {
     @Test
     public void resetInterruptFlagThrowsException() throws InterruptedException {
         context.checking(new Expectations() {{
-            one(interruptible).call(); will(throwException(new InterruptedException()));
+            oneOf(interruptible).call(); will(throwException(new InterruptedException()));
         }});
         assertThat(Thread.currentThread().isInterrupted(), is(false));
         ThreadUtils.resetInterruptFlagWhen(interruptible);

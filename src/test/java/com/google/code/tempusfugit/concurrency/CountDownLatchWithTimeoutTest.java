@@ -54,7 +54,7 @@ public class CountDownLatchWithTimeoutTest {
 
     private void awaitWillTimeOut(final boolean timeout) throws InterruptedException {
         context.checking(new Expectations() {{
-            one(latch).await(TIMEOUT.inMillis(), MILLISECONDS); will(returnValue(timeout));
+            oneOf(latch).await(TIMEOUT.inMillis(), MILLISECONDS); will(returnValue(timeout));
         }});
     }
 

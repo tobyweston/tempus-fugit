@@ -40,8 +40,8 @@ public class BetterStopWatchTest {
     @Test
     public void getElapsedTimeFromBetterStopWatch() {
         context.checking(new Expectations() {{
-            one(time).create(); will(returnValue(new Date(0)));
-            one(time).create(); will(returnValue(new Date(100)));
+            oneOf(time).create(); will(returnValue(new Date(0)));
+            oneOf(time).create(); will(returnValue(new Date(100)));
         }});
         BetterStopWatch watch = new BetterStopWatch(time);
         assertThat(watch.getElapsedTime(), is(millis(100)));

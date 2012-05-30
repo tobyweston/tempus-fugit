@@ -38,7 +38,7 @@ public class ThreadDumpTest {
     @Test
     public void outputsThreadDetails() {
         context.checking(new Expectations() {{
-            one(stream).println(EXPECTED_THREAD_DETAILS_LINE);
+            oneOf(stream).println(EXPECTED_THREAD_DETAILS_LINE);
             ignoring(stream).println(with(any(String.class)));
             ignoring(stream).println();
         }});
@@ -49,7 +49,7 @@ public class ThreadDumpTest {
     public void outputsThreadStackTraceDetails() {
         context.checking(new Expectations() {{
             ignoring(stream).println(EXPECTED_THREAD_DETAILS_LINE);
-            one(stream).println(" - java.lang.Thread.dumpThreads(Native Method)");
+            oneOf(stream).println(" - java.lang.Thread.dumpThreads(Native Method)");
             allowing(stream).println(with(any(String.class)));
             allowing(stream).println();
         }});

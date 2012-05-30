@@ -98,7 +98,7 @@ public class RunConcurrentlyTest {
     private Statement createStatementWithExpectations(Mockery context) throws Throwable {
         final Statement statement = context.mock(Statement.class);
         context.checking(new Expectations() {{
-            one(statement).evaluate(); will(throwException(new RuntimeException("oops")));
+            oneOf(statement).evaluate(); will(throwException(new RuntimeException("oops")));
         }});
         return statement;
     }

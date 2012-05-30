@@ -50,7 +50,7 @@ public class CallableAdapterTest {
 
     private void callableWill(final Action action) throws Exception {
         context.checking(new Expectations() {{
-            one(callable).call(); will(action);
+            oneOf(callable).call(); will(action);
         }});
     }
 

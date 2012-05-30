@@ -57,10 +57,10 @@ public class InterruptCapturingThreadTest {
     public void outputsStackTraceDetails() throws TimeoutException, InterruptedException {
         final Sequence sequence = context.sequence("order");
         context.checking(new Expectations() {{
-            one(stream).print(with(containsString("java.lang.Thread.getStackTrace(Thread.java"))); inSequence(sequence);
-            one(stream).print(with(containsString("com.google.code.tempusfugit.concurrency.InterruptCapturingThread.interrupt(InterruptCapturingThread.java"))); inSequence(sequence);
-            one(stream).print(with(containsString("com.google.code.tempusfugit.concurrency.InterruptCapturingThreadTest.startSleepingThreadAndInterrupt(InterruptCapturingThreadTest"))); inSequence(sequence);
-            one(stream).print(with(containsString("com.google.code.tempusfugit.concurrency.InterruptCapturingThreadTest.outputsStackTraceDetails(InterruptCapturingThreadTest.java"))); inSequence(sequence);
+            oneOf(stream).print(with(containsString("java.lang.Thread.getStackTrace(Thread.java"))); inSequence(sequence);
+            oneOf(stream).print(with(containsString("com.google.code.tempusfugit.concurrency.InterruptCapturingThread.interrupt(InterruptCapturingThread.java"))); inSequence(sequence);
+            oneOf(stream).print(with(containsString("com.google.code.tempusfugit.concurrency.InterruptCapturingThreadTest.startSleepingThreadAndInterrupt(InterruptCapturingThreadTest"))); inSequence(sequence);
+            oneOf(stream).print(with(containsString("com.google.code.tempusfugit.concurrency.InterruptCapturingThreadTest.outputsStackTraceDetails(InterruptCapturingThreadTest.java"))); inSequence(sequence);
             allowing(stream).print(with(any(String.class)));
         }});
         startSleepingThreadAndInterrupt().printStackTraceOfInterruptingThreads(stream);

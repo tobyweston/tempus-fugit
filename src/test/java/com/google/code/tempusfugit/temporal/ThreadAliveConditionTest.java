@@ -52,7 +52,7 @@ public class ThreadAliveConditionTest {
 
     private void threadIsAlive(final boolean alive) {
         context.checking(new Expectations() {{
-            one(thread).isAlive(); will(returnValue(alive));
+            oneOf(thread).isAlive(); will(returnValue(alive));
         }});
     }
 

@@ -64,8 +64,8 @@ public class ExecuteUsingLockTest {
 
     private void setExpectationsOn(final Lock lock) {
         context.checking(new Expectations() {{
-            one(lock).lock();
-            one(lock).unlock();
+            oneOf(lock).lock();
+            oneOf(lock).unlock();
         }});
     }
 

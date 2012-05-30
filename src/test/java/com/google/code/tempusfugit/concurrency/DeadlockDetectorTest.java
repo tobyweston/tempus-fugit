@@ -63,13 +63,13 @@ public class DeadlockDetectorTest {
     private void setExpectationsOn(final PrintStream stream) {
         final Sequence sequence = context.sequence("output");
         context.checking(new Expectations() {{
-            one(stream).println(with(containsString("Deadlock detected"))); inSequence(sequence);
-            one(stream).println(with(containsString("Negotiator-Thread"))); inSequence(sequence);
-            one(stream).println(with(containsString("waiting to lock Monitor of " + Cat.class.getName()))); inSequence(sequence);
-            one(stream).println(with(containsString("which is held by \"Kidnapper-Thread"))); inSequence(sequence);
-            one(stream).println(with(containsString("Kidnapper-Thread"))); inSequence(sequence);
-            one(stream).println(with(containsString("waiting to lock Monitor of " + Cash.class.getName()))); inSequence(sequence);
-            one(stream).println(with(containsString("which is held by \"Negotiator-Thread"))); inSequence(sequence);
+            oneOf(stream).println(with(containsString("Deadlock detected"))); inSequence(sequence);
+            oneOf(stream).println(with(containsString("Negotiator-Thread"))); inSequence(sequence);
+            oneOf(stream).println(with(containsString("waiting to lock Monitor of " + Cat.class.getName()))); inSequence(sequence);
+            oneOf(stream).println(with(containsString("which is held by \"Kidnapper-Thread"))); inSequence(sequence);
+            oneOf(stream).println(with(containsString("Kidnapper-Thread"))); inSequence(sequence);
+            oneOf(stream).println(with(containsString("waiting to lock Monitor of " + Cash.class.getName()))); inSequence(sequence);
+            oneOf(stream).println(with(containsString("which is held by \"Negotiator-Thread"))); inSequence(sequence);
             allowing(stream).println();
         }});
     }

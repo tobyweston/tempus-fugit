@@ -41,7 +41,7 @@ public class CompositeFactoryTest {
     public void returnsOnSuccessfulDelegateCreate() {
         final Sequence sequence = context.sequence("enumeration");
         context.checking(new Expectations() {{
-            one(factory1).create(); will(returnValue("done")); inSequence(sequence);
+            oneOf(factory1).create(); will(returnValue("done")); inSequence(sequence);
             never(factory2).create();
             never(factory3).create();
         }});
@@ -52,8 +52,8 @@ public class CompositeFactoryTest {
     public void skipFactoriesThatThrowExceptions() {
         final Sequence sequence = context.sequence("enumeration");
         context.checking(new Expectations() {{
-            one(factory1).create(); will(throwException(new FactoryException())); inSequence(sequence);
-            one(factory2).create(); will(returnValue("done")); inSequence(sequence);
+            oneOf(factory1).create(); will(throwException(new FactoryException())); inSequence(sequence);
+            oneOf(factory2).create(); will(returnValue("done")); inSequence(sequence);
             never(factory3).create();
         }});
         assertThat(new CompositeFactory<String>(factory1, factory2, factory3).create(), is("done"));
@@ -63,9 +63,9 @@ public class CompositeFactoryTest {
     public void throwsExceptionIfAllFactoriesThrowExceptions() {
         final Sequence sequence = context.sequence("enumeration");
         context.checking(new Expectations() {{
-            one(factory1).create(); will(throwException(new FactoryException())); inSequence(sequence);
-            one(factory2).create(); will(throwException(new FactoryException())); inSequence(sequence);
-            one(factory3).create(); will(throwException(new FactoryException())); inSequence(sequence);
+            oneOf(factory1).create(); will(throwException(new FactoryException())); inSequence(sequence);
+            oneOf(factory2).create(); will(throwException(new FactoryException())); inSequence(sequence);
+            oneOf(factory3).create(); will(throwException(new FactoryException())); inSequence(sequence);
         }});
         new CompositeFactory<String>(factory1, factory2, factory3).create();
     }

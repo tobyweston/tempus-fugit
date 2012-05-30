@@ -50,7 +50,7 @@ public class ExecutorShutdownConditionTest {
 
     private void willShutdown(final boolean shutdown) {
         context.checking(new Expectations() {{
-            one(service).isShutdown(); will(returnValue(shutdown));
+            oneOf(service).isShutdown(); will(returnValue(shutdown));
         }});
     }
 
