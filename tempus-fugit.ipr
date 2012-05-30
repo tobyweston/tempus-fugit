@@ -333,15 +333,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: junit:junit-dep:4.9">
+    <library name="Maven: junit:junit:4.9">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit-dep/4.9/junit-dep-4.9.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.9/junit-4.9.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit-dep/4.9/junit-dep-4.9-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.9/junit-4.9-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit-dep/4.9/junit-dep-4.9-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.9/junit-4.9-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: junit:junit:sources:4.7">
