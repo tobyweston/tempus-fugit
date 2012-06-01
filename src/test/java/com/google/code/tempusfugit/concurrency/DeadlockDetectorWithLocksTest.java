@@ -99,7 +99,6 @@ public class DeadlockDetectorWithLocksTest {
         }
 
         private void notWillingToLetNibblesGoWithoutCash() {
-            System.out.println("starting thread kidnapper");
             try {
                 keep(nibbles);
                 countdownAndAwait(latch);
