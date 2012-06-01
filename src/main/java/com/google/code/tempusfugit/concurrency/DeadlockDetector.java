@@ -35,7 +35,8 @@ import static java.util.Collections.emptyList;
  */
 public class DeadlockDetector {
 
-    private final static ThreadMXBean mbean = ManagementFactory.getThreadMXBean();
+    private static final ThreadMXBean mbean = ManagementFactory.getThreadMXBean();
+    private static final String lineSeparator = System.getProperty("line.separator");
 
     public static void printDeadlocks(OutputStream writer) {
         List<ThreadInfo> deadlocks = findDeadlocks();
@@ -46,16 +47,20 @@ public class DeadlockDetector {
 
     private static void print(OutputStream writer, List<ThreadInfo> deadlocks) {
         try {
-            writer.write("Deadlock detected\n=================\n".getBytes());
+            writeln(writer, "Deadlock detected");
+            writeln(writer, "=================");
             for (ThreadInfo thread : deadlocks) {
-                writer.write(format("\"%s\":", thread.getThreadName()).getBytes());
-                writer.write(format("  waiting to lock Monitor of %s ", thread.getLockName()).getBytes());
-                writer.write(format("  which is held by \"%s\"", thread.getLockOwnerName()).getBytes());
-                writer.write(System.getProperty("line.separator").getBytes());
+                writeln(writer, format("%s\"%s\":", lineSeparator, thread.getThreadName()));
+                writeln(writer, format("  waiting to lock Monitor of %s ", thread.getLockName()));
+                writeln(writer, format("  which is held by \"%s\"", thread.getLockOwnerName()));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void writeln(OutputStream writer, String string) throws IOException {
+        writer.write(format("%s%s", string, lineSeparator).getBytes());
     }
 
     private static List<ThreadInfo> findDeadlocks() {

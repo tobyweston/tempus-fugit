@@ -16,20 +16,42 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import java.io.PrintStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Map;
+
+import static com.google.code.tempusfugit.ExceptionWrapper.wrapAsRuntimeException;
+import static java.lang.String.format;
 
 public class ThreadDump {
 
-    public static void dumpThreads(PrintStream writer) {
-        DeadlockDetector.printDeadlocks(writer);
-        Map<Thread, StackTraceElement[]> traces = Thread.getAllStackTraces();
-        for (Thread thread : traces.keySet()) {
-            writer.println(String.format("\nThread %s@%d: (state = %s)", thread.getName(), thread.getId(), thread.getState()));
-            for (StackTraceElement stackTraceElement : traces.get(thread)) {
-                writer.println(" - " + stackTraceElement);
+    private static final String lineSeparator = System.getProperty("line.separator");
+
+    public static void dumpThreads(OutputStream stream) {
+        DeadlockDetector.printDeadlocks(stream);
+        wrapAsRuntimeException(printThreadDump(stream));
+    }
+
+    private static Callable<Void, IOException> printThreadDump(final OutputStream writer) {
+        return new Callable<Void, IOException>() {
+            @Override
+            public Void call() throws IOException {
+                Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
+                for (Thread thread : stackTraces.keySet())
+                    print(thread, stackTraces.get(thread));
+                return null;
             }
-        }
+
+            private void print(Thread thread, StackTraceElement[] stackTraceElements) throws IOException {
+                writeln(writer, format("%sThread %s@%d: (state = %s)", lineSeparator, thread.getName(), thread.getId(), thread.getState()));
+                for (StackTraceElement stackTraceElement : stackTraceElements)
+                    writeln(writer, format(" - %s", stackTraceElement.toString()));
+            }
+        };
+    }
+
+    private static void writeln(OutputStream writer, String string) throws IOException {
+        writer.write(format("%s%s", string, lineSeparator).getBytes());
     }
 
 }

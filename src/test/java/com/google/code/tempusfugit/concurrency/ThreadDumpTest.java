@@ -16,44 +16,49 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import java.io.PrintStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
-@RunWith(JMock.class)
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+
 public class ThreadDumpTest {
 
-    private final Mockery context = new Mockery() {{
-        setImposteriser(ClassImposteriser.INSTANCE);
-    }};
+    private final OutputStream stream = new StubOutputStream();
 
-    private PrintStream stream = context.mock(PrintStream.class);
-    private static final String EXPECTED_THREAD_DETAILS_LINE = "\nThread main@1: (state = RUNNABLE)";
+    @Test
+    @Ignore("example usage")
+    public void exampleUsage() {
+        ThreadDump.dumpThreads(System.out);
+    }
 
     @Test
     public void outputsThreadDetails() {
-        context.checking(new Expectations() {{
-            oneOf(stream).println(EXPECTED_THREAD_DETAILS_LINE);
-            ignoring(stream).println(with(any(String.class)));
-            ignoring(stream).println();
-        }});
         ThreadDump.dumpThreads(stream);
+        assertThat(stream.toString(), containsString("\nThread main@1: (state = RUNNABLE)"));
     }
 
     @Test
     public void outputsThreadStackTraceDetails() {
-        context.checking(new Expectations() {{
-            ignoring(stream).println(EXPECTED_THREAD_DETAILS_LINE);
-            oneOf(stream).println(" - java.lang.Thread.dumpThreads(Native Method)");
-            allowing(stream).println(with(any(String.class)));
-            allowing(stream).println();
-        }});
         ThreadDump.dumpThreads(stream);
+        assertThat(stream.toString(), containsString(" - java.lang.Thread.dumpThreads(Native Method)"));
     }
-    
+
+    private static class StubOutputStream extends OutputStream {
+        private final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+        @Override
+        public void write(int b) throws IOException {
+            stream.write(b);
+        }
+
+        @Override
+        public String toString() {
+            return stream.toString();
+        }
+    }
 }
