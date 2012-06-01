@@ -35,7 +35,7 @@ public class ConcurrentTestRunner extends BlockJUnit4ClassRunner {
         private AtomicLong count = new AtomicLong();
 
         public Thread newThread(Runnable runnable) {
-            return new Thread(runnable, "ConcurrentTestRunner-Thread-" + count.getAndIncrement());
+            return new Thread(runnable, ConcurrentTestRunner.class.getSimpleName() + "-Thread-" + count.getAndIncrement());
         }
     }
 }

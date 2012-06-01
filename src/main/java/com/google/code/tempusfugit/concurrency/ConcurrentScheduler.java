@@ -23,6 +23,7 @@ import java.util.concurrent.TimeoutException;
 
 import static com.google.code.tempusfugit.concurrency.ExecutorServiceShutdown.shutdown;
 import static com.google.code.tempusfugit.temporal.Duration.days;
+import static java.lang.Boolean.TRUE;
 
 class ConcurrentScheduler implements RunnerScheduler {
 
@@ -37,10 +38,11 @@ class ConcurrentScheduler implements RunnerScheduler {
     }
 
     public void finished() {
-        Boolean completed = shutdown(executor).waitingForCompletion(days(365));
-        if (Thread.currentThread().isInterrupted())
-            throw new RuntimeException(new InterruptedException("scheduler shutdown was interrupted"));
-        if (!completed)
+        if (!successful(shutdown(executor).waitingForCompletion(days(365))))
             throw new RuntimeException(new TimeoutException("scheduler shutdown timed out before tests completed"));
+    }
+
+    private Boolean successful(Boolean completed) {
+        return TRUE.equals(completed);
     }
 }
