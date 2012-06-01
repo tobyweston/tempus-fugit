@@ -35,11 +35,10 @@
     </organization>
     <description>Java classes for temporal testing and concurrency</description>
     <inceptionYear>2009</inceptionYear>
-    <url>http://code.google.com/p/tempus-fugit/</url>
+    <url>http://tempusfugitlibrary.org/</url>
     <scm>
-        <connection>scm:svn:http://tempus-fugit.googlecode.com/svn/trunk/</connection>
-        <developerConnection>scm:svn:https://tempus-fugit.googlecode.com/svn/trunk/</developerConnection>
-        <url>http://tempus-fugit.googlecode.com/svn/trunk/</url>
+        <connection>scm:git:git@github.com:tobyweston/tempus-fugit.git</connection>
+        <url>https://tobyweston@github.com/tobyweston/tempus-fugit.git</url>
     </scm>
     <licenses>
         <license>
