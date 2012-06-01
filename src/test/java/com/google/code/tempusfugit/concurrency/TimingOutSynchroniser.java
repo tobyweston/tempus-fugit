@@ -16,6 +16,7 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import com.google.code.tempusfugit.temporal.Duration;
 import org.jmock.api.Invocation;
 import org.jmock.api.Invokable;
 import org.jmock.api.ThreadingPolicy;
@@ -30,6 +31,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.hamcrest.StringDescription.asString;
 
@@ -37,8 +39,17 @@ public class TimingOutSynchroniser implements ThreadingPolicy {
 
     private final Lock lock = new ReentrantLock();
     private final Condition awaitingStatePredicate = lock.newCondition();
+    private final Duration lockTimeout;
 
     private Error firstError = null;
+
+    public TimingOutSynchroniser() {
+        this(millis(250));
+    }
+
+    public TimingOutSynchroniser(Duration timeout) {
+        this.lockTimeout = timeout;
+    }
 
     public void waitUntil(StatePredicate predicate) throws InterruptedException {
         waitUntil(predicate, new InfiniteTimeout());
@@ -48,16 +59,16 @@ public class TimingOutSynchroniser implements ThreadingPolicy {
      * Waits up to a timeout for a StatePredicate to become active.  Fails the
      * test if the timeout expires.
      */
-    public void waitUntil(StatePredicate p, long timeoutMs) throws InterruptedException {
-        waitUntil(p, new FixedTimeout(timeoutMs));
+    public void waitUntil(StatePredicate predicate, long timeoutMs) throws InterruptedException {
+        waitUntil(predicate, new FixedTimeout(timeoutMs));
     }
 
-    private void waitUntil(StatePredicate predicate, Timeout timeout) throws InterruptedException {
+    private void waitUntil(StatePredicate predicate, Timeout testTimeout) throws InterruptedException {
         try {
-            lock.lock();
+            lock.tryLock(lockTimeout.inMillis(), MILLISECONDS);
             while (!predicate.isActive()) {
                 try {
-                    awaitingStatePredicate.await(timeout.timeRemaining(), MILLISECONDS);
+                    awaitingStatePredicate.await(testTimeout.timeRemaining(), MILLISECONDS);
                 } catch (TimeoutException e) {
                     if (firstError != null)
                         throw firstError;
@@ -65,7 +76,8 @@ public class TimingOutSynchroniser implements ThreadingPolicy {
                 }
             }
         } finally {
-            lock.unlock();
+            if (lock.tryLock())
+                lock.unlock();
         }
 
     }
@@ -80,7 +92,7 @@ public class TimingOutSynchroniser implements ThreadingPolicy {
 
     private Object synchroniseInvocation(Invokable mockObject, Invocation invocation) throws Throwable {
         try {
-            lock.lock();
+            lock.tryLock(lockTimeout.inMillis(), MILLISECONDS);
             try {
                 return mockObject.invoke(invocation);
             } catch (Error e) {
@@ -91,7 +103,8 @@ public class TimingOutSynchroniser implements ThreadingPolicy {
                 awaitingStatePredicate.signalAll();
             }
         } finally {
-            lock.unlock();
+            if (lock.tryLock())
+                lock.unlock();
         }
     }
 }
