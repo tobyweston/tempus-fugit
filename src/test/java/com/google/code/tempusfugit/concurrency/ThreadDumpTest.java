@@ -16,11 +16,10 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import com.google.code.tempusfugit.StubOutputStream;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -48,17 +47,4 @@ public class ThreadDumpTest {
         assertThat(stream.toString(), containsString(" - java.lang.Thread.dumpThreads(Native Method)"));
     }
 
-    private static class StubOutputStream extends OutputStream {
-        private final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-        @Override
-        public void write(int b) throws IOException {
-            stream.write(b);
-        }
-
-        @Override
-        public String toString() {
-            return stream.toString();
-        }
-    }
 }

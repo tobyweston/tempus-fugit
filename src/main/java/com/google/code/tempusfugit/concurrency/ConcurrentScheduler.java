@@ -18,8 +18,9 @@ package com.google.code.tempusfugit.concurrency;
 
 import org.junit.runners.model.RunnerScheduler;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeoutException;
 
 import static com.google.code.tempusfugit.concurrency.ExecutorServiceShutdown.shutdown;
 import static com.google.code.tempusfugit.temporal.Duration.days;
@@ -28,9 +29,15 @@ import static java.lang.Boolean.TRUE;
 class ConcurrentScheduler implements RunnerScheduler {
 
     private final ExecutorService executor;
+    private final OutputStream outputStream;
 
     public ConcurrentScheduler(ExecutorService executor) {
+        this(executor, System.err);
+    }
+
+    public ConcurrentScheduler(ExecutorService executor, OutputStream outputStream) {
         this.executor = executor;
+        this.outputStream = outputStream;
     }
 
     public void schedule(Runnable childStatement) {
@@ -39,10 +46,19 @@ class ConcurrentScheduler implements RunnerScheduler {
 
     public void finished() {
         if (!successful(shutdown(executor).waitingForCompletion(days(365))))
-            throw new RuntimeException(new TimeoutException("scheduler shutdown timed out before tests completed"));
+            writeln(outputStream, "scheduler shutdown timed out before tests completed, you may have executors hanging around...");
     }
 
     private Boolean successful(Boolean completed) {
         return TRUE.equals(completed);
+    }
+
+    private void writeln(OutputStream stream, String string) {
+        try {
+            stream.write(string.getBytes());
+            stream.write(System.getProperty("line.separator").getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
