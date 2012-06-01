@@ -16,27 +16,21 @@
 
 package com.google.code.tempusfugit.concurrency.kidnapping;
 
-import java.util.concurrent.CountDownLatch;
-
 public class Kidnapper extends Person {
 
     private final Cash cash;
     private final Cat nibbles;
-    private final CountDownLatch latch;
 
-    public Kidnapper(Cash cash, Cat nibbles, CountDownLatch latch) {
+    public Kidnapper(Cash cash, Cat nibbles) {
         setName("Kidnapper-" + getName());
         this.cash = cash;
         this.nibbles = nibbles;
-        this.latch = latch;
     }
 
     @Override
     public void run() {
         try {
-            nibbles.hold();
-            countdownAndAwait(latch);
-            cash.take();
+            nibbles.hold(cash.take());
         } finally {
             nibbles.release();
         }

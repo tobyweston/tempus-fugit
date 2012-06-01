@@ -16,11 +16,13 @@
 
 package com.google.code.tempusfugit.concurrency.kidnapping;
 
+import com.google.code.tempusfugit.concurrency.Callable;
+
 public interface Commodity {
 
-    void hold();
+    void hold(Callable<Void, RuntimeException> callable);
 
-    void take();
+    Callable<Void, RuntimeException> take();
 
     void release();
 }

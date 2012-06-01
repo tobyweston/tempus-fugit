@@ -20,24 +20,23 @@ import com.google.code.tempusfugit.concurrency.Callable;
 import com.google.code.tempusfugit.concurrency.Interruptible;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.code.tempusfugit.concurrency.ThreadUtils.resetInterruptFlagWhen;
 
-public class InterruptibleLock implements Cash, Cat {
+public class SynchronizedLock implements Cash, Cat {
 
-    private final Lock lock = new ReentrantLock();
+    private final Object lock = new Object();
     private final CountDownLatch latch;
 
-    public InterruptibleLock(CountDownLatch latch) {
+    public SynchronizedLock(CountDownLatch latch) {
         this.latch = latch;
     }
 
     @Override
     public void hold(Callable<Void, RuntimeException> callable) {
-        resetInterruptFlagWhen(locking(lock));
-        callable.call();
+        synchronized (lock) {
+            callable.call();
+        }
     }
 
     @Override
@@ -46,25 +45,16 @@ public class InterruptibleLock implements Cash, Cat {
             @Override
             public Void call() throws RuntimeException {
                 countdownAndAwait(latch);
-                return resetInterruptFlagWhen(locking(lock));
+                synchronized (lock) {
+                    // take the commodity!
+                }
+                return null;
             }
         };
     }
 
     @Override
     public void release() {
-        if (lock.tryLock())
-            lock.unlock();
-    }
-
-    private static Interruptible<Void> locking(final Lock lock) {
-        return new Interruptible<Void>() {
-            @Override
-            public Void call() throws InterruptedException {
-                lock.lockInterruptibly();
-                return null;
-            }
-        };
     }
 
     void countdownAndAwait(CountDownLatch latch) {

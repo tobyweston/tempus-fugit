@@ -16,48 +16,66 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import com.google.code.tempusfugit.concurrency.kidnapping.*;
 import com.google.code.tempusfugit.temporal.Condition;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.code.tempusfugit.concurrency.DeadlockMatcher.detected;
-import static com.google.code.tempusfugit.concurrency.ThreadUtils.resetInterruptFlagWhen;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
 
 /*
- when run as part of a suite, this test will leave the deadlocked threads hanging around. There's no way to break the
- deadlock, so the (junit) runner will either have to timeout (on the thread.join) or exit. Subsequent tests (on deadlocks)
- may also be affected as the JVM will still contain a deadlock.
+ when run as part of a suite, this intrinsic monitor test will leave the deadlocked threads hanging around. There's no
+ way to break the deadlock that the test creates.
  */
 public class DeadlockDetectorTest {
 
-    private final Cash cash = new Cash();
-    private final Cat nibbles = new Cat();
-
     private final CountDownLatch latch = new CountDownLatch(2);
+
     private final Deadlocks deadlocks = new Deadlocks();
 
     @Test
     public void noDeadlock() {
         DeadlockDetector.printDeadlocks(deadlocks);
-        assertThat(deadlocks, not(detected()));
+        assertThat(deadlocks, Matchers.not(detected()));
     }
 
     @Test
-    public void detectsIntrinsicDeadlock() throws InterruptedException, TimeoutException {
-        new Kidnapper().start();
-        new Negotiator().start();
+    public void detectsLockBasedDeadlock() throws InterruptedException, TimeoutException {
+        Cash cash = new InterruptibleLock(latch);
+        Cat nibbles = new InterruptibleLock(latch);
+
+        Kidnapper kidnapper = new Kidnapper(cash, nibbles);
+        Negotiator negotiator = new Negotiator(cash, nibbles);
+
+        kidnapper.start();
+        negotiator.start();
 
         waitOrTimeout(deadlock(), timeout(millis(250)));
+        verify(deadlocks, ReentrantLock.class);
 
-        verify(deadlocks);
+        kidnapper.interruptAndWaitToFinish();
+        negotiator.interruptAndWaitToFinish();
+    }
+
+    @Test
+    public void detectsIntrinsicMonitorBasedDeadlock() throws InterruptedException, TimeoutException {
+        Cash cash = new SynchronizedLock(latch);
+        Cat nibbles = new SynchronizedLock(latch);
+
+        new Kidnapper(cash, nibbles).start();
+        new Negotiator(cash, nibbles).start();
+
+        waitOrTimeout(deadlock(), timeout(millis(250)));
+        verify(deadlocks, Object.class);
     }
 
     private Condition deadlock() {
@@ -70,84 +88,14 @@ public class DeadlockDetectorTest {
         };
     }
 
-    private void verify(Deadlocks deadlocks) {
+    private void verify(Deadlocks deadlocks, Class<?> lockClass) {
         assertThat(deadlocks.toString(), containsString("Deadlock detected"));
         assertThat(deadlocks.toString(), containsString("Negotiator-Thread"));
-        assertThat(deadlocks.toString(), containsString("waiting to lock Monitor of " + Cat.class.getName()));
+        assertThat(deadlocks.toString(), containsString("waiting to lock Monitor of " + lockClass.getName()));
         assertThat(deadlocks.toString(), containsString("which is held by \"Kidnapper-Thread"));
         assertThat(deadlocks.toString(), containsString("Kidnapper-Thread"));
-        assertThat(deadlocks.toString(), containsString("waiting to lock Monitor of " + Cash.class.getName()));
+        assertThat(deadlocks.toString(), containsString("waiting to lock Monitor of " + lockClass.getName()));
         assertThat(deadlocks.toString(), containsString("which is held by \"Negotiator-Thread"));
-    }
-
-    class Kidnapper extends Thread {
-        Kidnapper() {
-            setName("Kidnapper-" + getName());
-        }
-
-        @Override
-        public void run() {
-            notWillingToLetNibblesGoWithoutCash();
-        }
-
-        private void notWillingToLetNibblesGoWithoutCash() {
-            synchronized (nibbles) {
-                countdownAndAwait(latch);
-                synchronized (cash) {
-                    take(cash);
-                }
-            }
-        }
-
-        private void take(Cash cash) {
-        }
-
-    }
-
-    class Negotiator extends Thread {
-
-        Negotiator() {
-            setName("Negotiator-" + getName());
-        }
-
-        @Override
-        public void run() {
-            notWillingToLetCashGoWithoutNibbles();
-        }
-
-        private void notWillingToLetCashGoWithoutNibbles() {
-            synchronized (cash) {
-                countdownAndAwait(latch);
-                synchronized (nibbles) {
-                    take(nibbles);
-                }
-            }
-        }
-
-        private void take(Cat nibbles) {
-        }
-
-    }
-
-    private void countdownAndAwait(CountDownLatch latch) {
-        latch.countDown();
-        resetInterruptFlagWhen(waitingFor(latch));
-    }
-
-    private Interruptible<Void> waitingFor(final CountDownLatch latch) {
-        return new Interruptible<Void>() {
-            public Void call() throws InterruptedException {
-                latch.await();
-                return null;
-            }
-        };
-    }
-
-
-    static class Cash {
-    }
-
-    static class Cat {
     }
 
 }

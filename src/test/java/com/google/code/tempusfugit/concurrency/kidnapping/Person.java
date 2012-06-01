@@ -16,33 +16,16 @@
 
 package com.google.code.tempusfugit.concurrency.kidnapping;
 
-import com.google.code.tempusfugit.concurrency.Interruptible;
 import com.google.code.tempusfugit.temporal.Conditions;
 
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
 
-import static com.google.code.tempusfugit.concurrency.ThreadUtils.resetInterruptFlagWhen;
 import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 
 public class Person extends Thread {
-
-    void countdownAndAwait(CountDownLatch latch) {
-        latch.countDown();
-        resetInterruptFlagWhen(waitingFor(latch));
-    }
-
-    private Interruptible<Void> waitingFor(final CountDownLatch latch) {
-        return new Interruptible<Void>() {
-            public Void call() throws InterruptedException {
-                latch.await();
-                return null;
-            }
-        };
-    }
 
     public void interruptAndWaitToFinish() throws InterruptedException, TimeoutException {
         interrupt();
