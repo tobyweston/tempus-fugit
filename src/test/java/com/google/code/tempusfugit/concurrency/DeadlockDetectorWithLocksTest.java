@@ -16,64 +16,76 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.Sequence;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.lib.concurrent.Synchroniser;
-import org.jmock.lib.legacy.ClassImposteriser;
+import com.google.code.tempusfugit.temporal.Condition;
+import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import java.io.PrintStream;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static com.google.code.tempusfugit.concurrency.DeadlockMatcher.detected;
 import static com.google.code.tempusfugit.concurrency.ThreadUtils.resetInterruptFlagWhen;
+import static com.google.code.tempusfugit.temporal.Conditions.isAlive;
+import static com.google.code.tempusfugit.temporal.Conditions.not;
+import static com.google.code.tempusfugit.temporal.Duration.millis;
+import static com.google.code.tempusfugit.temporal.Timeout.timeout;
+import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
-@RunWith(JMock.class)
 public class DeadlockDetectorWithLocksTest {
-
-    private final Mockery context = new Mockery() {{
-        setImposteriser(ClassImposteriser.INSTANCE);
-        setThreadingPolicy(new Synchroniser());
-    }};
-
-    private PrintStream stream = context.mock(PrintStream.class);
 
     private final Cash cash = new Cash();
     private final Cat nibbles = new Cat();
 
+    private final Kidnapper kidnapper = new Kidnapper();
+    private final Negotiator negotiator = new Negotiator();
     private final CountDownLatch latch = new CountDownLatch(2);
+    private final Deadlocks deadlocks = new Deadlocks();
 
     @Test
     public void noDeadlock() {
-        DeadlockDetector.printDeadlocks(stream);
+        DeadlockDetector.printDeadlocks(deadlocks);
+        assertThat(deadlocks, Matchers.not(detected()));
     }
 
-    @Test(timeout = 1000)
-    public void detectsLockBasedDeadlock() throws InterruptedException {
-        new Kidnapper().start();
-        new Negotiator().start();
+    @Test
+    public void detectsLockBasedDeadlock() throws InterruptedException, TimeoutException {
+        kidnapper.start();
+        negotiator.start();
 
-        setExpectationsOn(stream);
-        DeadlockDetector.printDeadlocks(stream);
+        waitOrTimeout(deadlock(), timeout(millis(250)));
+        verify(deadlocks);
+        waitForThreadsToFinish();
     }
 
-    private void setExpectationsOn(final PrintStream stream) {
-        final Sequence sequence = context.sequence("output");
-        context.checking(new Expectations() {{
-            oneOf(stream).println(with(containsString("Deadlock detected"))); inSequence(sequence);
-            oneOf(stream).println(with(containsString("Negotiator-Thread"))); inSequence(sequence);
-            oneOf(stream).println(with(containsString("waiting to lock Monitor of " + ReentrantLock.class.getName()))); inSequence(sequence);
-            oneOf(stream).println(with(containsString("which is held by \"Kidnapper-Thread"))); inSequence(sequence);
-            oneOf(stream).println(with(containsString("Kidnapper-Thread"))); inSequence(sequence);
-            oneOf(stream).println(with(containsString("waiting to lock Monitor of " + ReentrantLock.class.getName()))); inSequence(sequence);
-            oneOf(stream).println(with(containsString("which is held by \"Negotiator-Thread"))); inSequence(sequence);
-            allowing(stream).println();
-        }});
+    private Condition deadlock() {
+        return new Condition() {
+            @Override
+            public boolean isSatisfied() {
+                DeadlockDetector.printDeadlocks(deadlocks);
+                return deadlocks.detected();
+            }
+        };
+    }
+
+    private void verify(Deadlocks deadlocks) {
+        assertThat(deadlocks.toString(), containsString("Deadlock detected"));
+        assertThat(deadlocks.toString(), containsString("Negotiator-Thread"));
+        assertThat(deadlocks.toString(), containsString("waiting to lock Monitor of " + ReentrantLock.class.getName()));
+        assertThat(deadlocks.toString(), containsString("which is held by \"Kidnapper-Thread"));
+        assertThat(deadlocks.toString(), containsString("Kidnapper-Thread"));
+        assertThat(deadlocks.toString(), containsString("waiting to lock Monitor of " + ReentrantLock.class.getName()));
+        assertThat(deadlocks.toString(), containsString("which is held by \"Negotiator-Thread"));
+    }
+
+    private void waitForThreadsToFinish() throws TimeoutException, InterruptedException {
+        kidnapper.interrupt();
+        negotiator.interrupt();
+        waitOrTimeout(not(isAlive(kidnapper)), timeout(millis(250)));
+        waitOrTimeout(not(isAlive(negotiator)), timeout(millis(250)));
     }
 
     private class Kidnapper extends Thread {
@@ -87,6 +99,7 @@ public class DeadlockDetectorWithLocksTest {
         }
 
         private void notWillingToLetNibblesGoWithoutCash() {
+            System.out.println("starting thread kidnapper");
             try {
                 keep(nibbles);
                 countdownAndAwait(latch);
@@ -142,15 +155,26 @@ public class DeadlockDetectorWithLocksTest {
     }
 
     private void keep(Lock lock) {
-        lock.lock();
+        resetInterruptFlagWhen(locking(lock));
     }
 
     private void take(Lock lock) {
-        lock.lock();
+        resetInterruptFlagWhen(locking(lock));
+    }
+
+    private static Interruptible<Void> locking(final Lock lock) {
+        return new Interruptible<Void>() {
+            @Override
+            public Void call() throws InterruptedException {
+                lock.lockInterruptibly();
+                return null;
+            }
+        };
     }
 
     private void release(Lock lock) {
-        lock.unlock();
+        if (lock.tryLock())
+            lock.unlock();
     }
 
 }

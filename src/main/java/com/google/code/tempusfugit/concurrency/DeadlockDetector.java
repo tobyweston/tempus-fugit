@@ -16,7 +16,8 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import java.io.PrintStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
@@ -34,22 +35,26 @@ import static java.util.Collections.emptyList;
  */
 public class DeadlockDetector {
 
-    private static final ThreadMXBean mbean = ManagementFactory.getThreadMXBean();
+    private final static ThreadMXBean mbean = ManagementFactory.getThreadMXBean();
 
-    public static void printDeadlocks(PrintStream writer) {
+    public static void printDeadlocks(OutputStream writer) {
         List<ThreadInfo> deadlocks = findDeadlocks();
         if (deadlocks.isEmpty())
             return;
         print(writer, deadlocks);
     }
 
-    private static void print(PrintStream writer, List<ThreadInfo> deadlocks) {
-        writer.println("Deadlock detected\n=================\n");
-        for (ThreadInfo thread : deadlocks) {
-            writer.println(format("\"%s\":", thread.getThreadName()));
-            writer.println(format("  waiting to lock Monitor of %s ", thread.getLockName()));
-            writer.println(format("  which is held by \"%s\"", thread.getLockOwnerName()));
-            writer.println();
+    private static void print(OutputStream writer, List<ThreadInfo> deadlocks) {
+        try {
+            writer.write("Deadlock detected\n=================\n".getBytes());
+            for (ThreadInfo thread : deadlocks) {
+                writer.write(format("\"%s\":", thread.getThreadName()).getBytes());
+                writer.write(format("  waiting to lock Monitor of %s ", thread.getLockName()).getBytes());
+                writer.write(format("  which is held by \"%s\"", thread.getLockOwnerName()).getBytes());
+                writer.write(System.getProperty("line.separator").getBytes());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
