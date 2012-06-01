@@ -16,19 +16,16 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import com.google.code.tempusfugit.concurrency.kidnapping.*;
 import com.google.code.tempusfugit.temporal.Condition;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.code.tempusfugit.concurrency.DeadlockMatcher.detected;
-import static com.google.code.tempusfugit.concurrency.ThreadUtils.resetInterruptFlagWhen;
-import static com.google.code.tempusfugit.temporal.Conditions.isAlive;
-import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
@@ -37,12 +34,14 @@ import static org.hamcrest.Matchers.containsString;
 
 public class DeadlockDetectorWithLocksTest {
 
-    private final Cash cash = new Cash();
-    private final Cat nibbles = new Cat();
+    private final Cash cash = new InterruptibleLock();
+    private final Cat nibbles = new InterruptibleLock();
 
-    private final Kidnapper kidnapper = new Kidnapper();
-    private final Negotiator negotiator = new Negotiator();
     private final CountDownLatch latch = new CountDownLatch(2);
+
+    private final Kidnapper kidnapper = new Kidnapper(cash, nibbles, latch);
+    private final Negotiator negotiator = new Negotiator(cash, nibbles, latch);
+
     private final Deadlocks deadlocks = new Deadlocks();
 
     @Test
@@ -58,6 +57,7 @@ public class DeadlockDetectorWithLocksTest {
 
         waitOrTimeout(deadlock(), timeout(millis(250)));
         verify(deadlocks);
+
         waitForThreadsToFinish();
     }
 
@@ -82,98 +82,8 @@ public class DeadlockDetectorWithLocksTest {
     }
 
     private void waitForThreadsToFinish() throws TimeoutException, InterruptedException {
-        kidnapper.interrupt();
-        negotiator.interrupt();
-        waitOrTimeout(not(isAlive(kidnapper)), timeout(millis(250)));
-        waitOrTimeout(not(isAlive(negotiator)), timeout(millis(250)));
-    }
-
-    private class Kidnapper extends Thread {
-        Kidnapper() {
-            setName("Kidnapper-" + getName());
-        }
-
-        @Override
-        public void run() {
-            notWillingToLetNibblesGoWithoutCash();
-        }
-
-        private void notWillingToLetNibblesGoWithoutCash() {
-            try {
-                keep(nibbles);
-                countdownAndAwait(latch);
-                take(cash);
-            } finally {
-                release(nibbles);
-            }
-        }
-
-    }
-
-    private class Negotiator extends Thread {
-
-        Negotiator() {
-            setName("Negotiator-" + getName());
-        }
-
-        @Override
-        public void run() {
-            notWillingToLetCashGoWithoutNibbles();
-        }
-
-        private void notWillingToLetCashGoWithoutNibbles() {
-            try {
-                keep(cash);
-                countdownAndAwait(latch);
-                take(nibbles);
-            } finally {
-                release(cash);
-            }
-        }
-
-    }
-
-    private void countdownAndAwait(CountDownLatch latch) {
-        latch.countDown();
-        resetInterruptFlagWhen(waitingFor(latch));
-    }
-
-    private Interruptible<Void> waitingFor(final CountDownLatch latch) {
-        return new Interruptible<Void>() {
-            public Void call() throws InterruptedException {
-                latch.await();
-                return null;
-            }
-        };
-    }
-
-    private static class Cat extends ReentrantLock {
-    }
-
-    private static class Cash extends ReentrantLock {
-    }
-
-    private void keep(Lock lock) {
-        resetInterruptFlagWhen(locking(lock));
-    }
-
-    private void take(Lock lock) {
-        resetInterruptFlagWhen(locking(lock));
-    }
-
-    private static Interruptible<Void> locking(final Lock lock) {
-        return new Interruptible<Void>() {
-            @Override
-            public Void call() throws InterruptedException {
-                lock.lockInterruptibly();
-                return null;
-            }
-        };
-    }
-
-    private void release(Lock lock) {
-        if (lock.tryLock())
-            lock.unlock();
+        kidnapper.interruptAndWaitToFinish();
+        negotiator.interruptAndWaitToFinish();
     }
 
 }
