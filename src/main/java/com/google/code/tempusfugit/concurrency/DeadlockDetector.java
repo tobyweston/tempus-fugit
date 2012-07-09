@@ -28,10 +28,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
 /**
- * Detect Java-level deadlocks.
- * <p/>
- * Java 1.5 only supports finding monitor based deadlocks. 1.6's {@link ThreadMXBean} supports {@link java.util.concurrent.locks.Lock}
- * based deadlocks.
+ * Detect Java-level deadlocks both intrinsic and {@link java.util.concurrent.locks.Lock} based.
  */
 public class DeadlockDetector {
 
