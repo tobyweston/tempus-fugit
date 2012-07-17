@@ -26,10 +26,12 @@ public final class MovableClock implements Clock {
         now = new Date(0);
     }
 
+    // TODO why do we need this?
     public MovableClock(Date date) {
         now = new Date(date.getTime());
     }
 
+    // TODO rename to "time"?
     public Date create() {
         return new Date(now.getTime());
     }

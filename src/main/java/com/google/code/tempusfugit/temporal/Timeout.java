@@ -21,7 +21,7 @@ import static com.google.code.tempusfugit.temporal.RealClock.now;
 public final class Timeout {
 
     private Duration duration;
-    private StopWatch stopWatch;
+    private StopWatch timer;
 
     /** @since 1.1 */
     public static Timeout timeout(Duration duration) {
@@ -37,18 +37,19 @@ public final class Timeout {
         this(duration, startStopWatch());
     }
 
-    private Timeout(Duration duration, StopWatch stopWatch) {
+    private Timeout(Duration duration, StopWatch timer) {
         if (duration.inMillis() <= 0)
             throw new IllegalArgumentException();
         this.duration = duration;
-        this.stopWatch = stopWatch;
+        this.timer = timer;
     }
 
     public boolean hasExpired() {
-        return stopWatch.markAndGetTotalElapsedTime().greaterThan(duration);
+        timer.lap();
+        return timer.elapsedTime().greaterThan(duration);
     }
 
-    private static StopWatch startStopWatch() {
-        return StopWatch.start(now());
+    private static DefaultStopWatch startStopWatch() {
+        return new DefaultStopWatch(now());
     }
 }

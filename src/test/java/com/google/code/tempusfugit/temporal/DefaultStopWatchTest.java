@@ -16,6 +16,7 @@
 
 package com.google.code.tempusfugit.temporal;
 
+import com.google.code.tempusfugit.ClassInvariantViolation;
 import org.junit.Test;
 
 import java.util.Calendar;
@@ -26,35 +27,52 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class StopWatchTest {
+public class DefaultStopWatchTest {
+
     private Date date = new Date();
     private StubClock clock = new StubClock(date);
 
+    private final StopWatch timer = new DefaultStopWatch(clock);
+
     @Test
-    public void returnsCorrectStartDate() {
-        StopWatch stopWatch = StopWatch.start(clock);
-        assertThat(stopWatch.getStartDate(), is(equalTo(date)));
+    public void freshlyInitialised() {
+        assertThat(timer.elapsedTime(), is(millis(0)));
     }
 
     @Test
-    public void markingStopWatchReturnsTotalElapsedTime() {
-        StopWatch stopWatch = StopWatch.start(clock);
-        advanceTime(millis(5));
-        assertThat(stopWatch.markAndGetTotalElapsedTime(), is(equalTo(millis(5))));
-        advanceTime(millis(5));
-        assertThat(stopWatch.markAndGetTotalElapsedTime(), is(equalTo(millis(10l))));
+    public void startedButNotStopped() {
+        timer.reset();
+        assertThat(timer.elapsedTime(), is(millis(0)));
+    }
+
+    @Test (expected = ClassInvariantViolation.class)
+    public void stoppedThenStarted() {
+        timer.reset();
+        timer.lap();
+        advanceTimeBy(millis(100));
+        timer.reset();
+        assertThat(timer.elapsedTime(), is(millis(-100)));
     }
 
     @Test
-    public void markingMultipleTimesReturnsTotalElapsedTime() {
-        StopWatch stopWatch = StopWatch.start(clock);
-        advanceTime(millis(5));
-        stopWatch.markAndGetTotalElapsedTime();
-        advanceTime(millis(5));
-        assertThat(stopWatch.markAndGetTotalElapsedTime(), is(equalTo(millis(10l))));
+    public void returnsTotalElapsedTime() {
+        timer.reset();
+        advanceTimeBy(millis(5));
+        timer.lap();
+        assertThat(timer.elapsedTime(), is(equalTo(millis(5))));
     }
 
-    private void advanceTime(Duration duration) {
+    @Test
+    public void stoppingMultipleTimesReturnsTotalElapsedTime() {
+        timer.reset();
+        advanceTimeBy(millis(5));
+        timer.lap();
+        advanceTimeBy(millis(5));
+        timer.lap();
+        assertThat(timer.elapsedTime(), is(equalTo(millis(10))));
+    }
+
+    private void advanceTimeBy(Duration duration) {
         date = addMillisecondsTo(date, new Long(duration.inMillis()).intValue());
         clock.setDate(date);
     }

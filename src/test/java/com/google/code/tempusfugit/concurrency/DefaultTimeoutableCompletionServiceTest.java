@@ -94,7 +94,7 @@ public class DefaultTimeoutableCompletionServiceTest {
         new DefaultTimeoutableCompletionService(completionService).submit(asList(task1, task2, task3));
     }
 
-    @Test (expected = TimeoutException.class)
+    @Test (expected = TimeoutException.class, timeout = 5000)
     public void tasksSubmittedButNeverCompleteTimeout() throws Exception {
         final States taken = context.states("taken").startsAs("none");
         context.checking(new Expectations() {{

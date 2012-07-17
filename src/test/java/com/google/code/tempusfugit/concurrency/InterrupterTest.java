@@ -118,7 +118,7 @@ public class InterrupterTest {
             assertInterruptedWithin(duration);
             fail("didn't timeout, meaning interrupt was still called");
         } catch (TimeoutException e) {
-            // didn't interrupt, timeout expired before it was interruptted
+            // didn't interrupt, timeout expired before it was interrupted
         }
     }
 

@@ -16,41 +16,28 @@
 
 package com.google.code.tempusfugit.temporal;
 
-import java.util.Date;
+/**
+ * Stop watch implementations should time the difference between contruction (or a call to {@link #reset}) and a call to
+ * {@link #lap}. They should allow for multiple calls to {@link #lap} but may preserve a class invariant that {@link #lap}
+ * should not be called before {@link #reset} (which would indicate a negative difference).
+ *
+ * @since 1.2
+ */
+public interface StopWatch {
 
-import static com.google.code.tempusfugit.temporal.Duration.millis;
+    /**
+     * start or reset the stop watch starting position. This should be called before called {@link #lap}.
+     */
+    void reset();
 
-public final class StopWatch {
+    /**
+     * mark a lap, this method can be invoked multiple times but should be called before making a call to the
+     * {@link #elapsedTime()} method.
+     */
+    void lap();
 
-    private Clock clock;
-
-    private Date startDate;
-    private Date lastMarkDate;
-
-    public static StopWatch start(Clock clock) {
-        return new StopWatch(clock);
-    }
-
-    /** @since 1.2 */
-    public StopWatch(Clock clock) {
-        this.clock = clock;
-        this.startDate = clock.create();
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public Duration markAndGetTotalElapsedTime() {
-        lastMarkDate = clock.create();
-        return getTotalElapsedTime();
-    }
-
-    private Duration getTotalElapsedTime() {
-        final long startTime = startDate.getTime();
-        final long lastMarkTime = lastMarkDate.getTime();
-        assert(lastMarkTime >= startTime);
-        return millis(lastMarkTime - startTime);
-    }
-
+    /**
+     * @return the difference between construction or reset time and lap time.
+     */
+    Duration elapsedTime();
 }
