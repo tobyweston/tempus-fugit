@@ -18,6 +18,11 @@ package com.google.code.tempusfugit.temporal;
 
 import static com.google.code.tempusfugit.temporal.RealClock.now;
 
+/**
+ * A class to represent a timeout. You can ask if the timeout {@link #hasExpired()} but bear in mind that the {@link StopWatch}
+ * used internally to work out if a timeout has expired will start on it's construction. You should therefore new a
+ * {@link Timeout} up when you actually want the timeout to start ticking down.
+ */
 public final class Timeout {
 
     private Duration duration;
