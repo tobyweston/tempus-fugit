@@ -19,9 +19,6 @@ package com.google.code.tempusfugit.temporal;
 import com.google.code.tempusfugit.ClassInvariantViolation;
 import org.junit.Test;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -29,9 +26,7 @@ import static org.junit.Assert.assertThat;
 
 public class DefaultStopWatchTest {
 
-    private Date date = new Date();
-    private StubClock clock = new StubClock(date);
-
+    private final MovableClock clock = new MovableClock();
     private final StopWatch timer = new DefaultStopWatch(clock);
 
     @Test
@@ -49,7 +44,7 @@ public class DefaultStopWatchTest {
     public void stoppedThenStarted() {
         timer.reset();
         timer.lap();
-        advanceTimeBy(millis(100));
+        clock.incrementBy(millis(100));
         timer.reset();
         assertThat(timer.elapsedTime(), is(millis(-100)));
     }
@@ -57,7 +52,7 @@ public class DefaultStopWatchTest {
     @Test
     public void returnsTotalElapsedTime() {
         timer.reset();
-        advanceTimeBy(millis(5));
+        clock.incrementBy(millis(5));
         timer.lap();
         assertThat(timer.elapsedTime(), is(equalTo(millis(5))));
     }
@@ -65,38 +60,11 @@ public class DefaultStopWatchTest {
     @Test
     public void stoppingMultipleTimesReturnsTotalElapsedTime() {
         timer.reset();
-        advanceTimeBy(millis(5));
+        clock.incrementBy(millis(5));
         timer.lap();
-        advanceTimeBy(millis(5));
+        clock.incrementBy(millis(5));
         timer.lap();
         assertThat(timer.elapsedTime(), is(equalTo(millis(10))));
     }
 
-    private void advanceTimeBy(Duration duration) {
-        date = addMillisecondsTo(date, new Long(duration.inMillis()).intValue());
-        clock.setDate(date);
-    }
-
-    private static Date addMillisecondsTo(Date date, int amount) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.MILLISECOND, amount);
-        return calendar.getTime();
-    }
-
-    private class StubClock implements Clock {
-        private Date date;
-
-        private StubClock(Date date) {
-            this.date = date;
-        }
-
-        public Date create() {
-            return date;
-        }
-
-        public void setDate(Date date) {
-            this.date = date;
-        }
-    }
 }
