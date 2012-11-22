@@ -67,6 +67,26 @@ public class DeadlockDetectorTest {
     }
 
     @Test
+    public void detectsLockBasedDeadlockWithStack() throws InterruptedException, TimeoutException {
+        Cash cash = new InterruptibleLock(latch);
+        Cat nibbles = new InterruptibleLock(latch);
+
+        Kidnapper kidnapper = new Kidnapper(cash, nibbles);
+        Negotiator negotiator = new Negotiator(cash, nibbles);
+
+        kidnapper.start();
+        negotiator.start();
+
+        waitOrTimeout(deadlock(Integer.MAX_VALUE), timeout(millis(250)));
+        verify(deadlocks, ReentrantLock.class);
+        assertThat(deadlocks.toString(), containsString(" - com.google.code.tempusfugit.concurrency.kidnapping.Negotiator.run"));
+        assertThat(deadlocks.toString(), containsString(" - com.google.code.tempusfugit.concurrency.kidnapping.Kidnapper.run"));
+
+        kidnapper.interruptAndWaitToFinish();
+        negotiator.interruptAndWaitToFinish();
+    }
+
+    @Test
     public void detectsIntrinsicMonitorBasedDeadlock() throws InterruptedException, TimeoutException {
         Cash cash = new SynchronizedLock(latch);
         Cat nibbles = new SynchronizedLock(latch);
@@ -79,10 +99,14 @@ public class DeadlockDetectorTest {
     }
 
     private Condition deadlock() {
+        return deadlock (0);
+    }
+
+    private Condition deadlock(final int stackDepth) {
         return new Condition() {
             @Override
             public boolean isSatisfied() {
-                DeadlockDetector.printDeadlocks(deadlocks);
+                DeadlockDetector.printDeadlocks(deadlocks, stackDepth);
                 return deadlocks.detected();
             }
         };
