@@ -18,7 +18,6 @@ package com.google.code.tempusfugit.concurrency;
 
 import com.google.code.tempusfugit.concurrency.kidnapping.*;
 import com.google.code.tempusfugit.temporal.Condition;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
@@ -31,9 +30,10 @@ import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 
 /*
- when run as part of a suite, this intrinsic monitor test will leave the deadlocked threads hanging around. There's no
+ When run as part of a suite, this intrinsic monitor test will leave the deadlocked threads hanging around. There's no
  way to break the deadlock that the test creates.
  */
 public class DeadlockDetectorTest {
@@ -45,7 +45,7 @@ public class DeadlockDetectorTest {
     @Test
     public void noDeadlock() {
         DeadlockDetector.printDeadlocks(deadlocks);
-        assertThat(deadlocks, Matchers.not(detected()));
+        assertThat(deadlocks, not(detected()));
     }
 
     @Test
@@ -67,6 +67,27 @@ public class DeadlockDetectorTest {
     }
 
     @Test
+    public void detectsLockBasedDeadlockWithStack() throws InterruptedException, TimeoutException {
+        Cash cash = new InterruptibleLock(latch);
+        Cat nibbles = new InterruptibleLock(latch);
+
+        Kidnapper kidnapper = new Kidnapper(cash, nibbles);
+        Negotiator negotiator = new Negotiator(cash, nibbles);
+
+        kidnapper.start();
+        negotiator.start();
+
+        waitOrTimeout(deadlock(Integer.MAX_VALUE), timeout(millis(250)));
+        verify(deadlocks, ReentrantLock.class);
+
+        assertThat(deadlocks.toString(), containsString(" - com.google.code.tempusfugit.concurrency.kidnapping.Negotiator.run"));
+        assertThat(deadlocks.toString(), containsString(" - com.google.code.tempusfugit.concurrency.kidnapping.Kidnapper.run"));
+
+        kidnapper.interruptAndWaitToFinish();
+        negotiator.interruptAndWaitToFinish();
+    }
+
+    @Test
     public void detectsIntrinsicMonitorBasedDeadlock() throws InterruptedException, TimeoutException {
         Cash cash = new SynchronizedLock(latch);
         Cat nibbles = new SynchronizedLock(latch);
@@ -79,10 +100,14 @@ public class DeadlockDetectorTest {
     }
 
     private Condition deadlock() {
+        return deadlock(0);
+    }
+
+    private Condition deadlock(final int stackDepth) {
         return new Condition() {
             @Override
             public boolean isSatisfied() {
-                DeadlockDetector.printDeadlocks(deadlocks);
+                DeadlockDetector.printDeadlocks(deadlocks, stackDepth);
                 return deadlocks.detected();
             }
         };
