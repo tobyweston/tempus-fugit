@@ -38,8 +38,9 @@ import static org.hamcrest.Matchers.not;
  */
 public class DeadlockDetectorTest {
 
-    private final CountDownLatch latch = new CountDownLatch(2);
+    public static final int withEntireStackTrace = Integer.MAX_VALUE;
 
+    private final CountDownLatch latch = new CountDownLatch(2);
     private final Deadlocks deadlocks = new Deadlocks();
 
     @Test
@@ -59,7 +60,7 @@ public class DeadlockDetectorTest {
         kidnapper.start();
         negotiator.start();
 
-        waitOrTimeout(deadlock(), timeout(millis(250)));
+        waitOrTimeout(forDeadlockDetected(), timeout(millis(250)));
         verify(deadlocks, ReentrantLock.class);
 
         kidnapper.interruptAndWaitToFinish();
@@ -77,7 +78,7 @@ public class DeadlockDetectorTest {
         kidnapper.start();
         negotiator.start();
 
-        waitOrTimeout(deadlock(Integer.MAX_VALUE), timeout(millis(250)));
+        waitOrTimeout(forDeadlockDetected(withEntireStackTrace), timeout(millis(250)));
         verify(deadlocks, ReentrantLock.class);
 
         assertThat(deadlocks.toString(), containsString(" - com.google.code.tempusfugit.concurrency.kidnapping.Negotiator.run"));
@@ -95,15 +96,15 @@ public class DeadlockDetectorTest {
         new Kidnapper(cash, nibbles).start();
         new Negotiator(cash, nibbles).start();
 
-        waitOrTimeout(deadlock(), timeout(millis(250)));
+        waitOrTimeout(forDeadlockDetected(), timeout(millis(250)));
         verify(deadlocks, Object.class);
     }
 
-    private Condition deadlock() {
-        return deadlock(0);
+    private Condition forDeadlockDetected() {
+        return forDeadlockDetected(0);
     }
 
-    private Condition deadlock(final int stackDepth) {
+    private Condition forDeadlockDetected(final int stackDepth) {
         return new Condition() {
             @Override
             public boolean isSatisfied() {
