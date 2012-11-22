@@ -44,10 +44,15 @@ public class ThreadDump {
 
             private void print(Thread thread, StackTraceElement[] stackTraceElements) throws IOException {
                 writeln(writer, format("%sThread %s@%d: (state = %s)", lineSeparator, thread.getName(), thread.getId(), thread.getState()));
-                for (StackTraceElement stackTraceElement : stackTraceElements)
-                    writeln(writer, format(" - %s", stackTraceElement.toString()));
+                printStackTrace (writer, stackTraceElements);
             }
+
         };
+    }
+
+    static void printStackTrace (final OutputStream writer, StackTraceElement[] stackTraceElements) throws IOException {
+        for (StackTraceElement stackTraceElement : stackTraceElements)
+            writeln(writer, format(" - %s", stackTraceElement.toString()));
     }
 
     private static void writeln(OutputStream writer, String string) throws IOException {
