@@ -67,3 +67,7 @@ To generate the awful Surefire report after running `mvn test`.
     mvn deploy -Dmaven.test.skip=true
 
 To deploy without running the tests.
+
+    mvn clean -s ~/tools/apache/apache-maven-2.2.1/conf/settings.xml
+
+To supply an alternative settings file
