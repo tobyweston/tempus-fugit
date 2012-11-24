@@ -70,4 +70,4 @@ To deploy without running the tests.
 
     mvn clean -s ~/tools/apache/apache-maven-2.2.1/conf/settings.xml
 
-To supply an alternative settings file
+To supply an alternative settings file. For example, you'll need to [setup OSS Sonatype credentials](http://www.sonatype.com/people/2010/11/what-to-do-when-nexus-returns-401/) in your `settings.xml`.
