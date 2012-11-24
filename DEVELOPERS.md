@@ -1,5 +1,5 @@
 
-## Releasing
+# Releasing
 
 Since java.net stopped working to publish (after their "upgrade"), we've moved to publishing via OSS Sonatype at [https://oss.sonatype.org/index.html](https://oss.sonatype.org/index.html).
 
