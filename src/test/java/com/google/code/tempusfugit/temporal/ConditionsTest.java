@@ -26,8 +26,8 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 @RunWith(Enclosed.class)
 public class ConditionsTest {

@@ -34,12 +34,12 @@ import java.util.concurrent.Callable;
 import static com.google.code.tempusfugit.ExceptionWrapper.*;
 import static com.google.code.tempusfugit.WithException.as;
 import static com.google.code.tempusfugit.WithException.with;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.hamcrest.core.Is.is;
 import static org.jmock.Expectations.returnValue;
 import static org.jmock.Expectations.throwException;
-import static org.junit.Assert.assertThat;
 
 @RunWith(JMock.class)
 public class ExceptionWrapperTest {

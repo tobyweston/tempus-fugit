@@ -21,8 +21,8 @@ import org.junit.Test;
 
 import static com.google.code.tempusfugit.temporal.Duration.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 public final class DurationTest {
 

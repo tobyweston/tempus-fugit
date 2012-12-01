@@ -33,8 +33,8 @@ import static com.google.code.tempusfugit.concurrency.ExecutorServiceShutdown.sh
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 @RunWith(JMock.class)
 public class ExecutorServiceShutdownTest {

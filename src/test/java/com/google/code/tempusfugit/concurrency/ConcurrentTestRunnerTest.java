@@ -31,8 +31,8 @@ import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static java.util.Collections.synchronizedSet;
 import static junit.framework.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 @RunWith(ConcurrentTestRunner.class)
 public class ConcurrentTestRunnerTest {

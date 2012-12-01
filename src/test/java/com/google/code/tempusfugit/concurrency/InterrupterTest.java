@@ -31,10 +31,10 @@ import static com.google.code.tempusfugit.temporal.WaitFor.SLEEP_PERIOD;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static java.lang.Thread.currentThread;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 public class InterrupterTest {

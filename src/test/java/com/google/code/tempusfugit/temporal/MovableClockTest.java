@@ -21,8 +21,8 @@ import org.junit.Test;
 import java.util.Date;
 
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 public class MovableClockTest {
 

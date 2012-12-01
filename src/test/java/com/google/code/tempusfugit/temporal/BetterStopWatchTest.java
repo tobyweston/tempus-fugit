@@ -27,8 +27,8 @@ import org.junit.runner.RunWith;
 import java.util.Date;
 
 import static com.google.code.tempusfugit.temporal.Duration.millis;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 @Ignore
 @RunWith(JMock.class)

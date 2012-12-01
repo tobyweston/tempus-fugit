@@ -31,8 +31,8 @@ import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 @RunWith(JMock.class)
 public class ThreadUtilsTest {
