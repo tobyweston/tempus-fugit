@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2009-2012, toby weston & tempus-fugit committers
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0 
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
@@ -25,9 +25,9 @@ import static com.google.code.tempusfugit.temporal.Duration.millis;
 
 /**
  * The {@link ThreadLocal} based stop watch is safe to use with multiple threads as it will time each thread's call
- * between {@link #reset()} and {@link #lap()}. It is intended to use one shared {@link Clock} in order to base it's
- * timings on. For example, {@link RealClock} but you could use a clock based on {@link ThreadLocal} if you need to
- * provide different clocks per thread (although, outside of a testing context, I'm not sure why you'd want to).
+ * between {@link #reset()} (or construction) and {@link #lap()}. It is intended to use one shared {@link Clock}.
+ * For example, {@link RealClock} but you could use a clock based on {@link ThreadLocal} if you need to provide different
+ * clocks per thread (although, outside of a testing context, I'm not sure why you'd want to).
  *
  * @since 1.2
  */
@@ -41,19 +41,19 @@ public class ThreadLocalStopWatch implements StopWatch {
 
     public ThreadLocalStopWatch(Clock clock) {
         this.clock = clock;
-        Date now = this.clock.create();
+        Date now = this.clock.now();
         started = new ThreadLocalLong(now.getTime());
         stopped = new ThreadLocalLong(now.getTime());
     }
 
     @Override
     public void reset() {
-        started.set(clock.create().getTime());
+        started.set(clock.now().getTime());
     }
 
     @Override
     public void lap() {
-        stopped.set(clock.create().getTime());
+        stopped.set(clock.now().getTime());
     }
 
     @Override

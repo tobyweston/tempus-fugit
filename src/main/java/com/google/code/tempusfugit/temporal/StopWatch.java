@@ -21,6 +21,9 @@ package com.google.code.tempusfugit.temporal;
  * {@link #lap}. They should allow for multiple calls to {@link #lap} but may preserve a class invariant that {@link #lap}
  * should not be called before {@link #reset} (which would indicate a negative difference).
  *
+ * Stop watch implementations may start on construction or may provide an optional method to start. Check the
+ * implementations.
+ *
  * @since 1.2
  */
 public interface StopWatch {
@@ -37,7 +40,7 @@ public interface StopWatch {
     void lap();
 
     /**
-     * @return the difference between construction or reset time and lap time.
+     * @return the difference between construction (or reset time) and lap time.
      */
     Duration elapsedTime();
 }

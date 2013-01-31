@@ -30,7 +30,7 @@ import static com.google.code.tempusfugit.temporal.Conditions.isAlive;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(JMock.class)
-@Ignore ("does JMock not allow mocking of native methods?")
+@Ignore ("does JMock not allow mocking of native methods? ask on the mailing list")
 public class ThreadAliveConditionTest {
 
     private final Mockery context = new JUnit4Mockery() {{

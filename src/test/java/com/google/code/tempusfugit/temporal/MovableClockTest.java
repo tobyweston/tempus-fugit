@@ -30,34 +30,34 @@ public class MovableClockTest {
 
     @Test
     public void dateStartsAtZero() {
-        assertThat(clock.create().getTime(), is(0L));
+        assertThat(clock.now().getTime(), is(0L));
     }
 
     @Test
     public void dateCanMoveOn() {
         clock.incrementBy(seconds(1));
-        assertThat(clock.create().getTime(), is(1000L));
+        assertThat(clock.now().getTime(), is(1000L));
         clock.incrementBy(seconds(2));
-        assertThat(clock.create().getTime(), is(3000L));
+        assertThat(clock.now().getTime(), is(3000L));
         clock.incrementBy(seconds(3));
-        assertThat(clock.create().getTime(), is(6000L));
+        assertThat(clock.now().getTime(), is(6000L));
     }
 
     @Test
     public void setTime() {
         clock.setTime(seconds(1));
-        assertThat(clock.create().getTime(), is(1000L));
+        assertThat(clock.now().getTime(), is(1000L));
         clock.setTime(seconds(2));
-        assertThat(clock.create().getTime(), is(2000L));
+        assertThat(clock.now().getTime(), is(2000L));
         clock.setTime(seconds(3));
-        assertThat(clock.create().getTime(), is(3000L));
+        assertThat(clock.now().getTime(), is(3000L));
     }
 
     @Test
     public void dateStartsAtDatePassedIn() {
         Date date = new Date();
         MovableClock clock = new MovableClock(date);
-        assertThat(clock.create().getTime(), is(date.getTime()));
+        assertThat(clock.now().getTime(), is(date.getTime()));
     }
 
     @Test
@@ -65,11 +65,11 @@ public class MovableClockTest {
         Date date = new Date();
         MovableClock clock = new MovableClock(date);
         clock.incrementBy(seconds(1));
-        assertThat(clock.create().getTime(), is(date.getTime() + seconds(1).inMillis()));
+        assertThat(clock.now().getTime(), is(date.getTime() + seconds(1).inMillis()));
         clock.incrementBy(seconds(2));
-        assertThat(clock.create().getTime(), is(date.getTime() + seconds(3).inMillis()));
+        assertThat(clock.now().getTime(), is(date.getTime() + seconds(3).inMillis()));
         clock.incrementBy(seconds(3));
-        assertThat(clock.create().getTime(), is(date.getTime() + seconds(6).inMillis()));
+        assertThat(clock.now().getTime(), is(date.getTime() + seconds(6).inMillis()));
     }
 
     @Test
@@ -77,11 +77,11 @@ public class MovableClockTest {
         Date date = new Date();
         MovableClock clock = new MovableClock(date);
         clock.setTime(seconds(1));
-        assertThat(clock.create().getTime(), is(1000L));
+        assertThat(clock.now().getTime(), is(1000L));
         clock.setTime(seconds(2));
-        assertThat(clock.create().getTime(), is(2000L));
+        assertThat(clock.now().getTime(), is(2000L));
         clock.setTime(seconds(3));
-        assertThat(clock.create().getTime(), is(3000L));
+        assertThat(clock.now().getTime(), is(3000L));
     }
 
 }

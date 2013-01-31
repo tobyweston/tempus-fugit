@@ -18,6 +18,7 @@ package com.google.code.tempusfugit.concurrency;
 
 import com.google.code.tempusfugit.temporal.Clock;
 import com.google.code.tempusfugit.temporal.Duration;
+import com.google.code.tempusfugit.temporal.RealClock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,6 @@ import java.util.concurrent.*;
 
 import static com.google.code.tempusfugit.concurrency.Interrupter.interrupt;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
-import static com.google.code.tempusfugit.temporal.RealClock.now;
 import static java.lang.Thread.currentThread;
 
 public class DefaultTimeoutableCompletionService implements TimeoutableCompletionService {
@@ -39,7 +39,7 @@ public class DefaultTimeoutableCompletionService implements TimeoutableCompletio
     private final Clock time;
 
     public DefaultTimeoutableCompletionService(CompletionService completionService) {
-        this(completionService, DEFAULT_TIMEOUT, now());
+        this(completionService, DEFAULT_TIMEOUT, new RealClock());
     }
 
     public DefaultTimeoutableCompletionService(CompletionService completionService, Duration timeout, Clock time) {

@@ -17,10 +17,10 @@
 package com.google.code.tempusfugit.concurrency;
 
 
-import com.google.code.tempusfugit.FactoryException;
 import com.google.code.tempusfugit.temporal.Clock;
 import com.google.code.tempusfugit.temporal.Condition;
 import com.google.code.tempusfugit.temporal.Duration;
+import com.google.code.tempusfugit.temporal.RealClock;
 import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -41,7 +41,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
-import static com.google.code.tempusfugit.temporal.RealClock.now;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static java.util.Arrays.asList;
@@ -69,11 +68,11 @@ public class DefaultTimeoutableCompletionServiceTest {
     private static final Date EXPIRED_TIMEOUT = new Date(TIMEOUT.inMillis() + 1);
 
     private final ExecutorCompletionService completionService = context.mock(ExecutorCompletionService.class);
-    
+
     private final Clock time = new Clock() {
         private int count = 0;
         @Override
-        public synchronized Date create() throws FactoryException {
+        public synchronized Date now() {
             count++;
             if (count == 1)
                 return START_DATE;
@@ -141,7 +140,7 @@ public class DefaultTimeoutableCompletionServiceTest {
         final AtomicBoolean interrupted = new AtomicBoolean(false);
         Callable<Void> callable = new Callable<Void>() {
             public Void call() throws Exception {
-                while (!Thread.currentThread().isInterrupted()) 
+                while (!Thread.currentThread().isInterrupted())
                     Thread.yield();
                 interrupted.set(true);
                 return null;
@@ -149,7 +148,7 @@ public class DefaultTimeoutableCompletionServiceTest {
         };
 
         try {
-            new DefaultTimeoutableCompletionService(new ExecutorCompletionService(newSingleThreadExecutor()), millis(1), now()).submit(asList(callable));
+            new DefaultTimeoutableCompletionService(new ExecutorCompletionService(newSingleThreadExecutor()), millis(1), new RealClock()).submit(asList(callable));
             fail("didn't timeout");
         } catch (TimeoutException e) {
             waitOrTimeout(new Condition() {

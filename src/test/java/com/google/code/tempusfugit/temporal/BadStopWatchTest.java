@@ -28,11 +28,10 @@ import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@Ignore
+@Ignore ("example of how not to implement a stop watch")
 public class BadStopWatchTest {
 
     private final Mockery context = new JUnit4Mockery();
-    private Clock time = context.mock(Clock.class);
 
     @Test
     public void getElapsedTime() {
@@ -44,7 +43,6 @@ public class BadStopWatchTest {
     public static class BadStopWatch {
 
         private Date startDate;
-        private long elapsedTime;
 
         public BadStopWatch() {
             this.startDate = new Date();

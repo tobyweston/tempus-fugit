@@ -30,20 +30,20 @@ import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@Ignore
+@Ignore ("example only")
 @RunWith(JMock.class)
 public class BetterStopWatchTest {
 
     private final Mockery context = new JUnit4Mockery();
-    private Clock time = context.mock(Clock.class);
+    private Clock clock = context.mock(Clock.class);
 
     @Test
     public void getElapsedTimeFromBetterStopWatch() {
         context.checking(new Expectations() {{
-            oneOf(time).create(); will(returnValue(new Date(0)));
-            oneOf(time).create(); will(returnValue(new Date(100)));
+            oneOf(clock).now(); will(returnValue(new Date(0)));
+            oneOf(clock).now(); will(returnValue(new Date(100)));
         }});
-        BetterStopWatch watch = new BetterStopWatch(time);
+        BetterStopWatch watch = new BetterStopWatch(clock);
         assertThat(watch.getElapsedTime(), is(millis(100)));
     }
 
@@ -59,15 +59,15 @@ public class BetterStopWatchTest {
     public static class BetterStopWatch {
 
     private Date startDate;
-    private Clock factory;
+    private Clock clock;
 
-    public BetterStopWatch(Clock factory) {
-        this.factory = factory;
-        this.startDate = factory.create();
+    public BetterStopWatch(Clock coock) {
+        this.clock = coock;
+        this.startDate = coock.now();
     }
 
     public Duration getElapsedTime() {
-        return millis(factory.create().getTime() - startDate.getTime());
+        return millis(clock.now().getTime() - startDate.getTime());
     }
 
 }

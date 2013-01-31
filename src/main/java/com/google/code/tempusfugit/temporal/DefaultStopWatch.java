@@ -32,26 +32,30 @@ public final class DefaultStopWatch implements StopWatch {
     private Date started;
     private Date stopped;
 
-    /** @since 1.2 */
+    /**
+     * Constructs and starts a stop watch.
+     * @since 1.2
+     * */
     public DefaultStopWatch(Clock clock) {
-        Date now = clock.create();
+        Date now = clock.now();
         this.clock = clock;
         this.started = now;
         this.stopped = now;
     }
 
+    @Deprecated
     public Date getStartDate() {
         return started;
     }
 
     @Override
     public void reset() {
-        started = clock.create();
+        started = clock.now();
     }
 
     @Override
     public void lap() {
-        stopped = clock.create();
+        stopped = clock.now();
     }
 
     @Override

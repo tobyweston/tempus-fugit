@@ -20,7 +20,6 @@ import com.google.code.tempusfugit.temporal.*;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.google.code.tempusfugit.temporal.RealClock.now;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitUntil;
 import static java.lang.Thread.currentThread;
@@ -31,7 +30,7 @@ public final class Interrupter {
 
     private final Thread threadToInterrupt;
     private Thread interrupterThread;
-    private Clock time = now();
+    private Clock time = new RealClock();
 
     private Interrupter(Thread threadToInterrupt) {
         this.threadToInterrupt = threadToInterrupt;

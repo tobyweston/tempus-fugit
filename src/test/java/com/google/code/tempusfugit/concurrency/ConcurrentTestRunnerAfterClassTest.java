@@ -26,7 +26,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(ConcurrentTestRunner.class)
-@Ignore("Bug #10")
+@Ignore("Bug #10 (https://code.google.com/p/tempus-fugit/issues/detail?id=10)")
 public class ConcurrentTestRunnerAfterClassTest {
 
     private static Thread testThread;
@@ -40,7 +40,7 @@ public class ConcurrentTestRunnerAfterClassTest {
     public void assertAfterIsEvaluatedOnTestThread() {
         assertThat(Thread.currentThread(), is(testThread));
     }
-                                     
+
     @AfterClass
     public static void assertAfterClassIsEvaluatedOnTestThread() {
         assertThat(Thread.currentThread(), is(testThread));
