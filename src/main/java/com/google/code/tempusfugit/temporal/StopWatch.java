@@ -17,7 +17,7 @@
 package com.google.code.tempusfugit.temporal;
 
 /**
- * Stop watch implementations should time the difference between contruction (or a call to {@link #reset}) and a call to
+ * Stop watch implementations should time the difference between construction (or a call to {@link #reset}) and a call to
  * {@link #lap}. They should allow for multiple calls to {@link #lap} but may preserve a class invariant that {@link #lap}
  * should not be called before {@link #reset} (which would indicate a negative difference).
  *
