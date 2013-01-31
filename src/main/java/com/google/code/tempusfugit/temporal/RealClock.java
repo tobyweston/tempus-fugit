@@ -23,15 +23,12 @@ public class RealClock implements Clock {
     public RealClock() {
     }
 
-    public static RealClock now() {
-        return new RealClock();
-    }
-
     public static RealClock today() {
         return new RealClock();
     }
 
-    public Date create() {
+    @Override
+    public Date now() {
         return new Date();
     }
 }

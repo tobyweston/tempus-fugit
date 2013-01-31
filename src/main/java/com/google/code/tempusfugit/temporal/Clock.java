@@ -16,11 +16,13 @@
 
 package com.google.code.tempusfugit.temporal;
 
-import com.google.code.tempusfugit.Factory;
-
 import java.util.Date;
 
-/** @since 1.1 (formally DateFactory class) */
-public interface Clock extends Factory<Date> {
-    
+/**
+ * @since 1.1 (formally DateFactory class)
+ */
+public interface Clock {
+
+    Date now();
+
 }

@@ -20,28 +20,27 @@ import java.util.Date;
 
 public final class MovableClock implements Clock {
 
-    private final Date now;
+    private final Date current;
 
     public MovableClock() {
-        now = new Date(0);
+        current = new Date(0);
     }
 
-    // TODO why do we need this?
     public MovableClock(Date date) {
-        now = new Date(date.getTime());
+        current = new Date(date.getTime());
     }
 
-    // TODO rename to "time"?
-    public Date create() {
-        return new Date(now.getTime());
+    @Override
+    public Date now() {
+        return new Date(current.getTime());
     }
 
     public void setTime(Duration time) {
-        now.setTime(time.inMillis());
+        current.setTime(time.inMillis());
     }
 
     public void incrementBy(Duration time) {
-        now.setTime(now.getTime() + time.inMillis());
+        current.setTime(current.getTime() + time.inMillis());
     }
 
 }
