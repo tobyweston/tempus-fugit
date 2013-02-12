@@ -24,10 +24,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-public class DefaultStopWatchTest {
+public class TimerTest {
 
     private final MovableClock clock = new MovableClock();
-    private final StopWatch timer = new DefaultStopWatch(clock);
+    private final StopWatch timer = new Timer(clock);
 
     @Test
     public void freshlyInitialised() {
@@ -46,7 +46,13 @@ public class DefaultStopWatchTest {
         timer.lap();
         clock.incrementBy(millis(100));
         timer.reset();
-        assertThat(timer.elapsedTime(), is(millis(-100)));
+        timer.elapsedTime();
+    }
+
+    @Test
+    public void stoppedButNotStarted() {
+        timer.lap();
+        assertThat(timer.elapsedTime(), is(millis(0)));
     }
 
     @Test
@@ -64,7 +70,22 @@ public class DefaultStopWatchTest {
         timer.lap();
         clock.incrementBy(millis(5));
         timer.lap();
-        timer.elapsedTime();
+        assertThat(timer.elapsedTime(), is(millis(10)));
+    }
+
+    @Test
+    public void shouldRecordElapsedTimeBetweenStartAndStop() {
+        timer.reset();
+        clock.incrementBy(millis(5));
+        timer.lap();
+        assertThat(timer.elapsedTime(), is(millis(5)));
+        clock.incrementBy(millis(5));
+        timer.lap();
+        assertThat(timer.elapsedTime(), is(millis(10)));
+        timer.reset();
+        clock.incrementBy(millis(20));
+        timer.lap();
+        assertThat(timer.elapsedTime(), is(millis(20)));
     }
 
 }

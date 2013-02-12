@@ -53,7 +53,7 @@ public final class Timeout {
         return timer.elapsedTime().greaterThan(duration);
     }
 
-    private static DefaultStopWatch startStopWatch() {
-        return new DefaultStopWatch(new RealClock());
+    private static Timer startStopWatch() {
+        return new Timer(new RealClock());
     }
 }

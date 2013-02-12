@@ -32,14 +32,14 @@ import static com.google.code.tempusfugit.temporal.Duration.millis;
  * @since 1.2
  */
 @ThreadSafe
-public class ThreadLocalStopWatch implements StopWatch {
+public class ThreadLocalTimer implements StopWatch {
 
     private final Clock clock;
 
     private final ThreadLocal<Long> started;
     private final ThreadLocal<Long> stopped;
 
-    public ThreadLocalStopWatch(Clock clock) {
+    public ThreadLocalTimer(Clock clock) {
         this.clock = clock;
         Date now = this.clock.now();
         started = new ThreadLocalLong(now.getTime());

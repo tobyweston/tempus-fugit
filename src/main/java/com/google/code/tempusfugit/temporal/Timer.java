@@ -25,7 +25,7 @@ import java.util.Date;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 
 @Not(ThreadSafe.class)
-public final class DefaultStopWatch implements StopWatch {
+public final class Timer implements StopWatch {
 
     private final Clock clock;
 
@@ -36,7 +36,7 @@ public final class DefaultStopWatch implements StopWatch {
      * Constructs and starts a stop watch.
      * @since 1.2
      * */
-    public DefaultStopWatch(Clock clock) {
+    public Timer(Clock clock) {
         Date now = clock.now();
         this.clock = clock;
         this.started = now;

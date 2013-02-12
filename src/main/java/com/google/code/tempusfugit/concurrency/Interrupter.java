@@ -71,7 +71,7 @@ public final class Interrupter {
     }
 
     private StopWatch createAndStartStopWatch() {
-        return new DefaultStopWatch(time);
+        return new Timer(time);
     }
 
 }

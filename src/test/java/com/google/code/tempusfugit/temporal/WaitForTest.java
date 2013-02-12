@@ -53,7 +53,7 @@ public class WaitForTest {
         context.checking(new Expectations(){{
             oneOf(condition).isSatisfied(); will(returnValue(true));
         }});
-        waitOrTimeout(condition, timeout(millis(10), new DefaultStopWatch(date)));
+        waitOrTimeout(condition, timeout(millis(10), new Timer(date)));
     }
 
     @Test
@@ -62,12 +62,12 @@ public class WaitForTest {
             oneOf(condition).isSatisfied(); inSequence(sequence); will(returnValue(false));
             oneOf(condition).isSatisfied(); inSequence(sequence); will(returnValue(true));
         }});
-        waitOrTimeout(condition, timeout(millis(10), new DefaultStopWatch(date)));
+        waitOrTimeout(condition, timeout(millis(10), new Timer(date)));
     }
 
     @Test(expected = TimeoutException.class)
     public void timesOut() throws TimeoutException, InterruptedException {
-        waitOrTimeout(new ForceTimeout(millis(10)), timeout(millis(10), new DefaultStopWatch(date)));
+        waitOrTimeout(new ForceTimeout(millis(10)), timeout(millis(10), new Timer(date)));
     }
 
     @Test
@@ -75,7 +75,7 @@ public class WaitForTest {
         context.checking(new Expectations(){{
             oneOf(onTimeout).call();
         }});
-        waitOrTimeout(new ForceTimeout(millis(10)), onTimeout, timeout(millis(10), new DefaultStopWatch(date)));
+        waitOrTimeout(new ForceTimeout(millis(10)), onTimeout, timeout(millis(10), new Timer(date)));
     }
 
     @Test (expected = RuntimeException.class)
@@ -84,7 +84,7 @@ public class WaitForTest {
             oneOf(onTimeout).call();
             will(throwException(new RuntimeException()));
         }});
-        waitOrTimeout(new ForceTimeout(millis(10)), onTimeout, timeout(millis(10), new DefaultStopWatch(date)));
+        waitOrTimeout(new ForceTimeout(millis(10)), onTimeout, timeout(millis(10), new Timer(date)));
     }
 
     @Test (expected = InterruptedException.class, timeout = 500)
@@ -115,7 +115,7 @@ public class WaitForTest {
         return new Thread(new Runnable() {
             public void run() {
                 try {
-                    waitUntil(timeout(seconds(1), new DefaultStopWatch(date)));
+                    waitUntil(timeout(seconds(1), new Timer(date)));
                 } catch (InterruptedException e) {
                     currentThread().interrupt();
                 }
