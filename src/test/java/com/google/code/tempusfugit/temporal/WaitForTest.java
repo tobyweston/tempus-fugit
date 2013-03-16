@@ -30,8 +30,8 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.TimeoutException;
 
-import static com.google.code.tempusfugit.temporal.Conditions.isAlive;
-import static com.google.code.tempusfugit.temporal.Conditions.not;
+import static com.google.code.tempusfugit.condition.Conditions.isAlive;
+import static com.google.code.tempusfugit.condition.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;

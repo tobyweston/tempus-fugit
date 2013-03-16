@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.code.tempusfugit.temporal;
+package com.google.code.tempusfugit.condition;
 
-import com.google.code.tempusfugit.condition.*;
+import com.google.code.tempusfugit.temporal.Condition;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
 

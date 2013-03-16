@@ -16,7 +16,7 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import com.google.code.tempusfugit.temporal.Conditions;
+import com.google.code.tempusfugit.condition.Conditions;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
@@ -25,7 +25,7 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static com.google.code.tempusfugit.temporal.Conditions.assertThat;
+import static com.google.code.tempusfugit.condition.Conditions.assertThat;
 import static java.lang.Thread.State.BLOCKED;
 import static java.lang.Thread.State.NEW;
 import static org.hamcrest.core.Is.is;

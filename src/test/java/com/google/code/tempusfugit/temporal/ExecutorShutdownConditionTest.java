@@ -25,8 +25,8 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.ExecutorService;
 
-import static com.google.code.tempusfugit.temporal.Conditions.assertThat;
-import static com.google.code.tempusfugit.temporal.Conditions.shutdown;
+import static com.google.code.tempusfugit.condition.Conditions.assertThat;
+import static com.google.code.tempusfugit.condition.Conditions.shutdown;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(JMock.class)

@@ -22,8 +22,8 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
-import static com.google.code.tempusfugit.temporal.Conditions.assertThat;
-import static com.google.code.tempusfugit.temporal.Conditions.isWaiting;
+import static com.google.code.tempusfugit.condition.Conditions.assertThat;
+import static com.google.code.tempusfugit.condition.Conditions.isWaiting;
 import static java.lang.Thread.State.*;
 import static org.hamcrest.core.Is.is;
 

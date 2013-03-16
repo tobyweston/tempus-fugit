@@ -16,11 +16,11 @@
 
 package com.google.code.tempusfugit.concurrency.kidnapping;
 
-import com.google.code.tempusfugit.temporal.Conditions;
+import com.google.code.tempusfugit.condition.Conditions;
 
 import java.util.concurrent.TimeoutException;
 
-import static com.google.code.tempusfugit.temporal.Conditions.not;
+import static com.google.code.tempusfugit.condition.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;

@@ -1,6 +1,5 @@
 package com.google.code.tempusfugit.condition;
 
-import com.google.code.tempusfugit.temporal.Conditions;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;

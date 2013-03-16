@@ -1,7 +1,6 @@
 package com.google.code.tempusfugit.condition;
 
 import com.google.code.tempusfugit.temporal.Condition;
-import com.google.code.tempusfugit.temporal.Conditions;
 import org.hamcrest.Matcher;
 import org.jmock.Expectations;
 import org.jmock.Mockery;

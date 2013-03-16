@@ -25,8 +25,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static com.google.code.tempusfugit.temporal.Conditions.assertThat;
-import static com.google.code.tempusfugit.temporal.Conditions.isAlive;
+import static com.google.code.tempusfugit.condition.Conditions.assertThat;
+import static com.google.code.tempusfugit.condition.Conditions.isAlive;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(JMock.class)

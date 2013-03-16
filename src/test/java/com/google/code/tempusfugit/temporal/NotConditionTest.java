@@ -18,8 +18,8 @@ package com.google.code.tempusfugit.temporal;
 
 import org.junit.Test;
 
-import static com.google.code.tempusfugit.temporal.Conditions.assertThat;
-import static com.google.code.tempusfugit.temporal.Conditions.not;
+import static com.google.code.tempusfugit.condition.Conditions.assertThat;
+import static com.google.code.tempusfugit.condition.Conditions.not;
 import static org.hamcrest.core.Is.is;
 
 public class NotConditionTest {

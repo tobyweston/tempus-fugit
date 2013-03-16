@@ -28,8 +28,8 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import static com.google.code.tempusfugit.temporal.Conditions.isWaiting;
-import static com.google.code.tempusfugit.temporal.Conditions.not;
+import static com.google.code.tempusfugit.condition.Conditions.isWaiting;
+import static com.google.code.tempusfugit.condition.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
