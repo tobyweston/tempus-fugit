@@ -7,11 +7,14 @@ import org.hamcrest.Matcher;
 import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SelfDescribingMatcherCondition<T> implements SelfDescribingCondition {
 
     private final Callable<T, RuntimeException> actual;
     private final Matcher<T> matcher;
-    private final Description description = new StringDescription();
+    private final List<Description> description = new ArrayList<Description>();
 
     public SelfDescribingMatcherCondition(Callable<T, RuntimeException> actual, Matcher<T> matcher) {
         this.actual = actual;
@@ -22,8 +25,11 @@ public class SelfDescribingMatcherCondition<T> implements SelfDescribingConditio
     public boolean isSatisfied() {
         T value = actual.call();
         boolean matches = matcher.matches(value);
-        if (!matches)
-            matcher.describeMismatch(value, description);
+        if (!matches) {
+            StringDescription failure = new StringDescription();
+            matcher.describeMismatch(value, failure);
+            description.add(failure);
+        }
         return matches;
     }
 
@@ -33,7 +39,7 @@ public class SelfDescribingMatcherCondition<T> implements SelfDescribingConditio
                 .appendText("\nExpected: ")
                 .appendDescriptionOf(matcher)
                 .appendText("\n     but: ")
-                .appendText(this.description.toString())
+                .appendValueList("", ", ", "", this.description)
         ;
     }
 

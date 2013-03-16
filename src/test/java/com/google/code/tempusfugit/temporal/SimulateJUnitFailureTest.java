@@ -32,7 +32,7 @@ public class SimulateJUnitFailureTest {
         exception.expectMessage(Matchers.<String>allOf(
                 containsString("test lambda"),
                 containsString("Expected: is \"the best\""),
-                containsString("but: was \"the worst\"")
+                containsString("but: <was \"the worst\">")
         ));
         SelfDescribingMatcherCondition<String> condition = new SelfDescribingMatcherCondition<String>(probe("the worst"), is("the best"));
         condition.isSatisfied();
