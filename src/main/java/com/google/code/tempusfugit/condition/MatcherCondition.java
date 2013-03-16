@@ -12,6 +12,7 @@ public class MatcherCondition<T> implements Condition {
         this.actual = actual;
     }
 
+    @Override
     public boolean isSatisfied() {
         return matcher.matches(actual);
     }

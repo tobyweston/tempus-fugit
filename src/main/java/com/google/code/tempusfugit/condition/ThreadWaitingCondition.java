@@ -12,6 +12,7 @@ public class ThreadWaitingCondition implements Condition {
         this.thread = thread;
     }
 
+    @Override
     public boolean isSatisfied() {
         return (thread.getState() == TIMED_WAITING) || (thread.getState() == WAITING);
     }

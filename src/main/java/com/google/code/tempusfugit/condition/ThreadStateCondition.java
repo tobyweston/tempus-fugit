@@ -11,6 +11,7 @@ public class ThreadStateCondition implements Condition {
         this.state = state;
     }
 
+    @Override
     public boolean isSatisfied() {
         return thread.getState() == state;
     }

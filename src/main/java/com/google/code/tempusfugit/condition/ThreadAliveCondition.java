@@ -9,6 +9,7 @@ public class ThreadAliveCondition implements Condition {
         this.thread = thread;
     }
 
+    @Override
     public boolean isSatisfied() {
         return thread.isAlive();
     }

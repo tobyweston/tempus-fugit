@@ -12,6 +12,7 @@ public class ExecutorShutdownCondition implements Condition {
         this.executor = executor;
     }
 
+    @Override
     public boolean isSatisfied() {
         return executor.isShutdown();
     }

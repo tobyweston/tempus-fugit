@@ -10,6 +10,7 @@ public class NotCondition implements Condition {
         this.condition = condition;
     }
 
+    @Override
     public boolean isSatisfied() {
         return !condition.isSatisfied();
     }
