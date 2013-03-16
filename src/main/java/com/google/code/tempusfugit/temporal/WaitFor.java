@@ -21,6 +21,7 @@ import com.google.code.tempusfugit.concurrency.Callable;
 import java.util.concurrent.TimeoutException;
 
 import static com.google.code.tempusfugit.temporal.Duration.millis;
+import static com.google.code.tempusfugit.temporal.SimulateJUnitFailure.failOnTimeout;
 
 public final class WaitFor {
 
@@ -48,6 +49,11 @@ public final class WaitFor {
         } catch (TimeoutException e) {
             onTimeout.call();
         }
+    }
+
+    /** @since 1.2 */
+    public static void waitFor(SelfDescribingCondition condition, Timeout timeout) throws InterruptedException {
+        waitOrTimeout(condition, failOnTimeout(condition), timeout);
     }
 
     public static void waitUntil(Timeout timeout) throws InterruptedException {

@@ -17,12 +17,15 @@
 package com.google.code.tempusfugit.temporal;
 
 import com.google.code.tempusfugit.concurrency.Callable;
+import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
 import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import java.util.concurrent.TimeoutException;
@@ -32,12 +35,13 @@ import static com.google.code.tempusfugit.temporal.Conditions.not;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;
-import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
-import static com.google.code.tempusfugit.temporal.WaitFor.waitUntil;
+import static com.google.code.tempusfugit.temporal.WaitFor.*;
 import static java.lang.Thread.currentThread;
 
 @RunWith(JMock.class)
 public class WaitForTest {
+
+    @Rule public final ExpectedException exception = ExpectedException.none();
 
     private final MovableClock date = new MovableClock();
 
@@ -111,6 +115,14 @@ public class WaitForTest {
         waitOrTimeout(condition, timeout(millis(100)), sleeper);
     }
 
+    @Test
+    public void timeoutAndThrowSelfDescribingFailure() throws TimeoutException, InterruptedException {
+        exception.expect(AssertionError.class);
+        exception.expectMessage("forced timeout");
+        waitFor(new ForceTimeout(millis(10)), timeout(millis(10)));
+    }
+
+
     private Thread threadWaitsForever() {
         return new Thread(new Runnable() {
             public void run() {
@@ -140,7 +152,7 @@ public class WaitForTest {
         };
     }
 
-    private class ForceTimeout implements Condition {
+    private class ForceTimeout implements SelfDescribingCondition {
         private final Duration timeout;
 
         public ForceTimeout(Duration timeout) {
@@ -150,6 +162,11 @@ public class WaitForTest {
         public boolean isSatisfied() {
             date.setTime(timeout.plus(millis(1)));
             return false;
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("forced timeout");
         }
     }
 
