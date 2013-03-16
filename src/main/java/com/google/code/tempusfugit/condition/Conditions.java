@@ -16,7 +16,9 @@
 
 package com.google.code.tempusfugit.condition;
 
+import com.google.code.tempusfugit.concurrency.Callable;
 import com.google.code.tempusfugit.temporal.Condition;
+import com.google.code.tempusfugit.temporal.SelfDescribingCondition;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
 
@@ -58,9 +60,17 @@ public final class Conditions {
      * <p></p>
      * Not that if the actual value isn't updated by some asynchronous code, the matcher may never match so it'd be
      * pointless calling inside a <code>WaitFor.waitOrTimeout</code> call.
-     * @since 1.1 */
+     *
+     * @since 1.1
+     * @deprecated use {@link #assertion(com.google.code.tempusfugit.concurrency.Callable, org.hamcrest.Matcher)} instead
+     */
+    @Deprecated
     public static <T> Condition assertion(T actual, Matcher<T> matcher) {
         return new MatcherCondition<T>(actual, matcher);
+    }
+
+    public static <T> SelfDescribingCondition assertion(Callable<T, RuntimeException> actual, Matcher<T> matcher) {
+        return new SelfDescribingMatcherCondition(actual, matcher);
     }
 
 
