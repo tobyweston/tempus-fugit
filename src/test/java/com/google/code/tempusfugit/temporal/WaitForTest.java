@@ -122,7 +122,6 @@ public class WaitForTest {
         waitFor(new ForceTimeout(millis(10)), timeout(millis(10)));
     }
 
-
     private Thread threadWaitsForever() {
         return new Thread(new Runnable() {
             public void run() {
