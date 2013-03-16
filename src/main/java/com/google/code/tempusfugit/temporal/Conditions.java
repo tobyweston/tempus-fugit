@@ -16,13 +16,11 @@
 
 package com.google.code.tempusfugit.temporal;
 
+import com.google.code.tempusfugit.condition.*;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
 
 import java.util.concurrent.ExecutorService;
-
-import static java.lang.Thread.State.TIMED_WAITING;
-import static java.lang.Thread.State.WAITING;
 
 public final class Conditions {
 
@@ -57,89 +55,13 @@ public final class Conditions {
     /** Useful when waiting for an assertion in tests, for example;
      * <p></p>
      * <code>WaitFor.waitOrTimeout(assertion(limit, is(5)), timeout(millis(500)))</code>
-     *
+     * <p></p>
+     * Not that if the actual value isn't updated by some asynchronous code, the matcher may never match so it'd be
+     * pointless calling inside a <code>WaitFor.waitOrTimeout</code> call.
      * @since 1.1 */
     public static <T> Condition assertion(T actual, Matcher<T> matcher) {
-        return new MatcherCondition<T>(matcher, actual);
+        return new MatcherCondition<T>(actual, matcher);
     }
 
 
-    private static class NotCondition implements Condition {
-
-        private final Condition condition;
-
-        public NotCondition(Condition condition) {
-            this.condition = condition;
-        }
-
-        public boolean isSatisfied() {
-            return !condition.isSatisfied();
-        }
-    }
-
-    private static class ExecutorShutdownCondition implements Condition {
-
-        private final ExecutorService executor;
-
-        public ExecutorShutdownCondition(ExecutorService executor) {
-            this.executor = executor;
-        }
-
-        public boolean isSatisfied() {
-            return executor.isShutdown();
-        }
-    }
-
-    private static class ThreadAliveCondition implements Condition {
-        private final Thread thread;
-
-        public ThreadAliveCondition(Thread thread) {
-            this.thread = thread;
-        }
-
-        public boolean isSatisfied() {
-            return thread.isAlive();
-        }
-    }
-
-    private static class ThreadWaitingCondition implements Condition {
-        private final Thread thread;
-
-        public ThreadWaitingCondition(Thread thread) {
-            this.thread = thread;
-        }
-
-        public boolean isSatisfied() {
-            return (thread.getState() == TIMED_WAITING) || (thread.getState() == WAITING);
-        }
-    }
-
-    private static class ThreadStateCondition implements Condition {
-        private final Thread thread;
-        private final Thread.State state;
-
-        public ThreadStateCondition(Thread thread, Thread.State state) {
-            this.thread = thread;
-            this.state = state;
-        }
-
-        public boolean isSatisfied() {
-            return thread.getState() == state;
-        }
-
-    }
-
-    private static class MatcherCondition<T> implements Condition {
-        private final Matcher<T> matcher;
-        private final T actual;
-
-        public MatcherCondition(Matcher<T> matcher, T actual) {
-            this.matcher = matcher;
-            this.actual = actual;
-        }
-
-        public boolean isSatisfied() {
-            return matcher.matches(actual);
-        }
-    }
 }
