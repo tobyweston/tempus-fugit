@@ -30,6 +30,22 @@ SNAPSHOT Release ([https://oss.sonatype.org/content/repositories/snapshots/](htt
 
     `mvn clean deploy`
 
+  4. If Sonatype complains about the physical upload, for example with something like;
+
+    `Failed to transfer file: https://oss.sonatype.org ... Return code is: 401, ReasonPhrase: Unauthorized.`
+
+    It may be that you need to add the appropriate username and passphrase into Maven's `settings.xml`, ie;
+
+    `<server>
+     	<id>sonatype-nexus-snapshots</id>
+     	<username>...</username>
+     	<password>...</password>
+    </server>
+    <server>
+        <id>sonatype-nexus-staging</id>
+        <username>...</username>
+        <password>...</password>
+    </server>`
 
 and as tempus-fugit has been setup with the Maven PGP plugin, it'll automatically sign the artifacts before publishing. You'll just need to enter your pass phrase as part of the build.
 
