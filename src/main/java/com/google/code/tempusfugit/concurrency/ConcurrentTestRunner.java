@@ -16,19 +16,28 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static java.util.concurrent.Executors.newCachedThreadPool;
+import static java.util.concurrent.Executors.newFixedThreadPool;
 
 public class ConcurrentTestRunner extends BlockJUnit4ClassRunner {
 
     public ConcurrentTestRunner(Class<?> type) throws InitializationError {
         super(type);
-        setScheduler(new ConcurrentScheduler(newCachedThreadPool(new ConcurrentTestRunnerThreadFactory())));
+        setScheduler(new ConcurrentScheduler(createExecutor(type)));
+    }
+
+    private static ExecutorService createExecutor(Class<?> type) {
+        if (type.getAnnotation(Concurrent.class) != null)
+            return newFixedThreadPool(type.getAnnotation(Concurrent.class).count(), new ConcurrentTestRunnerThreadFactory());
+        return newCachedThreadPool(new ConcurrentTestRunnerThreadFactory());
     }
 
     private static class ConcurrentTestRunnerThreadFactory implements ThreadFactory {
