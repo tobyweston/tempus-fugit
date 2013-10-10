@@ -16,6 +16,7 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import com.google.code.tempusfugit.temporal.Condition;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.api.Action;
@@ -25,7 +26,10 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.Callable;
 
+import static com.google.code.tempusfugit.concurrency.CallableAdapter.condition;
 import static com.google.code.tempusfugit.concurrency.CallableAdapter.runnable;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jmock.Expectations.returnValue;
 import static org.jmock.Expectations.throwException;
 
@@ -47,6 +51,27 @@ public class CallableAdapterTest {
         callableWill(throwException(new Exception()));
         runnable(callable).run();
     }
+
+	@Test
+	public void conditionWorksReturningTrue() throws Exception {
+		callableWill(returnValue(true));
+		Condition condition = condition(callable);
+		assertThat(condition.isSatisfied(), is(true));
+	}
+
+	@Test
+	public void conditionWorksReturningFalse() throws Exception {
+		callableWill(returnValue(false));
+		Condition condition = condition(callable);
+		assertThat(condition.isSatisfied(), is(false));
+	}
+
+	@Test
+	public void conditionReturnsFalseWhenCallableThrowsException() throws Exception {
+		callableWill(throwException(new Exception()));
+		Condition condition = condition(callable);
+		assertThat(condition.isSatisfied(), is(false));
+	}
 
     private void callableWill(final Action action) throws Exception {
         context.checking(new Expectations() {{
