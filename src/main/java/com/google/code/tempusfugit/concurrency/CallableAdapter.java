@@ -17,6 +17,7 @@
 package com.google.code.tempusfugit.concurrency;
 
 import com.google.code.tempusfugit.temporal.Condition;
+
 import java.util.concurrent.Callable;
 
 public class CallableAdapter {
@@ -33,22 +34,13 @@ public class CallableAdapter {
         };
     }
 
-	/**
-	 * Converts a callable to a Condition.
-	 * <p/>
-	 * If the callable throws an Exception, the Condition is assumed to not have been
-	 * satisfied.
-	 *
-	 * @param callable to be converted
-	 * @return Condition wrapping a Callable
-	 */
-	public static Condition condition( final Callable<Boolean> callable ) {
+	public static Condition condition(final Callable<Boolean> callable ) {
 		return new Condition() {
 			@Override
 			public boolean isSatisfied() {
 				try {
 					return callable.call();
-				} catch ( Exception e ) {
+				} catch (Exception e ) {
 					return false;
 				}
 			}

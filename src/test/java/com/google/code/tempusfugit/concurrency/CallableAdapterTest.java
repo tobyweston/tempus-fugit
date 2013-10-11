@@ -41,33 +41,33 @@ public class CallableAdapterTest {
     private static final Object RESULT = new Object();
 
     @Test
-    public void delegates() throws Exception {
+    public void callableToRunnableDelegates() throws Exception {
         callableWill(returnValue(RESULT));
         runnable(callable).run();
     }
 
     @Test(expected = RuntimeException.class)
-    public void exceptionBubblesUp() throws Exception {
+    public void callableToRunnableExceptionPropagates() throws Exception {
         callableWill(throwException(new Exception()));
         runnable(callable).run();
     }
 
 	@Test
-	public void conditionWorksReturningTrue() throws Exception {
+	public void callableToConditionWorksReturningTrue() throws Exception {
 		callableWill(returnValue(true));
 		Condition condition = condition(callable);
 		assertThat(condition.isSatisfied(), is(true));
 	}
 
 	@Test
-	public void conditionWorksReturningFalse() throws Exception {
+	public void callableToConditionWorksReturningFalse() throws Exception {
 		callableWill(returnValue(false));
 		Condition condition = condition(callable);
 		assertThat(condition.isSatisfied(), is(false));
 	}
 
 	@Test
-	public void conditionReturnsFalseWhenCallableThrowsException() throws Exception {
+	public void callableToConditionReturnsFalseWhenCallableThrowsException() throws Exception {
 		callableWill(throwException(new Exception()));
 		Condition condition = condition(callable);
 		assertThat(condition.isSatisfied(), is(false));
