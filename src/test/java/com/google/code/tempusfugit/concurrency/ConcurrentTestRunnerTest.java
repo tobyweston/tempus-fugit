@@ -16,77 +16,24 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
-import com.google.code.tempusfugit.temporal.Condition;
-import junit.framework.AssertionFailedError;
-import org.junit.AfterClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.TimeoutException;
-
-import static com.google.code.tempusfugit.temporal.Duration.seconds;
-import static com.google.code.tempusfugit.temporal.Timeout.timeout;
-import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
-import static java.util.Collections.synchronizedSet;
-import static junit.framework.Assert.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@RunWith(ConcurrentTestRunner.class)
-@Concurrent(count = 5)
-public class ConcurrentTestRunnerTest {
+import org.junit.AfterClass;
 
-    private static final Set<String> threads = synchronizedSet(new HashSet<String>());
-
-    @Test
-    public void shouldRunInParallel1() throws TimeoutException, InterruptedException {
-        logCurrentThread();
-    }
-
-    @Test
-    public void shouldRunInParallel2() throws TimeoutException, InterruptedException {
-        logCurrentThread();
-    }
-
-    @Test
-    public void shouldRunInParallel3() throws TimeoutException, InterruptedException {
-        logCurrentThread();
-    }
-
-    @Test
-    public void shouldRunInParallel4() throws TimeoutException, InterruptedException {
-        logCurrentThread();
-    }
-
-    @Test
-    public void shouldRunInParallel5() throws TimeoutException, InterruptedException {
-        logCurrentThread();
-    }
-
-    private void logCurrentThread() throws TimeoutException, InterruptedException {
-        threads.add(Thread.currentThread().getName());
-        waitToForceCachedThreadPoolToCreateNewThread();
-    }
-
-    private void waitToForceCachedThreadPoolToCreateNewThread() throws InterruptedException, TimeoutException {
-        waitOrTimeout(new Condition() {
-            public boolean isSatisfied() {
-                return threads.size() == 5;
-            }
-        }, timeout(seconds(1)));
-    }
+public class ConcurrentTestRunnerTest extends AbstractConcurrentTestRunnerTest {
 
     @AfterClass
     public static void assertTestThreadsSpawned() {
-        assertThat(threads.size(), is(5));
+        assertThat(threads.size(), is(CONCURRENT_COUNT));
     }
 
-    @Test (expected = AssertionFailedError.class)
-    public void concurrentFailuresFailInTheMainTestThread() throws InterruptedException {
-        fail();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected int getConcurrentCount() {
+        return CONCURRENT_COUNT;
     }
 
 }

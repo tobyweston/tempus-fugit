@@ -16,16 +16,17 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
-import org.junit.runners.BlockJUnit4ClassRunner;
-import org.junit.runners.model.InitializationError;
+import static java.util.concurrent.Executors.newCachedThreadPool;
+import static java.util.concurrent.Executors.newFixedThreadPool;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static java.util.concurrent.Executors.newCachedThreadPool;
-import static java.util.concurrent.Executors.newFixedThreadPool;
+import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.InitializationError;
+
+import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
 
 public class ConcurrentTestRunner extends BlockJUnit4ClassRunner {
 
@@ -35,8 +36,13 @@ public class ConcurrentTestRunner extends BlockJUnit4ClassRunner {
     }
 
     private static ExecutorService createExecutor(Class<?> type) {
-        if (type.getAnnotation(Concurrent.class) != null)
-            return newFixedThreadPool(type.getAnnotation(Concurrent.class).count(), new ConcurrentTestRunnerThreadFactory());
+        Concurrent concurrent = null;
+        while (concurrent == null && type.getSuperclass() != null) {
+            concurrent = type.getAnnotation(Concurrent.class);
+            type = type.getSuperclass();
+        }
+        if (concurrent != null)
+            return newFixedThreadPool(concurrent.count(), new ConcurrentTestRunnerThreadFactory());
         return newCachedThreadPool(new ConcurrentTestRunnerThreadFactory());
     }
 
