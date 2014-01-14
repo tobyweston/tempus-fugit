@@ -36,14 +36,19 @@ public class ConcurrentTestRunner extends BlockJUnit4ClassRunner {
     }
 
     private static ExecutorService createExecutor(Class<?> type) {
+        Concurrent concurrent = findConcurrentClass(type);
+        if (concurrent != null)
+            return newFixedThreadPool(concurrent.count(), new ConcurrentTestRunnerThreadFactory());
+        return newCachedThreadPool(new ConcurrentTestRunnerThreadFactory());
+    }
+
+    private static Concurrent findConcurrentClass(Class<?> type) {
         Concurrent concurrent = null;
         while (concurrent == null && type.getSuperclass() != null) {
             concurrent = type.getAnnotation(Concurrent.class);
             type = type.getSuperclass();
         }
-        if (concurrent != null)
-            return newFixedThreadPool(concurrent.count(), new ConcurrentTestRunnerThreadFactory());
-        return newCachedThreadPool(new ConcurrentTestRunnerThreadFactory());
+        return concurrent;
     }
 
     private static class ConcurrentTestRunnerThreadFactory implements ThreadFactory {

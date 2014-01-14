@@ -3,6 +3,7 @@
  */
 package com.google.code.tempusfugit.concurrency;
 
+import static com.google.code.tempusfugit.concurrency.AbstractConcurrentTestRunnerTest.*;
 import static com.google.code.tempusfugit.temporal.Duration.seconds;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
@@ -21,15 +22,11 @@ import org.junit.runner.RunWith;
 import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
 import com.google.code.tempusfugit.temporal.Condition;
 
-/**
- * @author lpouzac
- *
- */
 @RunWith(ConcurrentTestRunner.class)
-@Concurrent(count = AbstractConcurrentTestRunnerTest.CONCURRENT_COUNT)
+@Concurrent(count = concurrentCount)
 public abstract class AbstractConcurrentTestRunnerTest {
 
-    protected final static int CONCURRENT_COUNT = 3;
+    protected final static int concurrentCount = 3;
 
     protected static final Set<String> threads = synchronizedSet(new HashSet<String>());
 

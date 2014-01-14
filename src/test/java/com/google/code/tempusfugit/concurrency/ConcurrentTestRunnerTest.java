@@ -25,15 +25,12 @@ public class ConcurrentTestRunnerTest extends AbstractConcurrentTestRunnerTest {
 
     @AfterClass
     public static void assertTestThreadsSpawned() {
-        assertThat(threads.size(), is(CONCURRENT_COUNT));
+        assertThat(threads.size(), is(concurrentCount));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected int getConcurrentCount() {
-        return CONCURRENT_COUNT;
+        return concurrentCount;
     }
 
 }
