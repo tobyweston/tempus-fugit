@@ -36,7 +36,6 @@ public class CompositeFactoryTest {
     private final Factory<String> factory2 = context.mock(Factory.class, "factory2");
     private final Factory<String> factory3 = context.mock(Factory.class, "factory3");
 
-
     @Test
     public void returnsOnSuccessfulDelegateCreate() {
         final Sequence sequence = context.sequence("enumeration");
