@@ -29,21 +29,21 @@ import static org.hamcrest.core.Is.is;
 @Ignore("Bug #10 (https://code.google.com/p/tempus-fugit/issues/detail?id=10)")
 public class ConcurrentTestRunnerAfterClassTest {
 
-    private static Thread testThread;
+    private static Thread TEST_THREAD;
 
     @Test
     public void runsMultipleTimes() {
-        testThread = Thread.currentThread();
+        TEST_THREAD = Thread.currentThread();
     }
 
     @After
     public void assertAfterIsEvaluatedOnTestThread() {
-        assertThat(Thread.currentThread(), is(testThread));
+        assertThat(Thread.currentThread(), is(TEST_THREAD));
     }
 
     @AfterClass
     public static void assertAfterClassIsEvaluatedOnTestThread() {
-        assertThat(Thread.currentThread(), is(testThread));
+        assertThat(Thread.currentThread(), is(TEST_THREAD));
     }
 
 }

@@ -38,7 +38,7 @@ import static org.hamcrest.Matchers.not;
  */
 public class DeadlockDetectorTest {
 
-    public static final int withEntireStackTrace = Integer.MAX_VALUE;
+    private static final int withEntireStackTrace = Integer.MAX_VALUE;
 
     private final CountDownLatch latch = new CountDownLatch(2);
     private final Deadlocks deadlocks = new Deadlocks();

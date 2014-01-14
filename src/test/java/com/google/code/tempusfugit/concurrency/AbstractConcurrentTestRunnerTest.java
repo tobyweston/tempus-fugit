@@ -23,12 +23,12 @@ import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
 import com.google.code.tempusfugit.temporal.Condition;
 
 @RunWith(ConcurrentTestRunner.class)
-@Concurrent(count = concurrentCount)
+@Concurrent(count = CONCURRENT_COUNT)
 public abstract class AbstractConcurrentTestRunnerTest {
 
-    protected final static int concurrentCount = 3;
+    protected final static int CONCURRENT_COUNT = 3;
 
-    protected static final Set<String> threads = synchronizedSet(new HashSet<String>());
+    protected static final Set<String> THREADS = synchronizedSet(new HashSet<String>());
 
     @Test
     public void shouldRunInParallel1() throws TimeoutException, InterruptedException {
@@ -56,14 +56,14 @@ public abstract class AbstractConcurrentTestRunnerTest {
     }
 
     private void logCurrentThread() throws TimeoutException, InterruptedException {
-        threads.add(Thread.currentThread().getName());
+        THREADS.add(Thread.currentThread().getName());
         waitToForceCachedThreadPoolToCreateNewThread();
     }
 
     private void waitToForceCachedThreadPoolToCreateNewThread() throws InterruptedException, TimeoutException {
         waitOrTimeout(new Condition() {
             public boolean isSatisfied() {
-                return threads.size() == getConcurrentCount();
+                return THREADS.size() == getConcurrentCount();
             }
         }, timeout(seconds(1)));
     }

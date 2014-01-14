@@ -42,30 +42,30 @@ public class RunConcurrentlyTest {
 
     @Rule public ConcurrentRule rule = new ConcurrentRule();
 
-    private static final AtomicInteger counter = new AtomicInteger();
+    private static final AtomicInteger COUNTER = new AtomicInteger();
 
-    private static final Set<String> threads = synchronizedSet(new HashSet<String>());
+    private static final Set<String> THREADS = synchronizedSet(new HashSet<String>());
 
     @Test
     @Concurrent (count = 5)
     public void runsMultipleTimes() {
-        counter.getAndIncrement();
+        COUNTER.getAndIncrement();
     }
 
     @AfterClass
     public static void assertTestMethodRanMultipleTimes() {
-        assertThat(counter.get(), is(5));
+        assertThat(COUNTER.get(), is(5));
     }
 
     @Test
     @Concurrent (count = 5)
     public void spawnTestThreads() {
-        threads.add(Thread.currentThread().getName());
+        THREADS.add(Thread.currentThread().getName());
     }
 
     @AfterClass
     public static void assertTestThreadsSpawned() {
-        assertThat(threads.size(), is(5));
+        assertThat(THREADS.size(), is(5));
     }
 
     @Test (expected = AssertionFailedError.class)

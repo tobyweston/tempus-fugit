@@ -11,19 +11,19 @@ import org.junit.AfterClass;
 
 import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
 
-@Concurrent(count = overiddenConcurrentCount)
+@Concurrent(count = OVERRIDDEN_CONCURRENT_COUNT)
 public class OverrideConcurrentTestRunnerTest extends AbstractConcurrentTestRunnerTest {
 
-    protected final static int overiddenConcurrentCount = 4;
+    protected final static int OVERRIDDEN_CONCURRENT_COUNT = 4;
 
     @AfterClass
     public static void assertTestThreadsSpawned() {
-        assertThat(threads.size(), is(overiddenConcurrentCount));
+        assertThat(THREADS.size(), is(OVERRIDDEN_CONCURRENT_COUNT));
     }
 
     @Override
     protected int getConcurrentCount() {
-        return overiddenConcurrentCount;
+        return OVERRIDDEN_CONCURRENT_COUNT;
     }
 
 }

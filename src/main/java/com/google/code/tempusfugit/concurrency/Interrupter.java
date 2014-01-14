@@ -26,7 +26,7 @@ import static java.lang.Thread.currentThread;
 
 public final class Interrupter {
 
-    private static final AtomicLong counter = new AtomicLong(0);
+    private static final AtomicLong COUNTER = new AtomicLong(0);
 
     private final Thread threadToInterrupt;
     private Thread interrupterThread;
@@ -60,7 +60,7 @@ public final class Interrupter {
                     currentThread().interrupt();
                 }
             }
-        }, "Interrupter-Thread-" + counter.incrementAndGet());
+        }, "Interrupter-Thread-" + COUNTER.incrementAndGet());
         interrupterThread.start();
         return this;
     }

@@ -38,6 +38,7 @@ public class CallableAdapterTest {
 
     private final Mockery context = new Mockery();
     private final Callable callable = context.mock(Callable.class);
+
     private static final Object RESULT = new Object();
 
     @Test

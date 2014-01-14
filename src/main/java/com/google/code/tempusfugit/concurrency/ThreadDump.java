@@ -25,7 +25,7 @@ import static java.lang.String.format;
 
 public class ThreadDump {
 
-    private static final String lineSeparator = System.getProperty("line.separator");
+    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     public static void dumpThreads(OutputStream stream) {
         DeadlockDetector.printDeadlocks(stream);
@@ -43,7 +43,7 @@ public class ThreadDump {
             }
 
             private void print(Thread thread, StackTraceElement[] stackTraceElements) throws IOException {
-                writeln(writer, format("%sThread %s@%d: (state = %s)", lineSeparator, thread.getName(), thread.getId(), thread.getState()));
+                writeln(writer, format("%sThread %s@%d: (state = %s)", LINE_SEPARATOR, thread.getName(), thread.getId(), thread.getState()));
                 printStackTrace (writer, stackTraceElements);
             }
         };
@@ -55,7 +55,7 @@ public class ThreadDump {
     }
 
     private static void writeln(OutputStream writer, String string) throws IOException {
-        writer.write(format("%s%s", string, lineSeparator).getBytes());
+        writer.write(format("%s%s", string, LINE_SEPARATOR).getBytes());
     }
 
 }

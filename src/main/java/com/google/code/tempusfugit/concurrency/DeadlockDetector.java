@@ -32,8 +32,8 @@ import static java.util.Collections.emptyList;
  */
 public class DeadlockDetector {
 
-    private static final ThreadMXBean mbean = ManagementFactory.getThreadMXBean();
-    private static final String lineSeparator = System.getProperty("line.separator");
+    private static final ThreadMXBean MBEAN = ManagementFactory.getThreadMXBean();
+    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     /**
      * Print deadlocks without deadlock stack traces.
@@ -60,7 +60,7 @@ public class DeadlockDetector {
             writeln(writer, "Deadlock detected");
             writeln(writer, "=================");
             for (ThreadInfo thread : deadlocks) {
-                writeln(writer, format("%s\"%s\":", lineSeparator, thread.getThreadName()));
+                writeln(writer, format("%s\"%s\":", LINE_SEPARATOR, thread.getThreadName()));
                 writeln(writer, format("  waiting to lock Monitor of %s ", thread.getLockName()));
                 writeln(writer, format("  which is held by \"%s\"", thread.getLockOwnerName()));
                 ThreadDump.printStackTrace(writer, thread.getStackTrace());
@@ -71,19 +71,19 @@ public class DeadlockDetector {
     }
 
     private static void writeln(OutputStream writer, String string) throws IOException {
-        writer.write(format("%s%s", string, lineSeparator).getBytes());
+        writer.write(format("%s%s", string, LINE_SEPARATOR).getBytes());
     }
 
     private static List<ThreadInfo> findDeadlocks(int stackDepth) {
         long[] result;
-        if (mbean.isSynchronizerUsageSupported())
-            result = mbean.findDeadlockedThreads();
+        if (MBEAN.isSynchronizerUsageSupported())
+            result = MBEAN.findDeadlockedThreads();
         else
-            result = mbean.findMonitorDeadlockedThreads();
+            result = MBEAN.findMonitorDeadlockedThreads();
         long[] monitorDeadlockedThreads = result;
         if (monitorDeadlockedThreads == null)
             return emptyList();
-        return asList(mbean.getThreadInfo(monitorDeadlockedThreads, stackDepth));
+        return asList(MBEAN.getThreadInfo(monitorDeadlockedThreads, stackDepth));
     }
 
 }
