@@ -22,12 +22,11 @@ import org.hamcrest.Matcher;
 import org.junit.Assert;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeoutException;
 
 public final class Conditions {
 
     public static Condition not(Condition condition) {
-        return new NotCondition(condition);
+        return () -> !condition.isSatisfied();
     }
 
     public static Condition shutdown(ExecutorService service) {

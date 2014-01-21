@@ -24,21 +24,9 @@ import static org.hamcrest.core.Is.is;
 
 public class NotConditionTest {
 
-    private Condition TRUE = new Condition() {
-        public boolean isSatisfied() {
-            return true;
-        }
-    };
-
-    private Condition FALSE = new Condition() {
-        public boolean isSatisfied() {
-            return false;
-        }
-    };
-
     @Test
     public void notCondition() {
-        assertThat(not(TRUE), is(false)); ;
-        assertThat(not(FALSE), is(true));
+        assertThat(not(() -> true), is(false)); ;
+        assertThat(not(() -> false), is(true));
     }
 }
