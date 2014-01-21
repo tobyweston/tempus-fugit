@@ -17,12 +17,12 @@
 package com.google.code.tempusfugit.condition;
 
 import com.google.code.tempusfugit.concurrency.Callable;
-import com.google.code.tempusfugit.temporal.Condition;
-import com.google.code.tempusfugit.temporal.SelfDescribingCondition;
+import com.google.code.tempusfugit.temporal.*;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeoutException;
 
 public final class Conditions {
 
@@ -31,7 +31,7 @@ public final class Conditions {
     }
 
     public static Condition shutdown(ExecutorService service) {
-        return new ExecutorShutdownCondition(service);
+        return service::isShutdown;
     }
 
     public static Condition isAlive(Thread thread) {
