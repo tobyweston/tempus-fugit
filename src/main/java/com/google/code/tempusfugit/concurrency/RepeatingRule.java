@@ -16,14 +16,23 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import org.junit.rules.MethodRule;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-public class RepeatingRule implements MethodRule {
+import java.lang.reflect.Method;
 
-    public Statement apply(Statement base, final FrameworkMethod method, final Object target) {
-        return new RunRepeatedly(method, base);
+import static com.google.code.tempusfugit.ExceptionWrapper.wrapAsRuntimeException;
+
+public class RepeatingRule implements TestRule {
+
+    @Override
+    public Statement apply(Statement base, Description description) {
+        return wrapAsRuntimeException(() -> {
+            Class<?> test = description.getTestClass();
+            Method method = test.getMethod(description.getMethodName());
+            return new RunRepeatedly(new FrameworkMethod(method), base);
+        });
     }
-
 }
