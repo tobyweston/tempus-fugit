@@ -61,11 +61,7 @@ public abstract class AbstractConcurrentTestRunnerTest {
     }
 
     private void waitToForceCachedThreadPoolToCreateNewThread() throws InterruptedException, TimeoutException {
-        waitOrTimeout(new Condition() {
-            public boolean isSatisfied() {
-                return THREADS.size() == getConcurrentCount();
-            }
-        }, timeout(seconds(1)));
+        waitOrTimeout(() -> THREADS.size() == getConcurrentCount(), timeout(seconds(1)));
     }
 
     @Test(expected = AssertionFailedError.class)

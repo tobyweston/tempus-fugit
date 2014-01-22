@@ -58,12 +58,9 @@ public class InterruptibleLock implements Cash, Cat {
     }
 
     private static Interruptible<Void> locking(final Lock lock) {
-        return new Interruptible<Void>() {
-            @Override
-            public Void call() throws InterruptedException {
-                lock.lockInterruptibly();
-                return null;
-            }
+        return () -> {
+            lock.lockInterruptibly();
+            return null;
         };
     }
 
@@ -73,11 +70,9 @@ public class InterruptibleLock implements Cash, Cat {
     }
 
     private Interruptible<Void> waitingFor(final CountDownLatch latch) {
-        return new Interruptible<Void>() {
-            public Void call() throws InterruptedException {
-                latch.await();
-                return null;
-            }
+        return () -> {
+            latch.await();
+            return null;
         };
     }
 

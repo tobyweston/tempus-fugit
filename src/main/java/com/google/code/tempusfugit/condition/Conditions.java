@@ -42,9 +42,7 @@ public final class Conditions {
     }
 
     public static Condition isWaiting(Thread thread) {
-        return () -> {
-            return (thread.getState() == TIMED_WAITING) || (thread.getState() == WAITING);
-        };
+        return () -> (thread.getState() == TIMED_WAITING) || (thread.getState() == WAITING);
     }
 
     public static Condition is(Thread thread, State state) {
@@ -71,7 +69,7 @@ public final class Conditions {
      */
     @Deprecated
     public static <T> Condition assertion(T actual, Matcher<T> matcher) {
-        return new MatcherCondition<T>(actual, matcher);
+        return new MatcherCondition<>(actual, matcher);
     }
 
     public static <T> SelfDescribingCondition assertion(Callable<T, RuntimeException> actual, Matcher<T> matcher) {

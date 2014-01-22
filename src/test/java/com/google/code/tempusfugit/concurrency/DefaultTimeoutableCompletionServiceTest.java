@@ -138,24 +138,18 @@ public class DefaultTimeoutableCompletionServiceTest {
     @Test
     public void incompleteTasksAreInterrupted() throws Exception {
         final AtomicBoolean interrupted = new AtomicBoolean(false);
-        Callable<Void> callable = new Callable<Void>() {
-            public Void call() throws Exception {
-                while (!Thread.currentThread().isInterrupted())
-                    Thread.yield();
-                interrupted.set(true);
-                return null;
-            }
+        Callable<Void> callable = () -> {
+            while (!Thread.currentThread().isInterrupted())
+                Thread.yield();
+            interrupted.set(true);
+            return null;
         };
 
         try {
             new DefaultTimeoutableCompletionService(new ExecutorCompletionService(newSingleThreadExecutor()), millis(1), new RealClock()).submit(asList(callable));
             fail("didn't timeout");
         } catch (TimeoutException e) {
-            waitOrTimeout(new Condition() {
-                public boolean isSatisfied() {
-                    return interrupted.get();
-                }
-            }, timeout(seconds(10)));
+            waitOrTimeout(interrupted::get, timeout(seconds(10)));
         }
     }
 
