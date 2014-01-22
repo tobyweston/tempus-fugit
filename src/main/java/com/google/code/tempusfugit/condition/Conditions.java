@@ -23,6 +23,10 @@ import org.junit.Assert;
 
 import java.util.concurrent.ExecutorService;
 
+import static java.lang.Thread.*;
+import static java.lang.Thread.State.TIMED_WAITING;
+import static java.lang.Thread.State.WAITING;
+
 public final class Conditions {
 
     public static Condition not(Condition condition) {
@@ -38,10 +42,12 @@ public final class Conditions {
     }
 
     public static Condition isWaiting(Thread thread) {
-        return new ThreadWaitingCondition(thread);
+        return () -> {
+            return (thread.getState() == TIMED_WAITING) || (thread.getState() == WAITING);
+        };
     }
 
-    public static Condition is(Thread thread, Thread.State state) {
+    public static Condition is(Thread thread, State state) {
         return new ThreadStateCondition(thread, state);
     }
 
