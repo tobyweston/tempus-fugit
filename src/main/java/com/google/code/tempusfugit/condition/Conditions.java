@@ -48,7 +48,7 @@ public final class Conditions {
     }
 
     public static Condition is(Thread thread, State state) {
-        return new ThreadStateCondition(thread, state);
+        return () -> thread.getState() == state;
     }
 
     public static void assertThat(Condition condition, Matcher<Boolean> booleanMatcher) {
