@@ -16,6 +16,12 @@
 
 package com.google.code.tempusfugit.temporal;
 
+import com.google.code.tempusfugit.Factory;
+import com.google.code.tempusfugit.concurrency.Callable;
+
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 /**
  * Stop watch implementations should time the difference between construction (or a call to {@link #reset}) and a call to
  * {@link #lap}. They should allow for multiple calls to {@link #lap} but may preserve a class invariant that {@link #lap}

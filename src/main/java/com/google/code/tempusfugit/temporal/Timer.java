@@ -17,10 +17,12 @@
 package com.google.code.tempusfugit.temporal;
 
 import com.google.code.tempusfugit.ClassInvariantViolation;
+import com.google.code.tempusfugit.concurrency.Callable;
 import com.google.code.tempusfugit.concurrency.annotations.Not;
 import com.google.code.tempusfugit.concurrency.annotations.ThreadSafe;
 
 import java.util.Date;
+import java.util.function.Function;
 
 import static com.google.code.tempusfugit.temporal.Duration.millis;
 
@@ -31,6 +33,16 @@ public final class Timer implements StopWatch {
 
     private Date started;
     private Date stopped;
+
+    public static Duration time(Runnable timed) {
+        Timer timer = new Timer(new RealClock());
+        try {
+            timed.run();
+        } finally {
+            timer.lap();
+        }
+        return timer.elapsedTime();
+    }
 
     /**
      * Constructs and starts a stop watch.
