@@ -3,7 +3,7 @@
 
 Take a look at the project's site at [tempusfugitlibrary.org](http://tempusfugitlibrary.org).
 
-**NN.** Checkout the JDK8 branch for the Java 8 conversion currently underway
+**NB.** Checkout the JDK8 branch for the Java 8 conversion currently underway
 
 ## Developers
 
