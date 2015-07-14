@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2013, toby weston & tempus-fugit committers
+ * Copyright (c) 2009-2015, toby weston & tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,16 @@
 
 package com.google.code.tempusfugit.concurrency;
 
-import static java.util.concurrent.Executors.newCachedThreadPool;
-import static java.util.concurrent.Executors.newFixedThreadPool;
+import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
+import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.InitializationError;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.junit.runners.BlockJUnit4ClassRunner;
-import org.junit.runners.model.InitializationError;
-
-import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
+import static java.util.concurrent.Executors.newCachedThreadPool;
+import static java.util.concurrent.Executors.newFixedThreadPool;
 
 public class ConcurrentTestRunner extends BlockJUnit4ClassRunner {
 

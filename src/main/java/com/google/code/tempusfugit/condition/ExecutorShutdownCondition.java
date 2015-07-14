@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
-package com.google.code.tempusfugit.concurrency;
+package com.google.code.tempusfugit.condition;
 
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
+import com.google.code.tempusfugit.temporal.Condition;
 
-public interface TimeoutableCompletionService {
-    <T> List<T> submit(List<? extends java.util.concurrent.Callable<T>> tasks) throws ExecutionException, TimeoutException;
+import java.util.concurrent.ExecutorService;
+
+public class ExecutorShutdownCondition implements Condition {
+
+    private final ExecutorService executor;
+
+    public ExecutorShutdownCondition(ExecutorService executor) {
+        this.executor = executor;
+    }
+
+    @Override
+    public boolean isSatisfied() {
+        return executor.isShutdown();
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2013, toby weston & tempus-fugit committers
+ * Copyright (c) 2009-2015, toby weston & tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,9 +110,13 @@ public class WaitForTest {
 
     @Test
     public void sleepPeriodShouldBeConfigurable() throws TimeoutException, InterruptedException {
-        context.checking(new Expectations(){{
-            oneOf(condition).isSatisfied(); inSequence(sequence); will(returnValue(false));
-            oneOf(condition).isSatisfied(); inSequence(sequence); will(returnValue(true));
+        context.checking(new Expectations() {{
+            oneOf(condition).isSatisfied();
+            inSequence(sequence);
+            will(returnValue(false));
+            oneOf(condition).isSatisfied();
+            inSequence(sequence);
+            will(returnValue(true));
             atLeast(1).of(sleeper).sleep();
         }});
         waitOrTimeout(condition, timeout(millis(100)), sleeper);
