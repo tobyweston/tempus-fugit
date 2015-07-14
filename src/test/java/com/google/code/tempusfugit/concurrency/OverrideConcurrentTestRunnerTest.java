@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2014, toby weston & tempus-fugit committers
+ * Copyright (c) 2009-2015, toby weston & tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,12 @@
  */
 package com.google.code.tempusfugit.concurrency;
 
-import static com.google.code.tempusfugit.concurrency.OverrideConcurrentTestRunnerTest.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-
+import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
 import org.junit.AfterClass;
 
-import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
+import static com.google.code.tempusfugit.concurrency.OverrideConcurrentTestRunnerTest.OVERRIDDEN_CONCURRENT_COUNT;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 @Concurrent(count = OVERRIDDEN_CONCURRENT_COUNT)
 public class OverrideConcurrentTestRunnerTest extends AbstractConcurrentTestRunnerTest {

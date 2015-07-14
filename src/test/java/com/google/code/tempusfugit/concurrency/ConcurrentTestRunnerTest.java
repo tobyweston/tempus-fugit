@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2014, toby weston & tempus-fugit committers
+ * Copyright (c) 2009-2015, toby weston & tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package com.google.code.tempusfugit.concurrency;
 
+import org.junit.AfterClass;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-
-import org.junit.AfterClass;
 
 public class ConcurrentTestRunnerTest extends AbstractConcurrentTestRunnerTest {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2014, toby weston & tempus-fugit committers
+ * Copyright (c) 2009-2015, toby weston & tempus-fugit committers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,24 +19,22 @@
  */
 package com.google.code.tempusfugit.concurrency;
 
-import static com.google.code.tempusfugit.concurrency.AbstractConcurrentTestRunnerTest.*;
-import static com.google.code.tempusfugit.temporal.Duration.seconds;
-import static com.google.code.tempusfugit.temporal.Timeout.timeout;
-import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
-import static java.util.Collections.synchronizedSet;
-import static junit.framework.Assert.fail;
+import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
+import com.google.code.tempusfugit.temporal.Condition;
+import junit.framework.AssertionFailedError;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
-import junit.framework.AssertionFailedError;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
-import com.google.code.tempusfugit.temporal.Condition;
+import static com.google.code.tempusfugit.concurrency.AbstractConcurrentTestRunnerTest.CONCURRENT_COUNT;
+import static com.google.code.tempusfugit.temporal.Duration.seconds;
+import static com.google.code.tempusfugit.temporal.Timeout.timeout;
+import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
+import static java.util.Collections.synchronizedSet;
+import static junit.framework.Assert.fail;
 
 @RunWith(ConcurrentTestRunner.class)
 @Concurrent(count = CONCURRENT_COUNT)
