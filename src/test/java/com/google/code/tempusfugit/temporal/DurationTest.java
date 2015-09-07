@@ -184,5 +184,13 @@ public final class DurationTest {
         assertThat(seconds(10), is(Matchers.greaterThan(seconds(9))));
         assertThat(seconds(10).greaterThan(seconds(9)), is(true));
     }
+
+    @Test
+    public void shouldCorrectlyCompareDifferentUnits() throws Exception {
+        assertThat(days(1).compareTo(millis(10)), is(Matchers.greaterThan(0)));
+        assertThat(hours(1).compareTo(millis(10)),  is(Matchers.greaterThan(0)));
+        assertThat(minutes(1).compareTo(millis(10)),  is(Matchers.greaterThan(0)));
+        assertThat(seconds(1).compareTo(millis(10)),  is(Matchers.greaterThan(0)));
+    }
     
 }
