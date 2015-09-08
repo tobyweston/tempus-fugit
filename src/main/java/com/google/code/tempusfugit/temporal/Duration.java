@@ -114,6 +114,6 @@ public class Duration implements Comparable<Duration> {
     }
 
     public int compareTo(Duration other) {
-        return this.value.compareTo(other.value);
+        return ((Long)inMillis()).compareTo(other.inMillis());
     }
 }
