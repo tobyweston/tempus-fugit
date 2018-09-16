@@ -25,11 +25,13 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * <p>
  * Based on the annotation of the same name by Brian Goetz and Tim Tim Peierls.
- * <p/>
+ * </p>
+ * <p> 
  * Broadly intended for use in the same context as described by Goetz in Concurrency In Practice
  * but with some attempt at type safety on the parameter types.
- * <p/>
+ * </p>
  * @see com.google.code.tempusfugit.concurrency.annotations.GuardedBy.Type 
  */
 @Documented
@@ -43,7 +45,7 @@ public @interface GuardedBy {
     public static enum Type {
         /** An intrinsic lock */
         THIS,
-        /** An inner class disambiguation from {@link GuardedBy.Type.THIS} monitor, qualify with @{link GuardedBy#details} */
+        /** An inner class disambiguation from {@link GuardedBy.Type#THIS} monitor, qualify with @{link GuardedBy#details} */
         @Deprecated INNER_CLASS_THIS,
         /** A class monitor, qualify with {@link GuardedBy#details} */
         CLASS,

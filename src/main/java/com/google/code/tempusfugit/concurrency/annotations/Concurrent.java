@@ -26,7 +26,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Annotation to mark a method as being potentially run concurrently.
- * <p>
+ * 
  * @see com.google.code.tempusfugit.concurrency.ConcurrentTestRunner
  * @see com.google.code.tempusfugit.concurrency.ConcurrentRule
  */

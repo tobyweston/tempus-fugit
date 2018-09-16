@@ -27,12 +27,10 @@ public final class Timeout {
     private Duration duration;
     private StopWatch timer;
 
-    /** @since 1.1 */
     public static Timeout timeout(Duration duration) {
         return new Timeout(duration);
     }
 
-    /** @since 1.1 */
     public static Timeout timeout(Duration duration, StopWatch stopWatch) {
         return new Timeout(duration, stopWatch);
     }

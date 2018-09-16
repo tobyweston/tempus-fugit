@@ -42,12 +42,10 @@ public class ExceptionWrapper {
         }
     }
 
-    /** @since 1.2 */
     public static void throwAsRuntimeException(Exception throwable) {
         throw new RuntimeException(throwable);
     }
 
-    /** @since 1.2 */
     public static <E extends RuntimeException> void throwException(Exception throwable, WithException<E> wrapper) throws E {
         throw newException(wrapper, throwable).create();
     }

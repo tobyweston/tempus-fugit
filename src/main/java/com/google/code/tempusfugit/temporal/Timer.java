@@ -34,7 +34,7 @@ public final class Timer implements StopWatch {
 
     /**
      * Constructs and starts a stop watch.
-     * @since 1.2
+     * @param clock the clock to base the timer on
      * */
     public Timer(Clock clock) {
         Date now = clock.now();

@@ -27,7 +27,7 @@ package com.google.code.tempusfugit;
  * regardless of the state of the object. This ensures that the object will always meet predefined conditions,
  * and that methods may, therefore, always reference the object without the risk of making inaccurate presumptions."
  *
- * @see http://en.wikipedia.org/wiki/Class_invariant
+ * @see <a href="http://en.wikipedia.org/wiki/Class_invariant">Definition of "class invariant" on Wikipedia</a>
  * @since 1.2
  */
 public class ClassInvariantViolation extends RuntimeException {

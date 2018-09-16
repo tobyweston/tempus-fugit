@@ -24,7 +24,6 @@ public final class WithException<E extends Exception> {
         return new WithException<E>(type);
     }
 
-    /** @since 1.2 */
     public static <E extends Exception> WithException<E> as(Class<E> type) {
         return new WithException<E>(type);
     }

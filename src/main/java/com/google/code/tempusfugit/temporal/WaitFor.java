@@ -30,19 +30,16 @@ public final class WaitFor {
     private WaitFor() {
     }
 
-    /** @since 1.1 */
     public static void waitOrTimeout(Condition condition, Timeout timeout) throws InterruptedException, TimeoutException {
         waitOrTimeout(condition, timeout, new ThreadSleep(SLEEP_PERIOD));
     }
 
-    /** @since 1.1 */
     public static void waitOrTimeout(Condition condition, Timeout timeout, Sleeper sleeper) throws TimeoutException, InterruptedException {
         if (success(condition, timeout, sleeper))
             return;
         throw new TimeoutException();
     }
 
-    /** @since 1.2 */
     public static <T, E extends Exception> void waitOrTimeout(Condition condition, Callable<T, E> onTimeout, Timeout timeout) throws InterruptedException, E {
         try {
             waitOrTimeout(condition, timeout);
@@ -51,7 +48,6 @@ public final class WaitFor {
         }
     }
 
-    /** @since 1.2 */
     public static void waitFor(SelfDescribingCondition condition, Timeout timeout) throws InterruptedException {
         waitOrTimeout(condition, failOnTimeout(condition), timeout);
     }

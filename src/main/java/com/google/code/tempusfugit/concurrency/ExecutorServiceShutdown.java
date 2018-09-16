@@ -46,7 +46,6 @@ public final class ExecutorServiceShutdown {
         return resetInterruptFlagWhen(awaitingTerminationIsInterrupted(duration));
     }
 
-    /** @since 1.1 */
     public Boolean waitingForShutdown(Timeout timeout) throws TimeoutException, InterruptedException {
         if (executor == null)
             return false;

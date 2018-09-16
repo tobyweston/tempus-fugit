@@ -54,13 +54,18 @@ public final class Conditions {
         Assert.assertThat(message, condition.isSatisfied(), booleanMatcher);
     }
 
-    /** Useful when waiting for an assertion in tests, for example;
-     * <p></p>
-     * <code>WaitFor.waitOrTimeout(assertion(limit, is(5)), timeout(millis(500)))</code>
-     * <p></p>
+    /** <p>
+     * Useful when waiting for an assertion in tests, for example;
+     * </p>
+     * <pre>WaitFor.waitOrTimeout(assertion(limit, is(5)), timeout(millis(500)))</pre>
+     * <p>
      * Not that if the actual value isn't updated by some asynchronous code, the matcher may never match so it'd be
      * pointless calling inside a <code>WaitFor.waitOrTimeout</code> call.
-     *
+     * </p>
+     * @param actual the actual value to compare
+     * @param matcher the matcher to compare with
+     * @param <T> the type of the value to compare
+     * @return a matcher condition to compare
      * @since 1.1
      * @deprecated use {@link #assertion(com.google.code.tempusfugit.concurrency.Callable, org.hamcrest.Matcher)} instead
      */

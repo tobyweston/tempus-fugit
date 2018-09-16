@@ -23,8 +23,9 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Annotation to indicate that a method should be repeated.
  * <p>
+ * Annotation to indicate that a method should be repeated.
+ * </p>
  * @see com.google.code.tempusfugit.concurrency.RepeatingRule
  */
 @Target(METHOD)

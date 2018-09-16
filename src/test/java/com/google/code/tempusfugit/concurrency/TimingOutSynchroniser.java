@@ -58,6 +58,9 @@ public class TimingOutSynchroniser implements ThreadingPolicy {
     /**
      * Waits up to a timeout for a StatePredicate to become active.  Fails the
      * test if the timeout expires.
+     * @param predicate will wait up to the specified timeout for this predicate to become true
+     * @param timeoutMs timeout in millis
+     * @throws InterruptedException if the wait is interrupted by the interrupt flag being set elsewhere
      */
     public void waitUntil(StatePredicate predicate, long timeoutMs) throws InterruptedException {
         waitUntil(predicate, new FixedTimeout(timeoutMs));

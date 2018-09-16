@@ -25,7 +25,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Annotation to highlight intermittently failing test methods or classes.
- * <p>
+ * 
  * @see com.google.code.tempusfugit.concurrency.IntermittentTestRunner
  */
 @Target({METHOD, TYPE})

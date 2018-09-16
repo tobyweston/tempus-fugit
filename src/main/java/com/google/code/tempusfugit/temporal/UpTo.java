@@ -22,7 +22,7 @@ import java.util.Random;
  * Get a random {@link Duration} up to a specified amount. Use with {@link Introduce} to apply a random sleep up to a
  * given amount.
  *
- * @see {@link Introduce}
+ * @see Introduce
  */
 public class UpTo {
 
