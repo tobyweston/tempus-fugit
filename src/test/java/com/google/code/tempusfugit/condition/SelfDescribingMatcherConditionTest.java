@@ -44,23 +44,18 @@ public class SelfDescribingMatcherConditionTest {
 
     @Test
     public void isSatisfied() {
-        Condition condition = new SelfDescribingMatcherCondition<String>(lambda("the best"), is("the best"));
+        Condition condition = new SelfDescribingMatcherCondition<>(lambda("the best"), is("the best"));
         assertThat(condition.isSatisfied(), is(true));
     }
 
     @Test
     public void isNotSatisfied() {
-        Condition condition = new SelfDescribingMatcherCondition<String>(lambda("the worst"), is("the best"));
+        Condition condition = new SelfDescribingMatcherCondition<>(lambda("the worst"), is("the best"));
         assertThat(condition.isSatisfied(), is(false));
     }
 
     private Callable<String, RuntimeException> lambda(final String value) {
-        return new Callable<String, RuntimeException>() {
-            @Override
-            public String call() throws RuntimeException {
-                return value;
-            }
-        };
+        return () -> value;
     }
 
     private static ProbeFor<String> stateOfTheEconomy() {

@@ -49,7 +49,7 @@ public class DefaultTimeoutableCompletionService implements TimeoutableCompletio
     }
 
     public <T> List<T> submit(List<? extends java.util.concurrent.Callable<T>> tasks) throws ExecutionException, TimeoutException {
-        List<Future<T>> submitted = new ArrayList<Future<T>>();
+        List<Future<T>> submitted = new ArrayList<>();
         try {
             for (Callable task : tasks) {
                 submitted.add(completionService.submit(task));
@@ -63,7 +63,7 @@ public class DefaultTimeoutableCompletionService implements TimeoutableCompletio
     }
 
     private <T> List<T> waitFor(int tasks, Duration timeout) throws ExecutionException, TimeoutException {
-        List<T> completed = new ArrayList<T>();
+        List<T> completed = new ArrayList<>();
         Interrupter interrupter = interrupt(currentThread()).using(time).after(timeout);
         try {
             for (int i = 0; i < tasks; i++) {

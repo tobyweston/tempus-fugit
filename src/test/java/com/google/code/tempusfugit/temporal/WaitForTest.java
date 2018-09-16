@@ -130,13 +130,11 @@ public class WaitForTest {
     }
 
     private Thread threadWaitsForever() {
-        return new Thread(new Runnable() {
-            public void run() {
-                try {
-                    waitUntil(timeout(seconds(1), new Timer(date)));
-                } catch (InterruptedException e) {
-                    currentThread().interrupt();
-                }
+        return new Thread(() -> {
+            try {
+                waitUntil(timeout(seconds(1), new Timer(date)));
+            } catch (InterruptedException e) {
+                currentThread().interrupt();
             }
         }, "blocking-thread");
     }

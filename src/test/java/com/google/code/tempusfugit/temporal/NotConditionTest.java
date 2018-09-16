@@ -26,7 +26,7 @@ public class NotConditionTest {
 
     @Test
     public void notCondition() {
-        assertThat(not(() -> true), is(false)); ;
+        assertThat(not(() -> true), is(false));
         assertThat(not(() -> false), is(true));
     }
 }

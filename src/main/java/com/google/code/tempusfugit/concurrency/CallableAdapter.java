@@ -23,26 +23,21 @@ import java.util.concurrent.Callable;
 public class CallableAdapter {
 
     public static Runnable runnable(final Callable callable) {
-        return new Runnable() {
-            public void run() {
-                try {
-                    callable.call();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
+        return () -> {
+			try {
+				callable.call();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		};
     }
 
 	public static Condition condition(final Callable<Boolean> callable ) {
-		return new Condition() {
-			@Override
-			public boolean isSatisfied() {
-				try {
-					return callable.call();
-				} catch (Exception e ) {
-					return false;
-				}
+		return () -> {
+			try {
+				return callable.call();
+			} catch (Exception e ) {
+				return false;
 			}
 		};
 	}

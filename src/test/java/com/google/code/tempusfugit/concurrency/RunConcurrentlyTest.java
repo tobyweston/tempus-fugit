@@ -44,7 +44,7 @@ public class RunConcurrentlyTest {
 
     private static final AtomicInteger COUNTER = new AtomicInteger();
 
-    private static final Set<String> THREADS = synchronizedSet(new HashSet<String>());
+    private static final Set<String> THREADS = synchronizedSet(new HashSet<>());
 
     @Test
     @Concurrent (count = 5)

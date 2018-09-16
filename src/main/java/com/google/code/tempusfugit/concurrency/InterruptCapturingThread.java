@@ -23,7 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class InterruptCapturingThread extends Thread {
 
-    private final CopyOnWriteArrayList<StackTraceElement[]> interrupterStackTraces = new CopyOnWriteArrayList<StackTraceElement[]>();
+    private final CopyOnWriteArrayList<StackTraceElement[]> interrupterStackTraces = new CopyOnWriteArrayList<>();
 
     public InterruptCapturingThread() {
     }
@@ -63,7 +63,7 @@ public class InterruptCapturingThread extends Thread {
     }
     
     public List<StackTraceElement[]> getInterrupters() {
-        return new ArrayList<StackTraceElement[]>(interrupterStackTraces);
+        return new ArrayList<>(interrupterStackTraces);
     }
 
     public void printStackTraceOfInterruptingThreads(PrintStream out) {

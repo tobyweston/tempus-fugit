@@ -86,11 +86,7 @@ public class TimingOutSynchroniser implements ThreadingPolicy {
     }
 
     public Invokable synchroniseAccessTo(final Invokable mockObject) {
-        return new Invokable() {
-            public Object invoke(Invocation invocation) throws Throwable {
-                return synchroniseInvocation(mockObject, invocation);
-            }
-        };
+        return invocation -> synchroniseInvocation(mockObject, invocation);
     }
 
     private Object synchroniseInvocation(Invokable mockObject, Invocation invocation) throws Throwable {

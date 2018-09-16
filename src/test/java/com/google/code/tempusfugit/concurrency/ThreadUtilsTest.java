@@ -75,11 +75,7 @@ public class ThreadUtilsTest {
     }
 
     private InterruptedIndicatingThread threadSleepsForever() {
-        return new InterruptedIndicatingThread(new Runnable() {
-            public void run() {
-               ThreadUtils.sleep(seconds(10));
-            }
-        }, "sleeping-thread");
+        return new InterruptedIndicatingThread(() -> ThreadUtils.sleep(seconds(10)), "sleeping-thread");
     }
 
     private void waitForShutdown(final Thread thread) throws TimeoutException, InterruptedException {

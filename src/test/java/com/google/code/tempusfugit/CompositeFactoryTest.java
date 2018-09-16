@@ -44,7 +44,7 @@ public class CompositeFactoryTest {
             never(factory2).create();
             never(factory3).create();
         }});
-        assertThat(new CompositeFactory<String>(factory1, factory2, factory3).create(), is("done"));
+        assertThat(new CompositeFactory<>(factory1, factory2, factory3).create(), is("done"));
     }
 
     @Test
@@ -55,7 +55,7 @@ public class CompositeFactoryTest {
             oneOf(factory2).create(); will(returnValue("done")); inSequence(sequence);
             never(factory3).create();
         }});
-        assertThat(new CompositeFactory<String>(factory1, factory2, factory3).create(), is("done"));
+        assertThat(new CompositeFactory<>(factory1, factory2, factory3).create(), is("done"));
     }
 
     @Test (expected = FactoryException.class)
@@ -66,6 +66,6 @@ public class CompositeFactoryTest {
             oneOf(factory2).create(); will(throwException(new FactoryException())); inSequence(sequence);
             oneOf(factory3).create(); will(throwException(new FactoryException())); inSequence(sequence);
         }});
-        new CompositeFactory<String>(factory1, factory2, factory3).create();
+        new CompositeFactory<>(factory1, factory2, factory3).create();
     }
 }

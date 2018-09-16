@@ -31,7 +31,7 @@ public class SelfDescribingMatcherCondition<T> implements SelfDescribingConditio
 
     private final Callable<T, RuntimeException> actual;
     private final Matcher<T> matcher;
-    private final List<Description> description = new ArrayList<Description>();
+    private final List<Description> description = new ArrayList<>();
 
     public static <T> SelfDescribingMatcherCondition probe(ProbeFor<T> probe, Matcher<T> matcher) {
         return new SelfDescribingMatcherCondition(probe, matcher);

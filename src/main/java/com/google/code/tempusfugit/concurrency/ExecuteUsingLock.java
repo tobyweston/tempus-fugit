@@ -27,7 +27,7 @@ public class ExecuteUsingLock<T, E extends Exception> {
     }
 
     public static <T, E extends Exception> ExecuteUsingLock<T, E> execute(Callable<T, E> callable) {
-        return new ExecuteUsingLock<T, E>(callable);
+        return new ExecuteUsingLock<>(callable);
     }
 
     public T using(Lock lock) throws E {

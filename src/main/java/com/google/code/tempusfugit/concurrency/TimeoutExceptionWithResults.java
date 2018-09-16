@@ -30,12 +30,12 @@ public final class TimeoutExceptionWithResults extends TimeoutException {
 
     public <T> TimeoutExceptionWithResults(String message, List<T> results) {
         this(message);
-        this.results = new ArrayList<T>(results);
+        this.results = new ArrayList<>(results);
     }
 
     public <T> TimeoutExceptionWithResults(List<T> results) {
         super();
-        this.results = new ArrayList<T>(results);
+        this.results = new ArrayList<>(results);
     }
 
     public <T> List<T> getResults() {

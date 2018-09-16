@@ -49,16 +49,14 @@ public final class Interrupter {
 
     public Interrupter after(final Duration duration) {
         final Timeout timeout = timeout(duration, createAndStartStopWatch());
-        interrupterThread = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    waitUntil(timeout);
-                    if (!interrupterThread.isInterrupted()) {
-                        Interrupter.this.threadToInterrupt.interrupt();
-                    }
-                } catch (InterruptedException e) {
-                    currentThread().interrupt();
+        interrupterThread = new Thread(() -> {
+            try {
+                waitUntil(timeout);
+                if (!interrupterThread.isInterrupted()) {
+                    Interrupter.this.threadToInterrupt.interrupt();
                 }
+            } catch (InterruptedException e) {
+                currentThread().interrupt();
             }
         }, "Interrupter-Thread-" + COUNTER.incrementAndGet());
         interrupterThread.start();

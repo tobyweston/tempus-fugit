@@ -51,11 +51,11 @@ public class ExceptionWrapper {
     }
 
     static class ExceptionFactory<E extends Exception> implements Factory<E> {
-        private final Class wrapped;
+        private final Class<E> wrapped;
         private final Throwable throwable;
 
         static <E extends Exception> ExceptionFactory<E> newException(WithException<E> wrapped, Throwable throwable) {
-            return new ExceptionFactory<E>(wrapped.getType(), throwable);
+            return new ExceptionFactory<>(wrapped.getType(), throwable);
         }
 
         private ExceptionFactory(Class<E> wrapped, Throwable throwable) {

@@ -78,7 +78,7 @@ public final class Conditions {
     }
 
     public static <T> SelfDescribingCondition assertion(Callable<T, RuntimeException> actual, Matcher<T> matcher) {
-        return new SelfDescribingMatcherCondition<T>(actual, matcher);
+        return new SelfDescribingMatcherCondition<>(actual, matcher);
     }
 
 }

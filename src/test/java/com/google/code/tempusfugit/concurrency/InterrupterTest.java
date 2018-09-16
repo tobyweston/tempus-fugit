@@ -67,7 +67,7 @@ public class InterrupterTest {
     }
 
     @Test
-    public void interruptDoesntGetsCalledAfterFixedTime() throws TimeoutException {
+    public void interruptDoesntGetsCalledAfterFixedTime() {
         interrupt(thread).using(time).after(millis(1));
         assertNotInterruptedWithin(TIMEOUT);
     }
@@ -88,7 +88,7 @@ public class InterrupterTest {
     }
 
     @Test
-    public void interruptCanBeCancelled() throws InterruptedException {
+    public void interruptCanBeCancelled() {
         Interrupter interrupter = interrupt(thread).using(time).after(millis(1));
         interrupter.cancel();
         time.setTime(millis(1));

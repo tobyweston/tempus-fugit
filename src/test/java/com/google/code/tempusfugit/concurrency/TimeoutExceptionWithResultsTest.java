@@ -31,7 +31,7 @@ public class TimeoutExceptionWithResultsTest {
 
     private static final String MESSAGE = "message";
 
-    private final List<String> strings = new ArrayList<String>(asList("hello", "goodbye", "bonjour"));
+    private final List<String> strings = new ArrayList<>(asList("hello", "goodbye", "bonjour"));
     
     @Test
     public void resultsAreInitialised() {

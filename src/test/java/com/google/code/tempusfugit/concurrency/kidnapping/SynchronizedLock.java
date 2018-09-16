@@ -41,15 +41,12 @@ public class SynchronizedLock implements Cash, Cat {
 
     @Override
     public Callable<Void, RuntimeException> take() {
-        return new Callable<Void, RuntimeException>() {
-            @Override
-            public Void call() throws RuntimeException {
-                countdownAndAwait(latch);
-                synchronized (lock) {
-                    // take the commodity!
-                }
-                return null;
+        return () -> {
+            countdownAndAwait(latch);
+            synchronized (lock) {
+                // take the commodity!
             }
+            return null;
         };
     }
 
@@ -63,11 +60,9 @@ public class SynchronizedLock implements Cash, Cat {
     }
 
     private Interruptible<Void> waitingFor(final CountDownLatch latch) {
-        return new Interruptible<Void>() {
-            public Void call() throws InterruptedException {
-                latch.await();
-                return null;
-            }
+        return () -> {
+            latch.await();
+            return null;
         };
     }
 

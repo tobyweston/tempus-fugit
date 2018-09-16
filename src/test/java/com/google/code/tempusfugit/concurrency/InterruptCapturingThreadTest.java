@@ -85,13 +85,11 @@ public class InterruptCapturingThreadTest {
     }
 
     private static InterruptCapturingThread sleepingThread() {
-        return new InterruptCapturingThread(new Runnable() {
-            public void run() {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    // this is supposed to happen
-                }
+        return new InterruptCapturingThread(() -> {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                // this is supposed to happen
             }
         }, "thread-to-interrupt");
     }

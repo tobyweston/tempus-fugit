@@ -47,18 +47,12 @@ public class ExecuteUsingLockTest {
     }
 
     private Callable<Void, RuntimeException> something() {
-        return new Callable<Void, RuntimeException>() {
-            public Void call() throws RuntimeException {
-                return null;
-            }
-        };
+        return () -> null;
     }
 
     private Callable<Void, Exception> somethingThatThrowsException() {
-        return new Callable<Void, Exception>() {
-            public Void call() throws Exception {
-                throw new RuntimeException("go go go");
-            }
+        return () -> {
+            throw new RuntimeException("go go go");
         };
     }
 

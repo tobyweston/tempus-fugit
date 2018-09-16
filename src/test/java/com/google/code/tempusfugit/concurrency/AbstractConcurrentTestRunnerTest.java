@@ -39,7 +39,7 @@ public abstract class AbstractConcurrentTestRunnerTest {
 
     protected final static int CONCURRENT_COUNT = 3;
 
-    protected static final Set<String> THREADS = synchronizedSet(new HashSet<String>());
+    protected static final Set<String> THREADS = synchronizedSet(new HashSet<>());
 
     @Test
     public void shouldRunInParallel1() throws TimeoutException, InterruptedException {
@@ -76,7 +76,7 @@ public abstract class AbstractConcurrentTestRunnerTest {
     }
 
     @Test(expected = AssertionFailedError.class)
-    public void concurrentFailuresFailInTheMainTestThread() throws InterruptedException {
+    public void concurrentFailuresFailInTheMainTestThread() {
         fail();
     }
 

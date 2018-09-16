@@ -44,8 +44,8 @@ class RunConcurrently extends Statement {
             statement.evaluate();
     }
 
-    private ExecutorCompletionService createCompletionService() {
-        return new ExecutorCompletionService(new Executor() {
+    private ExecutorCompletionService<Void> createCompletionService() {
+        return new ExecutorCompletionService<Void>(new Executor() {
             private int count;
             public void execute(Runnable runnable) {
                 new Thread(runnable, method.getName() + "-Thread-" + count++).start();
@@ -92,7 +92,7 @@ class RunConcurrently extends Statement {
             this.start = start;
         }
 
-        public Void call() throws Exception {
+        public Void call() {
             try {
                 start.await();
                 statement.evaluate();

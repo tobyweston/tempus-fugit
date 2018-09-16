@@ -21,11 +21,11 @@ public final class WithException<E extends Exception> {
     private final Class<E> type;
 
     public static <E extends Exception> WithException<E> with(Class<E> type) {
-        return new WithException<E>(type);
+        return new WithException<>(type);
     }
 
     public static <E extends Exception> WithException<E> as(Class<E> type) {
-        return new WithException<E>(type);
+        return new WithException<>(type);
     }
 
     private WithException(Class<E> type) {

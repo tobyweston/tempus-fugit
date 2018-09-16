@@ -121,7 +121,7 @@ public class DefaultTimeoutableCompletionServiceTest {
             new DefaultTimeoutableCompletionService(completionService, TIMEOUT, time).submit(asList(task1, task2));
             fail("should have timed out");
         } catch (final TimeoutExceptionWithResults e) {
-            assertThat((String) e.getResults().get(0), is(TASK1_RESULT));
+            assertThat(e.getResults().get(0), is(TASK1_RESULT));
         }
     }
 
@@ -172,11 +172,11 @@ public class DefaultTimeoutableCompletionServiceTest {
             throw new UnsupportedOperationException();
         }
 
-        public String get() throws InterruptedException, ExecutionException {
+        public String get() {
             return string;
         }
 
-        public String get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        public String get(long timeout, TimeUnit unit) {
             throw new UnsupportedOperationException();
         }
     }

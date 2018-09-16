@@ -72,7 +72,7 @@ public class ThreadLocalTimer implements StopWatch {
 
         @Override
         protected Long initialValue() {
-            return Long.valueOf(initialValue);
+            return initialValue;
         }
     }
 }

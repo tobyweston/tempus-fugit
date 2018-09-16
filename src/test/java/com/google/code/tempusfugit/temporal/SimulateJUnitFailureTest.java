@@ -45,12 +45,12 @@ public class SimulateJUnitFailureTest {
     @Test
     public void shouldSimulateJUnitFailureOnTimeout() {
         exception.expect(AssertionError.class);
-        exception.expectMessage(Matchers.<String>allOf(
+        exception.expectMessage(Matchers.allOf(
                 containsString("test lambda"),
                 containsString("Expected: is \"the best\""),
                 containsString("but: <was \"the worst\">")
         ));
-        SelfDescribingMatcherCondition<String> condition = new SelfDescribingMatcherCondition<String>(probe("the worst"), is("the best"));
+        SelfDescribingMatcherCondition<String> condition = new SelfDescribingMatcherCondition<>(probe("the worst"), is("the best"));
         condition.isSatisfied();
         failOnTimeout(condition).call();
     }
