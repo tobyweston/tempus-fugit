@@ -24,7 +24,7 @@ package com.google.code.tempusfugit.concurrency.annotations;
  * ensure immutability.
  * <p/>
  */
-public abstract aspect DeclareImmutableError {
+ aspect DeclareImmutableError {
 
 	pointcut testCase() : within(TestCase+);
 

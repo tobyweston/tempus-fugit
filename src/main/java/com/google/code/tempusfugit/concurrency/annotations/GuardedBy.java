@@ -42,7 +42,7 @@ public @interface GuardedBy {
     Type lock();
     String details() default "";
 
-    public static enum Type {
+    enum Type {
         /** An intrinsic lock */
         THIS,
         /** An inner class disambiguation from {@link GuardedBy.Type#THIS} monitor, qualify with @{link GuardedBy#details} */
@@ -56,6 +56,6 @@ public @interface GuardedBy {
         /** A static field, qualify with {@link GuardedBy#details}*/
         STATIC_FIELD,
         /** The lock object is returned by calling the method, qualify with {@link GuardedBy#details} */
-        METHOD;
+        METHOD
     }
 }

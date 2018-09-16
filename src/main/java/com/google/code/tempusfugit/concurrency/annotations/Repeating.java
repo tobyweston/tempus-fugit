@@ -31,5 +31,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(METHOD)
 @Retention(RUNTIME)
 public @interface Repeating {
-    public abstract int repetition() default 100;
+    int repetition() default 100;
 }
