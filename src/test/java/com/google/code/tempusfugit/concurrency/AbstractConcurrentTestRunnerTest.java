@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- *
- */
 package com.google.code.tempusfugit.concurrency;
 
 import com.google.code.tempusfugit.concurrency.annotations.Concurrent;

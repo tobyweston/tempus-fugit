@@ -100,7 +100,7 @@ public class TimerTest {
     @Test
     public void timeSomething() {
         Duration duration = Timer.time(() -> sleep(millis(25)));
-        assertThat(duration, is(both(greaterThan(millis(25))).and(lessThan(millis(45)))));
+        assertThat(duration, is(both(greaterThan(millis(25))).and(lessThan(millis(60)))));
     }
 
 }
