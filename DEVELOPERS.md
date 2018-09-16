@@ -15,10 +15,10 @@ SNAPSHOT Release ([https://oss.sonatype.org/content/repositories/snapshots/](htt
   1. Having added the Sonatype parent to your POM.
 
 
-    `<parent>
+    <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
-    </parent>`
+    </parent>
 
 
   2. Having previously generated your PGP key, you may need to install it on the box you intend to deploy from. You will have to export it from the original keyring (where you first created the key pair) and install it along with the public key into the keyring on the machine you want to publish from.
@@ -28,15 +28,15 @@ SNAPSHOT Release ([https://oss.sonatype.org/content/repositories/snapshots/](htt
   3. You should just be able to publish via Maven
 
 
-    `mvn clean deploy`
+    mvn clean deploy
 
   4. If Sonatype complains about the physical upload, for example with something like;
 
-    `Failed to transfer file: https://oss.sonatype.org ... Return code is: 401, ReasonPhrase: Unauthorized.`
+    Failed to transfer file: https://oss.sonatype.org ... Return code is: 401, ReasonPhrase: Unauthorized.
 
     It may be that you need to add the appropriate username and passphrase into Maven's `settings.xml`, ie;
 
-    `<server>
+    <server>
      	<id>sonatype-nexus-snapshots</id>
      	<username>...</username>
      	<password>...</password>
@@ -45,7 +45,7 @@ SNAPSHOT Release ([https://oss.sonatype.org/content/repositories/snapshots/](htt
         <id>sonatype-nexus-staging</id>
         <username>...</username>
         <password>...</password>
-    </server>`
+    </server>
 
 and as tempus-fugit has been setup with the Maven PGP plugin, it'll automatically sign the artifacts before publishing. You'll just need to enter your pass phrase as part of the build.
 
@@ -54,12 +54,12 @@ and as tempus-fugit has been setup with the Maven PGP plugin, it'll automaticall
   1. Having prepared a release (tagging in Subversion etc) with the [mvn release](http://maven.apache.org/plugins/maven-release-plugin/examples/prepare-release.html) plugin.
 
 
-    ```mvn release:clean
-    mvn release:prepare```
+    mvn release:clean
+    mvn release:prepare
 
   2. you firstly, have to _stage_ the artifacts with Sonatype.
 
-    `mvn release:perform`
+    mvn release:perform
 
   3. This will upload to Sonatype's staging area where you can promote it through to a release via their GUI at [https://oss.sonatype.org](https://oss.sonatype.org). Pick up the instructions for the GUI from the [User Guide](https://docs.sonaty pe.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide#SonatypeOSSMavenRepositoryUsageGuide-8.ReleaseIt).
 
