@@ -41,12 +41,15 @@ public class SynchronizedLock implements Cash, Cat {
 
     @Override
     public Callable<Void, RuntimeException> take() {
-        return () -> {
-            countdownAndAwait(latch);
-            synchronized (lock) {
-                // take the commodity!
+        return new Callable<Void, RuntimeException>() {
+            @Override
+            public Void call() throws RuntimeException {
+                SynchronizedLock.this.countdownAndAwait(latch);
+                synchronized (lock) {
+                    // take the commodity!
+                }
+                return null;
             }
-            return null;
         };
     }
 

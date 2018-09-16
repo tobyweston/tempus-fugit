@@ -55,7 +55,12 @@ public class SelfDescribingMatcherConditionTest {
     }
 
     private Callable<String, RuntimeException> lambda(final String value) {
-        return () -> value;
+        return new Callable<String, RuntimeException>() {
+            @Override
+            public String call() throws RuntimeException {
+                return value;
+            }
+        };
     }
 
     private static ProbeFor<String> stateOfTheEconomy() {

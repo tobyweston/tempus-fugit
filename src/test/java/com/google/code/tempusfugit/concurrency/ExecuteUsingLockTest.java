@@ -47,7 +47,12 @@ public class ExecuteUsingLockTest {
     }
 
     private Callable<Void, RuntimeException> something() {
-        return () -> null;
+        return new Callable<Void, RuntimeException>() {
+            @Override
+            public Void call() throws RuntimeException {
+                return null;
+            }
+        };
     }
 
     private Callable<Void, Exception> somethingThatThrowsException() {
