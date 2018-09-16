@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeoutException;
 
 import static com.google.code.tempusfugit.concurrency.ThreadUtils.resetInterruptFlagWhen;
+import static com.google.code.tempusfugit.condition.Conditions.*;
 import static com.google.code.tempusfugit.temporal.WaitFor.waitOrTimeout;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -39,6 +40,7 @@ public final class ExecutorServiceShutdown {
         return new ExecutorServiceShutdown(executor);
     }
 
+    /* @return {@code true} if the executor terminated and {@code false} if the timeout elapsed before termination */
     public Boolean waitingForCompletion(final Duration duration) {
         if (executor == null)
             return false;
@@ -55,11 +57,7 @@ public final class ExecutorServiceShutdown {
     }
 
     private Interruptible<Boolean> awaitingTerminationIsInterrupted(final Duration timeout) {
-        return new Interruptible<Boolean>(){
-            public Boolean call() throws InterruptedException {
-                return executor.awaitTermination(timeout.inMillis(), MILLISECONDS);
-            }
-        };
+        return () -> executor.awaitTermination(timeout.inMillis(), MILLISECONDS);
     }
 
 }

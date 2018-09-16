@@ -17,12 +17,21 @@
 package com.google.code.tempusfugit.temporal;
 
 import com.google.code.tempusfugit.ClassInvariantViolation;
+import com.google.code.tempusfugit.concurrency.ThreadUtils;
 import org.junit.Test;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import static com.google.code.tempusfugit.concurrency.ThreadUtils.sleep;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
+import static com.google.code.tempusfugit.temporal.Duration.seconds;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.both;
+import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.number.OrderingComparison.greaterThan;
 
 public class TimerTest {
 
@@ -86,6 +95,12 @@ public class TimerTest {
         clock.incrementBy(millis(20));
         timer.lap();
         assertThat(timer.elapsedTime(), is(millis(20)));
+    }
+
+    @Test
+    public void timeSomething() {
+        Duration duration = Timer.time(() -> sleep(millis(25)));
+        assertThat(duration, is(both(greaterThan(millis(25))).and(lessThan(millis(45)))));
     }
 
 }

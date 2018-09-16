@@ -31,6 +31,7 @@ import java.util.concurrent.TimeoutException;
 
 import static com.google.code.tempusfugit.concurrency.ExecutorServiceShutdown.shutdown;
 import static com.google.code.tempusfugit.temporal.Duration.millis;
+import static com.google.code.tempusfugit.temporal.Duration.seconds;
 import static com.google.code.tempusfugit.temporal.Timeout.timeout;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -94,7 +95,7 @@ public class ExecutorServiceShutdownTest {
             oneOf(executor).shutdownNow();
             oneOf(executor).isShutdown(); will(returnValue(true));
         }});
-        assertThat(shutdown(executor).waitingForShutdown(timeout(millis(5))), is(true));
+        assertThat(shutdown(executor).waitingForShutdown(timeout(millis(500))), is(true));
     }
 
     @Test(expected = TimeoutException.class)
@@ -103,7 +104,7 @@ public class ExecutorServiceShutdownTest {
             oneOf(executor).shutdownNow();
             atLeast(1).of(executor).isShutdown(); will(returnValue(false));
         }});
-        shutdown(executor).waitingForShutdown(timeout(millis(5)));
+        shutdown(executor).waitingForShutdown(timeout(millis(500)));
     }
 
     private void awaitingTermination(final boolean result) throws InterruptedException {

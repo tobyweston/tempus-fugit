@@ -20,16 +20,14 @@ import com.google.code.tempusfugit.temporal.Duration;
 
 public final class ThreadUtils {
 
-    public static void sleep(final Duration duration) {
+    public static void sleep(Duration duration) {
         resetInterruptFlagWhen(sleepingIsInterrupted(duration));
     }
 
-    private static Interruptible<Void> sleepingIsInterrupted(final Duration duration) {
-        return new Interruptible<Void>() {
-            public Void call() throws InterruptedException {
-                Thread.sleep(duration.inMillis());
-                return null;
-            }
+    private static Interruptible<Void> sleepingIsInterrupted(Duration duration) {
+        return () -> {
+            Thread.sleep(duration.inMillis());
+            return null;
         };
     }
 

@@ -17,21 +17,24 @@
 package com.google.code.tempusfugit.condition;
 
 import com.google.code.tempusfugit.concurrency.Callable;
-import com.google.code.tempusfugit.temporal.Condition;
-import com.google.code.tempusfugit.temporal.SelfDescribingCondition;
+import com.google.code.tempusfugit.temporal.*;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
 
 import java.util.concurrent.ExecutorService;
 
+import static java.lang.Thread.*;
+import static java.lang.Thread.State.TIMED_WAITING;
+import static java.lang.Thread.State.WAITING;
+
 public final class Conditions {
 
     public static Condition not(Condition condition) {
-        return new NotCondition(condition);
+        return () -> !condition.isSatisfied();
     }
 
     public static Condition shutdown(ExecutorService service) {
-        return new ExecutorShutdownCondition(service);
+        return service::isShutdown;
     }
 
     public static Condition isAlive(Thread thread) {
@@ -39,11 +42,11 @@ public final class Conditions {
     }
 
     public static Condition isWaiting(Thread thread) {
-        return new ThreadWaitingCondition(thread);
+        return () -> (thread.getState() == TIMED_WAITING) || (thread.getState() == WAITING);
     }
 
-    public static Condition is(Thread thread, Thread.State state) {
-        return new ThreadStateCondition(thread, state);
+    public static Condition is(Thread thread, State state) {
+        return () -> thread.getState() == state;
     }
 
     public static void assertThat(Condition condition, Matcher<Boolean> booleanMatcher) {
@@ -71,7 +74,7 @@ public final class Conditions {
      */
     @Deprecated
     public static <T> Condition assertion(T actual, Matcher<T> matcher) {
-        return new MatcherCondition<T>(actual, matcher);
+        return new MatcherCondition<>(actual, matcher);
     }
 
     public static <T> SelfDescribingCondition assertion(Callable<T, RuntimeException> actual, Matcher<T> matcher) {

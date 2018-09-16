@@ -93,7 +93,10 @@ public class WaitForTest {
 
     @Test (expected = InterruptedException.class, timeout = 500)
     public void waitForCanBeInterrupted() throws TimeoutException, InterruptedException {
-        waitOrTimeout(InterruptWaitFor(), timeout(seconds(10)));
+        waitOrTimeout(() -> {
+            currentThread().interrupt();
+            return false;
+        }, timeout(seconds(10)));
     }
 
     @Test (timeout = 500)
@@ -144,15 +147,6 @@ public class WaitForTest {
 
     private void waitForShutdown(final Thread thread) throws TimeoutException, InterruptedException {
         waitOrTimeout(not(isAlive(thread)), timeout(seconds(1)));
-    }
-
-    private Condition InterruptWaitFor() {
-        return new Condition() {
-            public boolean isSatisfied() {
-                currentThread().interrupt();
-                return false;
-            }
-        };
     }
 
     private class ForceTimeout implements SelfDescribingCondition {

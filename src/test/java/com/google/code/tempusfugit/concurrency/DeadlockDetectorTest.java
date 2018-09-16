@@ -105,12 +105,9 @@ public class DeadlockDetectorTest {
     }
 
     private Condition forDeadlockDetected(final int stackDepth) {
-        return new Condition() {
-            @Override
-            public boolean isSatisfied() {
-                DeadlockDetector.printDeadlocks(deadlocks, stackDepth);
-                return deadlocks.detected();
-            }
+        return () -> {
+            DeadlockDetector.printDeadlocks(deadlocks, stackDepth);
+            return deadlocks.detected();
         };
     }
 

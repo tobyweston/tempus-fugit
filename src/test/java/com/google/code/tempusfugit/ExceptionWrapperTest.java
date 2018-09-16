@@ -49,6 +49,10 @@ public class ExceptionWrapperTest {
     private final Mockery context = new JUnit4Mockery();
     private final Callable<String> callable = context.mock(Callable.class);
 
+    public void exampleLambdaSyntax() throws SomeOtherCheckedException {
+        wrapAnyException(() -> null, with(SomeOtherCheckedException.class));
+    }
+
     @Test
     public void shouldDelegateCallReflectiveException() throws Exception {
         callWill(returnValue("value"));
