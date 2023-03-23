@@ -37,6 +37,8 @@ public class IntermittentTestRunner extends BlockJUnit4ClassRunner {
     }
 
     private int repeatCount(FrameworkMethod method) {
+        if (isIgnored(method))
+            return 1;
         if (intermittent(type))
             return repetition(type);
         if (intermittent(method))
